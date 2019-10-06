@@ -1,13 +1,13 @@
-import HomePage from './home-page/HomePage'
-import AdminPage from './admin-page/AdminPage'
-import MyPage from './my-page/MyPage'
+import HomePage from './home-page/HomePage.vue'
+import AdminPage from './admin-page/AdminPage.vue'
+import MyPage from './my-page/MyPage.vue'
+import ProductDetailPage from './product-detail-page/ProductDetailPage.vue'
 export default [
     {
         path: '/',
         name: 'home-page',
         component: HomePage,
         meta: {
-
         }
     },
     {
@@ -19,11 +19,29 @@ export default [
         }
     },
     {
-        path: '/mypage',
+        path: '/mypage/:ahihi',
         name: 'my-page',
         component: MyPage,
         meta: {
 
         }
+    },
+    {
+        path: '/product/:name',
+        name: 'product',
+        component: ProductDetailPage,
+        meta: {
+
+        }
+    },
+    {
+        path: '/404',
+        name: 'not-found-page',
+        component: MyPage
+    },
+    {
+        path: '*',
+        redirect: '/404'
     }
+
 ]
