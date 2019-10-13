@@ -47,8 +47,8 @@
       <div class="collapse navbar-collapse">
         <div class="nav-item dropdown">
           <a
+            style="color:black"
             class="nav-link dropdown-toggle"
-            style="color: black"
             href="#"
             id="navbarDropdownMenuLink"
             role="button"
@@ -83,21 +83,18 @@
             <a class="nav-link" href="#">
               <i class="fa fa-building"></i>
               Hệ thống Showroom
-              <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item active ml-auto">
             <a class="nav-link" href="#">
               <i class="fa fa-wrench"></i>
               Kiểm tra bảo hành
-              <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item active ml-auto">
             <a class="nav-link" href="#">
               <i class="fa fa-bell"></i>
               Thông báo
-              <span class="sr-only">(current)</span>
             </a>
           </li>
         </ul>
@@ -111,6 +108,7 @@
 <script>
 import Login_Modal from "../../components/login_modal/Login_modal.vue";
 import History_product_modal from "../../components/history_product_modal/History_product_modal.vue";
+
 export default {
   data() {
     return {};
@@ -137,7 +135,7 @@ export default {
     .myFormSearch {
       width: 50%;
       display: grid;
-      grid-template-columns: 83% 15%;
+      grid-template-columns: 75% 20%;
     }
   }
 }

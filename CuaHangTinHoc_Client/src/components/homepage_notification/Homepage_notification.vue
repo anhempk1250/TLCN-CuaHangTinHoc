@@ -5,33 +5,21 @@
         <li
           class="list-group-item dropdown dropdown-toggle"
           data-toggle="dropdown"
+          data-target=".mydropdown"
           aria-haspopup="true"
           aria-expanded="false"
         >
           <a href="#">Tivi - Màn hình TV</a>
-          <div class="dropdown-menu" style="margin-left: 13rem;margin-top: -2rem;">
-            <table class="table">
-              <tr>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-              </tr>
-              <tr>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-              </tr>
-              <tr>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-              </tr>
-              <tr>
-                <th>1</th>
-                <th>1</th>
-                <th>1</th>
-              </tr>
-            </table>
+          <div class="mydropdown" style="margin-left: 13rem;margin-top: -2rem;">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="row" v-for="i in 4" :key="i">
+                      <div class="col">
+                          indext: {{i}}
+                      </div>
+                  </div>
+                </div>
+              </div>
           </div>
         </li>
         <li class="list-group-item">
