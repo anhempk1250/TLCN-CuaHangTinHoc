@@ -18,7 +18,10 @@ const baseRoutes = [
 const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
-    routes: baseRoutes
+    routes: baseRoutes,
+    scrollBehavior () {
+        return { x: 0, y: 0 }
+      }
 })
 
 export default router

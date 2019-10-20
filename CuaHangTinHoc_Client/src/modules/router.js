@@ -19,7 +19,7 @@ export default [
         }
     },
     {
-        path: '/mypage/:ahihi',
+        path: '/mypage/',
         name: 'my-page',
         component: MyPage,
         meta: {
@@ -27,11 +27,11 @@ export default [
         }
     },
     {
-        path: '/product/:name',
+        path: '/product/:id/:name',
         name: 'product',
         component: ProductDetailPage,
         meta: {
-
+            product: {}
         }
     },
     {

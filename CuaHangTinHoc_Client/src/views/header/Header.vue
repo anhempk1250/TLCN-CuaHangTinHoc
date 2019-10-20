@@ -45,40 +45,69 @@
 
     <nav class="navbar navbar-expand-lg navbar-light myHeader2">
       <div class="collapse navbar-collapse">
-        <div class="nav-item dropdown">
-          <a
-            style="color:black"
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdownMenuLink"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <i class="fa fa-bars"></i> Danh mục sản phẩm
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </div>
+        <ul class="navbar-nav">
+          <li class="dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              style="color: black"
+              href="#"
+              id="navbarDropdownMenuLink"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="fa fa-bars"> Danh Mục Sản Phẩm</i>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li>
+                <a class="dropdown-item" href="#">Action</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Another action</a>
+              </li>
+              <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">Google</a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="#">Submenu</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Submenu0</a>
+                  </li>
+                  <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle" href="#">Submenu 1</a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="dropdown-item" href="#">Subsubmenu1</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">Subsubmenu1</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle" href="#">Submenu 2</a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a class="dropdown-item" href="#">Subsubmenu2</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">Subsubmenu2</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
 
         <ul class="navbar-nav ml-auto">
-          <a
-            class="nav-link"
-            style="color: black"
-            href="#"
-            id="navbarDropdownMenuLink"
-            role="button"
-            data-toggle="modal"
-            data-target=".bd-example-modal-xl"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <i class="fa fa-chevron-down"></i> Sản phẩm vừa xem
-          </a>
+          <li>
+            <a class="nav-link" style="color: black" href="#">
+              <DropdownMega></DropdownMega>
+            </a>
+          </li>
           <li class="nav-item active ml-auto">
             <a class="nav-link" href="#">
               <i class="fa fa-building"></i>
@@ -100,7 +129,6 @@
         </ul>
       </div>
     </nav>
-
     <Login_Modal />
     <History_product_modal />
   </div>
@@ -108,12 +136,14 @@
 <script>
 import Login_Modal from "../../components/login_modal/Login_modal.vue";
 import History_product_modal from "../../components/history_product_modal/History_product_modal.vue";
-
+import DropdownMega from "../../components/dropdown_mega/dropdown_mega.vue";
 export default {
   data() {
-    return {};
+    return {
+      
+    };
   },
-  components: { Login_Modal, History_product_modal }
+  components: { Login_Modal, History_product_modal, DropdownMega }
 };
 </script>
 <style scoped lang="scss">
@@ -128,6 +158,13 @@ export default {
     background-color: #068f94;
     color: white;
   }
+
+  .btn:focus,
+  .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   .navbar-brand {
     margin-right: 5%;
   }
@@ -145,5 +182,22 @@ export default {
   background-color: #e9ebea;
   border: 0.5px solid #9bc4af;
   border-top: 0px;
+}
+.navbar-nav li:hover > ul.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 99%;
+  margin-top: -4.45rem;
+}
+
+/* rotate caret on hover */
+.dropdown-menu > li > a:hover:after {
+  text-decoration: underline;
+  transform: rotate(-90deg);
 }
 </style>

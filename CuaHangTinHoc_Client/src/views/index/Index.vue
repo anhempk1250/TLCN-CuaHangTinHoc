@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <body id="index">
     <Header/>
     <router-view class='bodyContent' />
     <Footer/>
-  </div>
+  </body>
 </template>
 <script>
 import Header from "../header/Header";
@@ -12,7 +12,11 @@ export default {
   data() {
     return {};
   },
-  components: { Header, Footer }
+  components: { Header, Footer },
+  mounted() {
+        document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -21,9 +25,6 @@ div {
 }
 .bodyContent {
   background-color: #e9ebea;
-  padding-left: 6rem;
-  padding-right: 5rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding: 2% 5%;
 }
 </style>
