@@ -20,6 +20,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+#index {
+  font-family: Roboto, sans-serif;
+}
 div {
   text-align: center;
 }

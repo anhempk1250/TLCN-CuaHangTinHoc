@@ -3,13 +3,18 @@ import Router from 'vue-router'
 
 import childrenRouter from './modules/router'
 import Index from './views/index/Index.vue'
-
+import IndexStore from './views/store/IndexStore.vue'
+import childrenRouterStore from './modules_store/routerStore'
 Vue.use(Router)
 
 const baseRoutes = [
     {
+        path: '/store',
+        component: IndexStore,
+        children: childrenRouterStore
+    },
+    {
         path: '/',
-        //name: 'home',
         component: Index,
         children: childrenRouter
     }

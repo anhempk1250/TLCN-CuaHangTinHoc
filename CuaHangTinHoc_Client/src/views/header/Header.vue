@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="font:Roboto, san-serif;">
     <nav class="navbar navbar-expand-lg navbar-light myHeader1">
       <a class="navbar-brand" href="#">VH</a>
       <button
@@ -37,9 +37,11 @@
         >
           <i class="fa fa-user"></i> Đăng Nhập
         </button>
-        <button class="leftNavbar-item btn">
-          <i class="fa fa-shopping-cart"></i> Giỏ Hàng
-        </button>
+        <router-link :to="{name: 'cart'}">
+          <button class="leftNavbar-item btn">
+            <i class="fa fa-shopping-cart"></i> Giỏ Hàng
+          </button>
+        </router-link>
       </div>
     </nav>
 
@@ -56,57 +58,42 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              <i class="fa fa-bars"> Danh Mục Sản Phẩm</i>
+              <i class="fa fa-bars"></i>
+              Danh Mục Sản Phẩm
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a class="dropdown-item" href="#">Action</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Another action</a>
-              </li>
-              <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="#">Google</a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="dropdown-item" href="#">Submenu</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">Submenu0</a>
-                  </li>
+            <ul class="dropdown-menu" style="padding:0;" aria-labelledby="navbarDropdownMenuLink">
+              <li
+                v-for="(category,index) in productCategoryList"
+                :key="index"
+                class="dropdown-submenu"
+              >
+                <a class="dropdown-item dropdown-toggle" href="#">{{category.name}}</a>
+                <ul class="dropdown-menu" style="padding:0;">
                   <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle" href="#">Submenu 1</a>
+                    <a class="dropdown-item dropdown-toggle" href="#">Thương Hiệu</a>
                     <ul class="dropdown-menu">
-                      <li>
-                        <a class="dropdown-item" href="#">Subsubmenu1</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">Subsubmenu1</a>
+                      <li v-for="(producer,index) in producerList" :key="index">
+                        <a class="dropdown-item" href="#">{{producer.name}}</a>
                       </li>
                     </ul>
                   </li>
-                  <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle" href="#">Submenu 2</a>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a class="dropdown-item" href="#">Subsubmenu2</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">Subsubmenu2</a>
-                      </li>
-                    </ul>
-                  </li>
+                  <div v-if="category.product_types.length > 0">
+                    <li v-for="(type,indexType) in category.product_types" :key="indexType">
+                      <a class="dropdown-item" href="#">{{type.name}}</a>
+                    </li>
+                  </div>
                 </ul>
               </li>
             </ul>
           </li>
         </ul>
-
         <ul class="navbar-nav ml-auto">
           <li>
-            <a class="nav-link" style="color: black" href="#">
-              <DropdownMega></DropdownMega>
-            </a>
+            <DropdownMegaHistory
+              class="nav-link"
+              style="color: black"
+              :productHistoryList="productHistoryList"
+            ></DropdownMegaHistory>
           </li>
           <li class="nav-item active ml-auto">
             <a class="nav-link" href="#">
@@ -130,20 +117,48 @@
       </div>
     </nav>
     <Login_Modal />
-    <History_product_modal />
   </div>
 </template>
 <script>
 import Login_Modal from "../../components/login_modal/Login_modal.vue";
-import History_product_modal from "../../components/history_product_modal/History_product_modal.vue";
-import DropdownMega from "../../components/dropdown_mega/dropdown_mega.vue";
+import DropdownMegaHistory from "../../components/dropdown_mega/dropdown_mega.vue";
+
+import { mapGetters } from "vuex";
+
 export default {
   data() {
-    return {
-      
-    };
+    return {};
   },
-  components: { Login_Modal, History_product_modal, DropdownMega }
+  methods: {
+    test() {
+      console.log(this.productCategoryList);
+    }
+  },
+  components: {
+    Login_Modal,
+
+    DropdownMegaHistory
+  },
+  computed: {
+    ...mapGetters({
+      productCategoryList: "productCategoryList",
+      productCategoryLoading: "productCategoryLoading",
+      producerList: "producerList",
+      producerLoading: "producerLoading",
+      productHistoryList: "productHistoryList"
+    })
+  },
+  created() {
+    if (this.productCategoryList.length == 0)
+      this.$store.dispatch("getProductCategory");
+    if (this.producerList.length == 0) this.$store.dispatch("getProducerList");
+
+    if (localStorage.productHistoryList)
+      this.$store.dispatch(
+        "updateProductHistory",
+        localStorage.productHistoryList
+      );
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -185,14 +200,17 @@ export default {
 }
 .navbar-nav li:hover > ul.dropdown-menu {
   display: block;
+  color: red;
 }
+
 .dropdown-submenu {
   position: relative;
+  padding: 0;
 }
 .dropdown-submenu > .dropdown-menu {
-  top: 0;
-  left: 99%;
-  margin-top: -4.45rem;
+  position: absolute;
+  top: -3px;
+  left: 99.5%;
 }
 
 /* rotate caret on hover */

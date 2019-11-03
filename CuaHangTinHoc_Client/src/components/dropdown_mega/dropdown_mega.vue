@@ -1,21 +1,25 @@
 <template>
   <div>
     <div class="dropdown1">
-      <div class="dropbtn1">
+      <div class="dropbtn1" style="cursor: pointer">
         <i class="fa fa-chevron-down"></i> Sản phẩm vừa xem
       </div>
       <br />
       <div class="dropdown-content1">
         <div class="row1">
-          <div class="column1" v-for="i in 9" :key="i">
+          <h4
+            v-if="productHistoryList==null"
+            style="position: absolute;margin: 4rem 45%;color:red"
+          >Lịch sử rỗng</h4>
+          <div class="column1" v-for="(product, index) in productHistoryList" :key="index">
             <a href="#">
               <div class="row">
                 <div class="col">
-                  <img src="https://img1.phongvu.vn/media/catalog/product/1/_/1_45_29.jpg" alt />
+                  <img :src="product.first_image.image_link" alt="image" />
                 </div>
               </div>
               <div class="row">
-                <div class="col" style="word-break: break-all;">May Tinh ABC</div>
+                <div class="col" style="word-break: break-all;">{{fixProductName(product.Name)}}</div>
               </div>
             </a>
           </div>
@@ -25,10 +29,36 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  props: ["productHistoryList"],
+  watch: {
+    productHistoryList(newVal) {
+      this.productHistoryList = newVal;
+      console.log(this.productHistoryList,'mega');
+    }
+  },
+  methods: {
+    fixProductName(name) {
+      if (name.length > 30) return name.substring(0, 30) + " ...";
+      else {
+        return name;
+      }
+    }
+  },
+  computed: {
+    loadProductHistory() {
+      console.log(this.productHistoryList,'mega','computed');
+      return this.productHistoryList;
+    }
+  },
+  mounted() {}
+};
 </script>
 <style lang="scss" scoped>
-a:hover .row{
+a:hover .row {
   background-color: white;
 }
 .row {
@@ -86,10 +116,14 @@ body {
 .column1 {
   float: left;
   width: 10%;
-  height: 10rem;
+  margin: 0 1%;
+  height: 12rem;
   background-color: white;
 }
 
+.row1 {
+  height: 12rem;
+}
 .column1 a {
   float: none;
   color: black;
@@ -101,7 +135,6 @@ body {
 .column1 a:hover {
   background-color: #e9ebea;
 }
-
 /* Clear floats after the columns */
 .row1:after {
   content: "";

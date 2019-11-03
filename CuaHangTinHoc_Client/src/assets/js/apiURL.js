@@ -3,7 +3,12 @@ var apiAddress = apiConfig.api_url
 
 var apiUrl = {
   products: apiAddress + '/products',
-  productImages: apiAddress + "/images"
+  productDetails: apiAddress + '/productDetails',
+  productCategories: apiAddress + '/productCategory',
+  producer: apiAddress + "/producers",
+  productType: apiAddress + "/productType",
+  categories: apiAddress + "/categories",
+  store_product: apiAddress + '/storeProducts'
 }
 
 exports.apiUrl = apiUrl

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="font-family: Roboto, sans-serif;">
     <div class="row">
       <div class="col-md-9">
         <Carousel />
@@ -28,10 +28,19 @@
         </div>
       </div>
     </div>
-    <div class="row bodyContentHomePage">
-      <div class="productList col-2" v-for="i in 20" :key="i">
-        <ProductItem v-if="i%2==0" class="product-container" :loading="productLoading" :product="productList[0]" />
-        <ProductItem v-else class="product-container" :loading="productLoading" :product="productList[1]" />
+    <div style="margin: 3rem 0;" v-for="(productType,index) in productTypeList" :key="index">
+      <h3 class="text-left" style="color : #1D99DB">{{productType.name}}</h3>
+      <div class="ListProductContainer">
+        <div class="bodyContentHomePage">
+          <div
+            class="productList"
+            v-for="(product,indexProduct) in productType.product_list_with_type"
+            :key="indexProduct"
+          >
+            <ProductItem class="product-container" :loading="false" :product="product" />
+          </div>
+        </div>
+        <a href="#" class="btn btn-outline-primary">Xem Thêm (nhớ sửa router link)</a>
       </div>
     </div>
   </div>
@@ -50,25 +59,33 @@ export default {
   computed: {
     ...mapGetters({
       productList: "productList",
-      productLoading: "productLoading"
+      productLoading: "productLoading",
+      productTypeList: "productTypeList",
+      productTypeLoading: "productTypeLoading"
     })
   },
   created() {
-    if( this.productList.length == 0 )
-      this.$store.dispatch("getProductList");
+    if (this.productList.length == 0) this.$store.dispatch("getProductList");
+    if (this.productTypeList.length == 0)
+      this.$store.dispatch("getProductTypeList");
   }
 };
 </script>
 <style lang="scss" scoped>
-div {
+.ListProductContainer {
+  background-color: white;
+  padding: 0 1rem 1rem 1rem;
+  a {
+    width: 20%;
+  }
   .bodyContentHomePage {
     width: 100%;
     background-color: white;
-    div {
-      .productList {
-        .product-container {
-          margin: 2rem 1rem;
-        }
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    .productList {
+      .product-container {
+        margin: 2rem 1rem;
       }
     }
   }

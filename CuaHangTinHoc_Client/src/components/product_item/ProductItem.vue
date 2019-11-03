@@ -5,28 +5,40 @@
       @mouseover="hoverItem()"
       @mouseleave="notHoverItem()"
       :class="{'myHover': shadowClass}"
-      style="color: black;cursor: pointer"
+      style="color: black;cursor: pointer;font: 14px Roboto, sans-serif"
       v-on:click="pushRouter()"
-      v-if="!loading"
     >
       <div id="productImage">
-        <img alt="itemImg" src="https://salt.tikicdn.com/cache/w1200/ts/product/f3/a1/2f/daef43879134e1a0ed37dfa76f102aca.jpg" />
+        <img alt="itemImg" :src="product.first_image.image_link" />
       </div>
       <div id="productName">
-        <div class="col">{{product.Name}}</div>
+        <div class="col">{{fixProductName}}</div>
       </div>
       <div id="productPrice" class="row" style="padding-left: 10px;">
         <div class="col-7 text-left" style="padding-right: 0;">
-          <b style="color: red;">{{product.Price - (product.Price / product.Percent_Discount)/1}} đ</b>
-          <br />
-          <div style="text-decoration: line-through;">{{product.Price}} đ</div>
+          <div v-if="product.ID_Discount!=null">
+            <b
+              style="color: red;"
+            >{{fixFormatVND(product.Price - (product.Price / product.Percent_Discount)/1)}} đ</b>
+
+            <div
+              style="text-decoration: line-through;margin-top: 5px;"
+            >{{fixFormatVND(product.Price)}} đ</div>
+          </div>
+          <div v-else-if="product.ID_Discount==null">
+            <b style="color: red;">{{fixFormatVND(product.Price)}} đ</b>
+          </div>
         </div>
 
-        <div class="col-5" style="padding-left: 0;margin-left: -5px;">
-          <div v-if="product.ID_Discount!=null">
+        <div
+          class="col-5"
+          style="padding-left: 0;margin-left: -5px;"
+          v-if="product.ID_Discount!=null"
+        >
+          <div>
             Nhập mã
             <br />
-            <span>{{product.ID_Discount}}</span>
+            <span style="margin-top: 5px;">{{product.ID_Discount}}</span>
           </div>
         </div>
       </div>
@@ -58,22 +70,41 @@ export default {
       if (this.product.productCount < 1) return true;
       return false;
     },
+    fixFormatVND(nStr) {
+      nStr = nStr + "";
+      let x = nStr.split(".");
+      let x1 = x[0];
+      let x2 = x.length > 1 ? "." + x[1] : "";
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, "$1" + "," + "$2");
+      }
+      return x1 + x2;
+    },
     pushRouter() {
-      this.$router.push(
-        "/product/" + this.product.ID + "/" + this.product.Name
-      );
+      this.$store.dispatch("addProductHistory",this.product);
+      this.$router.push({
+        path: "/product/" + this.product.id
+      });
     }
   },
   computed: {
     shadowClass() {
       return this.isHover;
+    },
+    fixProductName() {
+      let name = this.product.Name;
+      if (this.product.Name.length > 45) return name.substring(0, 45) + " ...";
+      else {
+        return name;
+      }
     }
   }
 };
 </script>
 <style scoped lang="scss">
 .myHover {
-  box-shadow: 0px 0px 60px 10px rgba(179, 168, 181, 1);
+  box-shadow: 0px 0px 20px 5px rgba(179, 168, 181, 1);
 }
 a:hover {
   text-decoration: none;

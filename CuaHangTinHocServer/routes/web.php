@@ -23,3 +23,17 @@ Route::post('/testLaravel',function (\Illuminate\Http\Request $request){
     $lname = $request->input('lastName');
     return "firstName : $fname / lastName : $lname" ;
 });
+
+
+// home page
+Route::get('/products','HomePageController@getSummaryProductList');
+Route::get('/productDetails','HomePageController@getProduct');
+Route::get('/productCategory','HomePageController@getProductCategoryList');
+Route::get('/producers', 'HomePageController@getProducerList');
+Route::get('/productType','HomePageController@getProductTypeList');
+
+// category page
+Route::get('/categories', 'CategoryPageController@getCategoryList');
+
+// store - product-page
+Route::get('/storeProducts','StorePageController@getProduct');
