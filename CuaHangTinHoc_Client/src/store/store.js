@@ -55,6 +55,13 @@ export const store = new Vuex.Store({
       list: [],
       success: false,
       error: false
+    },
+    store_productCategoryState: {
+      loading: false,
+      list: [],
+      object: {},
+      success: false,
+      error: false
     }
   },
   mutations,

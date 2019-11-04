@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\DB;
@@ -36,5 +36,15 @@ class Product_Category extends Model
             ->groupBy('product_category.id','product_category.name','product_category.property','employeeaccount.name','product_category.summaryName')
             ->get();
         return $category;
+    }
+
+    public function createCategory(Request $request){
+        $productCategory = new Product_Category();
+        $productCategory->name =  $request->input("name");
+        $productCategory->employee_id =  $request->input("employee_id");
+        $productCategory->summaryName =  $request->input("summaryName");
+        $productCategory->property =  $request->input("property");
+        $productCategory->save();
+        return 'success';
     }
 }

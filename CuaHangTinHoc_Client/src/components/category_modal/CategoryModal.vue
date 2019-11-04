@@ -190,12 +190,25 @@ export default {
     InsertOrUpdateCategory() {
       if (this.checkInputCategory()) {
         if (this.insert) {
-          console.log("insert success");
+          this.category.propertyString = this.formatProperty();
+          this.$store.dispatch("insertStoreProductCategory", this.category);
+          // location.reload();
         } else {
           console.log("update success");
         }
-        location.reload();
+        //location.reload();
       }
+    },
+    formatProperty() {
+      let string = "";
+      for (let i = 0; i < this.category.propertyList.length; i++) {
+        if (i == 0) {
+          string += "" + (i + 1) + "_" + this.category.propertyList[i];
+        } else {
+          string += "___" + (i + 1) + "_" + this.category.propertyList[i];
+        }
+      }
+      return string;
     }
   }
 };

@@ -103,5 +103,25 @@ export default {
       .catch(function () {
         commit('storeProduct_error')
       })
-  }
+  },
+  insertStoreProductCategory({ commit }, category) {
+    console.log('insert')
+    const apiUrl = apiConfig.store_product
+    let data = {
+      name: category.name,
+      employee_id: "vinhdlv",
+      summaryName: category.summaryName,
+      property: category.propertyString
+
+    }
+    commit('storeProduct_request')
+    axios.post(apiUrl,data)
+      .then(function (response) {
+        commit('storeProduct_success', response.data)
+        console.log(response.data,'action insertcategory')
+      })
+      .catch(function () {
+        commit('storeProduct_error')
+      })
+    }
 }

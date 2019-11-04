@@ -37,3 +37,4 @@ Route::get('/categories', 'CategoryPageController@getCategoryList');
 
 // store - product-page
 Route::get('/storeProducts','StorePageController@getProduct');
+Route::post('/storeProducts','StorePageController@createCategory');

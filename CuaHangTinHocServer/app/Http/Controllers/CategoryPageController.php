@@ -14,4 +14,8 @@ class CategoryPageController extends BaseController
         $category = new Product_Category();
         return $category->getCategoryList();
     }
+
+    public function createCategory(Request $request) {
+
+    }
 }
