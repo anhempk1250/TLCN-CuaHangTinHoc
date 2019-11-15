@@ -8,7 +8,10 @@ var apiUrl = {
   producer: apiAddress + "/producers",
   productType: apiAddress + "/productType",
   categories: apiAddress + "/categories",
-  store_product: apiAddress + '/storeProducts'
+  store_product: apiAddress + '/storeProducts',
+  customerRegister: apiAddress + '/customerRegister',
+  store_category: apiAddress + "/storeCategory",
+  store_authen: apiAddress + "/storeAuthen"
 }
 
 exports.apiUrl = apiUrl

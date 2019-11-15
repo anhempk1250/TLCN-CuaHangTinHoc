@@ -15,5 +15,12 @@ export default {
   categoryList: state => state.categoryState.list,
   categoryLoading: state => state.categoryState.loading,
   storeProductList: state => state.store_productState.list,
-  storeProductLoading: state => state.store_productState.loading
+  storeProductLoading: state => state.store_productState.loading,
+  customerAccountObject: state => state.customerAccountState.object,
+  customerAccountLoading: state => state.customerAccountState.loading,
+  customerAccountMessage: state => state.customerAccountState.msg,
+  storeCategoryList: state => state.store_categoryState.list,
+  storeCategoryLoading: state => state.store_categoryState.loading,
+  storeAuthenMsg: state => state.authenState.msg,
+  storeEmployeeAccount: state => state.authenState.object
 }

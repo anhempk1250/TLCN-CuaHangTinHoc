@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row" style="background-color: #e9ebea;margin:0;padding: 1rem;">
-      <h5 class="text-left" style="margin-top:0.5rem;">
+      <h5 class="text-left" style="margin-top:0.5rem;color:#307ECC">
         <p v-if="!control">Danh sách sản phẩm</p>
         <p v-if="control && insert">Tạo sản phẩm</p>
         <p v-else-if="control && !insert">Chỉnh sửa sản phẩm</p>

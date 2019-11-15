@@ -65,9 +65,8 @@ export default {
     })
   },
   created() {
-    if (this.productList.length == 0) this.$store.dispatch("getProductList");
-    if (this.productTypeList.length == 0)
-      this.$store.dispatch("getProductTypeList");
+    this.$store.dispatch("getProductList");
+    //this.$store.dispatch("getProductTypeList");
   }
 };
 </script>

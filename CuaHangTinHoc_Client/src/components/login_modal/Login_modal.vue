@@ -8,7 +8,7 @@
               active-nav-item-class="font-weight-bold text-uppercase text-danger"
               content-class="mt-3"
             >
-              <b-tab title="Đăng Nhập">
+              <b-tab title="Đăng Nhập" v-if="!store">
                 <div class="modal-header">
                   <h2 class="modal-title">Chọn Phương Thức Đăng Nhập</h2>
                 </div>
@@ -53,24 +53,31 @@
                 </div>
               </b-tab>
               <b-tab title="Tạo Tài Khoản">
+                <div
+                  v-if="customerAccountMessage!=''"
+                  class="alert alert-danger"
+                  role="alert"
+                >{{customerAccountMessage}}</div>
                 <div class="row">
                   <div class="col">
                     <input
                       id="firstName"
                       type="text"
                       class="form-control"
-                      placeholder="Họ và tên lót"
+                      placeholder="Họ tên"
+                      v-model="customer.name"
                     />
                   </div>
                 </div>
                 <div class="row">
                   <div class="col">
-                    <input id="lastName" type="text" class="form-control" placeholder="Tên" />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <input id="email" type="email" class="form-control" placeholder="Email" />
+                    <input
+                      id="email"
+                      type="email"
+                      class="form-control"
+                      placeholder="Email"
+                      v-model="customer.email"
+                    />
                   </div>
                 </div>
                 <div class="row">
@@ -80,6 +87,40 @@
                       type="password"
                       class="form-control"
                       placeholder="Password"
+                      v-model="customer.password"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="confirm-password"
+                      type="password"
+                      class="form-control"
+                      placeholder="Nhập lại mật khẩu"
+                      v-model="confirm"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="phone"
+                      type="text"
+                      class="form-control"
+                      placeholder="Điện thoại"
+                      v-model="customer.phone"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="address"
+                      type="text"
+                      class="form-control"
+                      placeholder="Địa chỉ"
+                      v-model="customer.address"
                     />
                   </div>
                 </div>
@@ -103,13 +144,23 @@
                 <div class="row">
                   <div class="col">
                     <label for="CheckPrivacy">
-                      <input id="CheckPrivacy" class="text-left" type="checkbox" /> Tôi đồng ý với điều khoản của công ty
+                      <input
+                        id="CheckPrivacy"
+                        @click="checkBox()"
+                        class="text-left"
+                        type="checkbox"
+                        checked
+                      /> Tôi đồng ý với điều khoản của công ty
                     </label>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col">
-                    <button class="btn btn-primary" style="width: 100%">Tạo tài khoản</button>
+                    <button
+                      class="btn btn-primary"
+                      style="width: 100%"
+                      @click="createAccount()"
+                    >Tạo tài khoản</button>
                   </div>
                 </div>
               </b-tab>
@@ -121,7 +172,43 @@
   </div>
 </template>
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+  data() {
+    return {
+      checked: true,
+      confirm: "",
+      customer: {
+        email: "",
+        name: "",
+        password: "",
+        phone: "",
+        address: ""
+      }
+    };
+  },
+  props: {
+    store: Boolean
+  },
+  methods: {
+    checkBox() {
+      this.checked = !this.checked;
+    },
+    createAccount() {
+      if (!this.checked) {
+        alert("Vui lòng chọn đồng ý điều khoản");
+      } else {
+        this.$store.dispatch("insertAccountCustomer", this.customer);
+      }
+    }
+  },
+  computed: {
+    ...mapGetters({
+      customerAccountMessage: "customerAccountMessage"
+    })
+  }
+};
 </script>
 <style scoped lang="scss">
 .row {

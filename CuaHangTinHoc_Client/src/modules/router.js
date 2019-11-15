@@ -4,6 +4,7 @@ import MyPage from './my-page/MyPage.vue'
 import ProductDetailPage from './product-detail-page/ProductDetailPage.vue'
 import NotFoundPage from './not-found-page/NotFoundPage.vue'
 import CartPage from './cart-page/CartPage.vue'
+import LoginPage from './login-page/LoginPage.vue';
 export default [
     {
         path: '/',
@@ -37,6 +38,11 @@ export default [
         path: '/cart',
         name: 'cart',
         component: CartPage
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginPage
     },
     {
         path: '/404',

@@ -48,7 +48,7 @@ class Product extends Model
             ->leftjoin('image', 'Product.ID', '=', 'image.product_id')
             ->select('Product.ID', 'Product.Name', 'Product.Price', 'Product.Description',
                 'Discount.ID as ID_Discount', 'Discount.Name as DiscountName', 'Discount.Percent_Discount',
-                'image.ID as ImageID', 'image.image_link', '')
+                'image.ID as ImageID', 'image.image_link')
             ->where('image.ID', '=', 1)
             ->get();
 

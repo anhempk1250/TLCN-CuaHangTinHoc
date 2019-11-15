@@ -3,16 +3,16 @@ import axios from 'axios'
 const apiConfig = require('../assets/js/apiURL').apiUrl
 export default {
   getProductList({ commit }) {
-    //console.log(apiConfig)
     const apiUrl = apiConfig.products
     commit('product_request')
     axios.get(apiUrl)
       .then(function (response) {
         commit('product_success', response.data)
-        //console.log(response.data)
+        console.log(response.data, 'success')
       })
-      .catch(function () {
+      .catch(function (err) {
         commit('product_error')
+        console.log(err, 'errer')
       })
   },
   getProductDetail({ commit }, product_id) {
@@ -104,24 +104,115 @@ export default {
         commit('storeProduct_error')
       })
   },
-  insertStoreProductCategory({ commit }, category) {
+  insertAccountCustomer({ commit }, customerAccount) {
     console.log('insert')
-    const apiUrl = apiConfig.store_product
+    const apiUrl = apiConfig.customerRegister
     let data = {
-      name: category.name,
-      employee_id: "vinhdlv",
-      summaryName: category.summaryName,
-      property: category.propertyString
-
+      name: customerAccount.name,
+      email: customerAccount.email,
+      password: customerAccount.password,
+      phone: customerAccount.phone,
+      address: customerAccount.address
     }
-    commit('storeProduct_request')
-    axios.post(apiUrl,data)
+    commit('customerAccount_request')
+    axios.post(apiUrl, data)
       .then(function (response) {
-        commit('storeProduct_success', response.data)
-        console.log(response.data,'action insertcategory')
+        commit('customerAccount_success', response.data)
+        console.log(response.data, 'action customerAccount')
       })
       .catch(function () {
-        commit('storeProduct_error')
+        commit('customerAccount_error')
       })
-    }
+  },
+  insertStoreCategory({ commit }, category) {
+    const apiUrl = apiConfig.store_category
+    return new Promise((resolve, reject) => {
+      commit('storeCategory_request')
+      axios.post(apiUrl, { category: category },
+        {
+          params: {
+            name: category.name,
+            property: category.propertyString,
+            summaryName: category.summaryName,
+            employee_id: category.employee_id
+          }
+        })
+        .then(function (response) {
+          commit('storeCategory_success', response.data)
+          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeCategory_error')
+          reject(err)
+          console.log(err);
+        })
+    })
+  },
+  updateStoreCategory({ commit }, category) {
+    const apiUrl = apiConfig.store_category
+    return new Promise((resolve, reject) => {
+      commit('storeCategory_request')
+      axios.put(apiUrl, { category: category },
+        {
+          params: {
+            _id: category.id,
+            name: category.name,
+            property: category.propertyString,
+            summaryName: category.summaryName,
+            employee_id: category.employee_id
+          }
+        })
+        .then(function (response) {
+          commit('storeCategory_success', response.data)
+          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeCategory_error')
+          reject(err)
+          console.log(err);
+        })
+    })
+  },
+  getStoreCategory({ commit }, token) {
+    const apiUrl = apiConfig.store_category
+    return new Promise((resolve, reject) => {
+      commit('storeCategory_request')
+      axios.get(apiUrl, { params: { token: token } })
+        .then(function (response) {
+          commit('storeCategory_success', response.data)
+          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeCategory_error')
+          reject(err)
+          console.log(err);
+        })
+    })
+  },
+  storeLogin({ commit }, employeeAccount) {
+    const apiUrl = apiConfig.store_authen
+    return new Promise((resolve, reject) => {
+      commit('authenState_request')
+      axios.get(apiUrl,
+        {
+          params: {
+            id: employeeAccount.id,
+            password: employeeAccount.password
+          }
+        })
+        .then(function (response) {
+          commit('authenState_success', response.data)
+          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('authenState_error')
+          reject(err)
+          console.log(err);
+        })
+    })
+  }
 }

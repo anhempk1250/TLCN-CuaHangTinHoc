@@ -116,7 +116,7 @@
         </ul>
       </div>
     </nav>
-    <Login_Modal />
+    <Login_Modal :store="false" />
   </div>
 </template>
 <script>
@@ -149,7 +149,7 @@ export default {
     })
   },
   created() {
-    if (this.productCategoryList.length == 0)
+    /*if (this.productCategoryList.length == 0)
       this.$store.dispatch("getProductCategory");
     if (this.producerList.length == 0) this.$store.dispatch("getProducerList");
 
@@ -157,7 +157,7 @@ export default {
       this.$store.dispatch(
         "updateProductHistory",
         localStorage.productHistoryList
-      );
+      );*/
   }
 };
 </script>

@@ -24,7 +24,6 @@ Route::post('/testLaravel',function (\Illuminate\Http\Request $request){
     return "firstName : $fname / lastName : $lname" ;
 });
 
-
 // home page
 Route::get('/products','HomePageController@getSummaryProductList');
 Route::get('/productDetails','HomePageController@getProduct');
@@ -38,3 +37,13 @@ Route::get('/categories', 'CategoryPageController@getCategoryList');
 // store - product-page
 Route::get('/storeProducts','StorePageController@getProduct');
 Route::post('/storeProducts','StorePageController@createCategory');
+
+// account
+Route::post('/customerRegister','AccountController@sendConfirmEmailCustomerAccount');
+Route::get('/confirmEmail','AccountController@confirmEmail')->name('customerVerify');
+
+Route::post('auth/register', 'UserController@register');
+Route::post('auth/login', 'UserController@login');
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('user-info', 'UserController@getUserInfo');
+});

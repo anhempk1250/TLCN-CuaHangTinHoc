@@ -1,5 +1,4 @@
 import StorePage from './store-page/StorePage.vue'
-import LoginPage from './login-page/LoginPage.vue'
 import CategoryPage from './category-page/CategoryPage.vue'
 import ProductPage from './product-page/ProductPage'
 import OrderPage from './order-page/OrderPage'
@@ -61,10 +60,5 @@ export default [
                 component: SalesPage
             }
         ]
-    },
-    {
-        path: '/login',
-        name: 'login-page',
-        component: LoginPage
     }
 ]

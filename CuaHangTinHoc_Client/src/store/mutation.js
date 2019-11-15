@@ -94,4 +94,52 @@ export default {
     state.store_productState.loading = false
     state.store_productState.error = true
   },
+  customerAccount_request(state) {
+    state.customerAccountState.loading = true
+  },
+  customerAccount_success(state, msg) {
+    state.customerAccountState.loading = false
+    state.customerAccountState.success = true,
+      state.customerAccountState.msg = msg
+  },
+  customerAccount_error(state) {
+    state.customerAccountState.loading = false
+    state.customerAccountState.error = true
+  },
+  storeCategory_request(state) {
+    state.store_categoryState.loading = true
+  },
+  storeCategory_success(state, data) {
+    state.store_categoryState.loading = false;
+    state.store_categoryState.success = true;
+    state.store_categoryState.list = data.list;
+    state.store_categoryState.msg = data.msg;
+    state.store_categoryState.object = data.object;
+    if (data.errorToken) {
+      state.authenState.token = '';
+      state.store_categoryState.errorToken = data.errorToken;
+      localStorage.errorAuthentication = "There was an authentication error";
+      console.log('i here')
+      location.reload();
+    }
+  },
+  storeCategory_error(state) {
+    state.store_categoryState.loading = false
+    state.store_categoryState.error = true
+  },
+  authenState_request(state) {
+    state.authenState.loading = true
+  },
+  authenState_success(state, data) {
+    state.authenState.loading = false;
+    state.authenState.success = true;
+    state.authenState.msg = data.msg;
+    state.authenState.list = data.list;
+    state.authenState.object = data.employee;
+    state.authenState.token = data.token;
+  },
+  authenState_error(state) {
+    state.authenState.loading = false
+    state.authenState.error = true
+  }
 }

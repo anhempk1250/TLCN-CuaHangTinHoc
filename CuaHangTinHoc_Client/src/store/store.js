@@ -38,7 +38,7 @@ export const store = new Vuex.Store({
       success: false,
       error: false
     },
-    productTypeSate: {
+    productTypeState: {
       loading: false,
       list: [],
       success: false,
@@ -56,12 +56,33 @@ export const store = new Vuex.Store({
       success: false,
       error: false
     },
-    store_productCategoryState: {
+    customerAccountState: {
       loading: false,
       list: [],
       object: {},
+      token: '',
       success: false,
-      error: false
+      error: false,
+      msg: ''
+    },
+    store_categoryState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      errorToken: false,
+      success: false,
+      error: false,
+      msg: ''
+    },
+    authenState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      success: false,
+      error: false,
+      msg: ''
     }
   },
   mutations,

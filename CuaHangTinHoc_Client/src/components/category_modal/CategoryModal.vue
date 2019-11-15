@@ -191,12 +191,10 @@ export default {
       if (this.checkInputCategory()) {
         if (this.insert) {
           this.category.propertyString = this.formatProperty();
-          this.$store.dispatch("insertStoreProductCategory", this.category);
-          // location.reload();
+          this.$store.dispatch("insertStoreCategory", this.category);
         } else {
           console.log("update success");
         }
-        //location.reload();
       }
     },
     formatProperty() {

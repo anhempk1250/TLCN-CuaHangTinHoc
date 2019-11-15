@@ -7,7 +7,12 @@
 <script>
 import HeaderStore from "../headerStore/headerStore.vue";
 export default {
-  components: { HeaderStore }
+  components: { HeaderStore },
+  created() {
+    if(!localStorage.token) {
+      this.$router.push({ name: "storeLoginPage" });
+    }
+  }
 };
 </script>
 <style scoped>
