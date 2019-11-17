@@ -45,6 +45,25 @@ class Product_Category extends Model
         $productCategory->summaryName =  $request->input("summaryName");
         $productCategory->property =  $request->input("property");
         $productCategory->save();
-        return 'success';
+        return $productCategory;
+    }
+
+    public function updateCategory(Request $request){
+        $productCategory = Product_Category::find($request->id);
+        $productCategory->name =  $request->input("name");
+        $productCategory->employee_id =  $request->input("employee_id");
+        $productCategory->summaryName =  $request->input("summaryName");
+        $productCategory->property =  $request->input("property");
+        $productCategory->save();
+        return $productCategory;
+    }
+
+    public function deleteCategory(Request $request){
+        $productCategory = Product_Category::find($request->id);
+        $productCategory->status = 0;
+        $productCategory->save();
+        $product = Product::where('product_category_id',$request->id)
+            ->update(['status' => 0]);
+        return $productCategory;
     }
 }

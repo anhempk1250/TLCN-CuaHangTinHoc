@@ -33,6 +33,9 @@ Route::get('/productType','HomePageController@getProductTypeList');
 
 // category page
 Route::get('/categories', 'CategoryPageController@getCategoryList');
+Route::post('/categories', 'CategoryPageController@createCategory');
+Route::patch('/categories', 'CategoryPageController@updateCategory');
+Route::delete('/categories', 'CategoryPageController@deleteCategory');
 
 // store - product-page
 Route::get('/storeProducts','StorePageController@getProduct');
