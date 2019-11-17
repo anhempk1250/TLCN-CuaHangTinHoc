@@ -2,6 +2,7 @@ export default {
   isLoggedIn: state => !!state.token,
   authStatus: state => state.status,
   productList: state => state.productState.list,
+  productObject : state => state.producerState.object,
   productLoading: state => state.productState.loading,
   productDetailsObject: state => state.productDetailsState.object,
   productDetailsLoading: state => state.productDetailsState.loading,
@@ -22,5 +23,8 @@ export default {
   storeCategoryList: state => state.store_categoryState.list,
   storeCategoryLoading: state => state.store_categoryState.loading,
   storeAuthenMsg: state => state.authenState.msg,
-  storeEmployeeAccount: state => state.authenState.object
+  storeEmployeeAccount: state => state.authenState.object,
+  storeCategory: state => state.store_categoryState,
+  storeProduct: state => state.store_productState,
+  storeProductTypeList: state => state.store_productTypeState.list
 }

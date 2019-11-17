@@ -31,6 +31,7 @@
       </div>
       <div class="col-md-3">
         <b-pagination
+          v-if="categoryList"
           v-model="currentPage"
           :total-rows="categoryList.length"
           :per-page="perPage"
@@ -41,53 +42,9 @@
       </div>
     </div>
 
-    <!--
-      <table class="table" id="categoryTable">
-      <thead class="thead-light" style="font-size: 14px;">
-        <tr class="text-center">
-          <th style="width: 15%;">Mã Danh Mục</th>
-          <th style="width: 15%;">Tên Danh Mục</th>
-          <th style="width: 30%;">Thuộc Tính Sản Phẩm</th>
-          <th style="width: 10%">Số Lượng</th>
-          <th style="width: 15%;">Người Nhập</th>
-          <th style="width: 15%"></th>
-        </tr>
-      </thead>
-      <tbody v-if="!categoryLoading" style="font-size: 14px;">
-        <tr
-          v-for="(category,index) in categoryList"
-          :key="index"
-          style="word-break: break-word;"
-          class="text-center"
-          :class="{'table-success' :  loadSelected.includes(category)}"
-          :style="formatForSearch(category,loadInputSearch)"
-        >
-          <td v-on:click="checkItem(category)">ABCDS{{category.id}}</td>
-          <td v-on:click="checkItem(category)">{{category.name}}</td>
-          <td
-            v-on:click="checkItem(category)"
-            class="text-center"
-          >{{formatProperty(category.property)}}</td>
-          <td v-on:click="checkItem(category)">{{category.numberOfProduct}}</td>
-          <td v-on:click="checkItem(category)">{{category.employeeName}}</td>
-          <td>
-            <i
-              title="Sửa"
-              data-toggle="modal"
-              data-target="#model_category"
-              @click="setUpdate(category)"
-              class="fas fa-edit"
-              style="margin-right: 1rem;"
-            ></i>
-            <i title="Xóa" class="fas fa-trash"></i>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    -->
     <b-table
-      selectable
       fixed
+      v-if="categoryList"
       select-mode="multi"
       @row-selected="selectRow"
       style="font-size: 14px;"
@@ -97,11 +54,15 @@
       :current-page="currentPage"
       :per-page="perPage"
       :fields="fields"
+      :filter="inputSearch"
+      sort-desc.sync="true"
+      sort-by="name"
+      :class="{'activeSelectAll': loadFlagSelectAll}"
     >
       <template v-slot:table-busy>
         <div class="text-center text-danger my-2">
           <b-spinner class="align-middle"></b-spinner>
-          <strong> Loading...</strong>
+          <strong>Loading...</strong>
         </div>
       </template>
 
@@ -129,26 +90,28 @@
         <p style="width:100%;word-break: break-word;">{{row.item.numberOfProduct}}</p>
       </template>
 
-      <template v-slot:cell(control)="data">
+      <template v-slot:cell(control)="row">
         <i
+          id="1"
           title="Sửa"
           data-toggle="modal"
           data-target="#model_category"
-          @click="setUpdate(data.item)"
-          class="fas fa-edit"
+          @click="setUpdate(row.item)"
+          class="fa fa-edit"
           style="margin-right: 1rem;"
+          disable="disable"
         ></i>
-        <i title="Xóa" class="fas fa-trash"></i>
+        <i title="Xóa" class="fa fa-trash" @click="deleteCategory(row.item)"></i>
       </template>
     </b-table>
 
     <div id="control">
-      <button class="btn btn-danger">
-        <i class="fas fa-trash"></i> Xóa
+      <button class="btn btn-danger" >
+        <i class="fa fa-trash"></i> Xóa
       </button>
       <button class="btn btn-info" @click="selectAll()">Chọn tất cả</button>
       <button class="btn btn-dark" v-on:click="cancel()">
-        <i class="fas fa-window-close"></i> Hủy
+        <i class="fa fa-window-close"></i> Hủy
       </button>
       <ModalCategory :insert="insert" :categorySelected="loadSelectedForUpdate" />
     </div>
@@ -160,44 +123,13 @@ import ModalCategory from "../../components/category_modal/CategoryModal.vue";
 export default {
   data() {
     return {
+      flagSelectAll: false,
       currentPage: 1,
-      perPage: 2,
+      perPage: 5,
       insert: true,
       selected: [],
       inputSearch: "",
       selectedForUpdate: {},
-      items: [
-        {
-          isActive: true,
-          age: 40,
-          name: { first: "Dickerson", last: "Macdonald" }
-        },
-        { isActive: false, age: 21, name: { first: "Larsen", last: "Shaw" } },
-        {
-          isActive: false,
-          age: 9,
-          name: { first: "Mini", last: "Navarro" },
-          _rowVariant: "success"
-        },
-        { isActive: false, age: 89, name: { first: "Geneva", last: "Wilson" } },
-        { isActive: true, age: 38, name: { first: "Jami", last: "Carney" } },
-        { isActive: false, age: 27, name: { first: "Essie", last: "Dunlap" } },
-        { isActive: true, age: 40, name: { first: "Thor", last: "Macdonald" } },
-        {
-          isActive: true,
-          age: 87,
-          name: { first: "Larsen", last: "Shaw" },
-          _cellVariants: { age: "danger", isActive: "warning" }
-        },
-        { isActive: false, age: 26, name: { first: "Mitzi", last: "Navarro" } },
-        {
-          isActive: false,
-          age: 22,
-          name: { first: "Genevieve", last: "Wilson" }
-        },
-        { isActive: true, age: 38, name: { first: "John", last: "Carney" } },
-        { isActive: false, age: 29, name: { first: "Dick", last: "Dunlap" } }
-      ],
       fields: [
         { key: "id", label: "Mã Danh Mục" },
         { key: "name", label: "Tên Danh Mục" },
@@ -219,7 +151,8 @@ export default {
   computed: {
     ...mapGetters({
       categoryList: "storeCategoryList",
-      categoryLoading: "storeCategoryLoading"
+      categoryLoading: "storeCategoryLoading",
+      storeCategory: "storeCategory"
     }),
     loadSelected() {
       return this.selected;
@@ -229,67 +162,94 @@ export default {
     },
     loadSelectedForUpdate() {
       return this.selectedForUpdate;
+    },
+    checkSelectMulti() {
+      if (this.selected.length > 1) return true;
+      else return false;
+    },
+    loadFlagSelectAll() {
+      return this.flagSelectAll;
     }
   },
   methods: {
     formatProperty(property) {
-      let temp = property;
-      while (temp.includes("___")) {
-        temp = temp.replace("___", ", ");
+      if (property) {
+        let temp = property;
+        while (temp.includes("___")) {
+          temp = temp.replace("___", ", ");
+        }
+        let index = 1;
+        while (temp.includes("_")) {
+          temp = temp.replace(index + "_", "");
+          index += 1;
+        }
+        return temp;
       }
-      let index = 1;
-      while (temp.includes("_")) {
-        temp = temp.replace(index + "_", "");
-        index += 1;
-      }
-      return temp;
     },
     checkItem(category) {
       let index = this.selected.indexOf(category);
       if (index > -1) this.selected.splice(index, 1);
       else this.selected.push(category);
     },
-    formatForSearch(category, inputSearch) {
-      let arr = Object.values(category);
-      //console.log(arr, "arr");
-      let string = "";
-      for (let i = 0; i < arr.length; i++) {
-        string += arr[i].toString().toLowerCase();
-      }
-      if (!string.includes(inputSearch.toLowerCase())) return "display: none;";
-      return "";
-    },
     cancel() {
       this.selected = [];
+      this.flagSelectAll = false;
     },
     setInsert() {
       this.insert = true;
     },
     setUpdate(category) {
-      this.selectedForUpdate = category;
-      this.selectedForUpdate.propertyList = [];
-      this.selectedForUpdate.propertyList = this.selectedForUpdate.property.split(
-        "___"
-      );
+      console.log("he", category);
+      if (category) {
+        console.log("he", category);
+        this.selectedForUpdate = category;
+        this.selectedForUpdate.propertyList = [];
+        if (this.selectedForUpdate.property) {
+          this.selectedForUpdate.propertyList = this.selectedForUpdate.property.split(
+            "___"
+          );
+        }
+      }
       this.insert = false;
     },
     selectAll() {
       this.selected = this.categoryList;
+      this.flagSelectAll = true;
     },
     selectRow(items) {
       this.selected = items;
     },
     loadCategoryList() {
       this.$store.dispatch("getStoreCategory", localStorage.token);
+    },
+    deleteCategory(category) {
+      if (confirm("Bạn chắc chắn muốn xóa ?")) {
+        console.log(category, 'delete')
+        this.$store.dispatch("deleteStoreCategory", category).then(() => {
+          if (
+            this.storeCategory.msg.msg &&
+            this.storeCategory.msg.msg != undefined
+          ) {
+            alert("Thông Báo: " + this.storeCategory.msg.msg);
+            console.log(this.storeCategory.msg.RequestSuccess);
+            if (this.storeCategory.msg.RequestSuccess) {
+              location.reload();
+            }
+          }
+        });
+      }
     }
   },
   created() {
-    console.log('created');
+    console.log("created");
     this.loadCategoryList();
   }
 };
 </script>
 <style lang="scss" scoped>
+.not-allowed {
+  cursor: not-allowed;
+}
 #control {
   margin-top: 1rem;
   button {
@@ -309,5 +269,9 @@ td {
   i {
     cursor: pointer;
   }
+}
+.activeSelectAll {
+  background-color: #17a2b8;
+  color: white;
 }
 </style>

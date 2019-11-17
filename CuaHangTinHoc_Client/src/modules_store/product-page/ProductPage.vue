@@ -12,7 +12,7 @@
         style="position: absolute;right: 2rem;"
         @click="setInsert()"
       >
-        <i class="fas fa-plus"></i> Thêm mới sản phẩm
+        <i class="fa fa-plus"></i> Thêm mới sản phẩm
       </button>
       <div v-if="control" style="position: absolute;right: 2rem;">
         <button class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
@@ -66,55 +66,63 @@
         </div>
         <div class="col-md-3">
           <b-pagination
-            style="right:1rem;bottom: -1rem;position:absolute;"
+            v-if="storeProductList"
             v-model="currentPage"
-            :total-rows="2"
-            :per-page="1"
-            aria-controls="my-table"
+            :total-rows="storeProductList.length"
+            :per-page="perPage"
+            align="fill"
+            size="sm"
+            class="my-0"
           ></b-pagination>
         </div>
       </div>
 
-      <table class="table" id="categoryTable">
-        <thead class="thead-light" style="font-size: 14px;">
-          <tr class="text-center">
-            <th style="width: 15%;">Mã sản phẩm</th>
-            <th style="width: 30%;">Tên sản phẩm</th>
-            <th style="width: 10%;">Số lượng</th>
-            <th style="width: 15%">Giá bán</th>
-            <th style="width: 15%;">Danh mục</th>
-            <th style="width: 15%"></th>
-          </tr>
-        </thead>
-        <tbody style="font-size: 14px;">
-          <tr class="text-center" v-for="(product,index) in loadProductList" :key="index">
-            <td>{{product.id}}</td>
-            <td>{{product.Name}}</td>
-            <td>{{product.productCount}}</td>
-            <td>{{product.Price}}</td>
-            <td>{{product.category.name}}</td>
-            <td>
-              <i
-                title="Sửa"
-                data-toggle="modal"
-                data-target="#model_category"
-                @click="setUpdate()"
-                class="fas fa-edit"
-                style="margin-right: 1rem;"
-              ></i>
-              <i title="Xóa" class="fas fa-trash"></i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <b-table
+        v-if="storeProductList"
+        select-mode="multi"
+        style="font-size: 14px;"
+        head-variant="light"
+        :busy="storeProductLoading"
+        :items="storeProductList"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :fields="fields"
+        :filter="inputSearch"
+        sort-desc.sync="true"
+        sort-by="name"
+      >
+        <template v-slot:cell(id)="row">
+          <p style="width:100%;word-break: break-word;">{{row.item.id + "abcyxz"}}</p>
+        </template>
+        <template v-slot:cell(Name)="row">
+          <p style="width:100%;word-break: break-word;">{{formatName(row.item.Name)}}</p>
+        </template>
+        <template v-slot:cell(Description)="row">
+          <p
+            style="width:100%;word-break: break-word;"
+            v-html="formatProperty(row.item.Description)"
+          ></p>
+        </template>
+        <template v-slot:cell(Price)="row">{{fixFormatVND(row.item.Price)}}đ</template>
+        <template v-slot:cell(control)="data">
+          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;"></i>
+          <i
+            title="Sửa"
+            @click="setUpdate(data.item)"
+            class="fa fa-edit"
+            style="margin-right: 1rem;"
+          ></i>
+          <i title="Xóa" class="fa fa-trash" @click="deleteProduct(data.item)"></i>
+        </template>
+      </b-table>
 
       <div id="control">
         <button class="btn btn-danger">
-          <i class="fas fa-trash"></i> Xóa
+          <i class="fa fa-trash"></i> Xóa
         </button>
         <button class="btn btn-info">Chọn tất cả</button>
         <button class="btn btn-dark">
-          <i class="fas fa-window-close"></i> Hủy
+          <i class="fa fa-window-close"></i> Hủy
         </button>
       </div>
     </div>
@@ -125,30 +133,24 @@
           <div class="input">
             <div>
               <label for="dm">Chọn danh mục:</label>
-              <select id="dm" class="form-control">
-                <option>ABC</option>
-                <option>123</option>
+              <select id="dm" ref="selectCetegory" class="form-control">
+                <option v-for="(category,index) in categoryList" :key="index">{{category.name}}</option>
               </select>
             </div>
 
             <div>
+              <label for="id">Mã sản phẩm:</label>
+              <input id="id" v-model="selected.id" class="form-control" placeholder="Nhập mã sản phẩm" />
+            </div>
+
+            <div>
               <label for="name">Tên sản phẩm:</label>
-              <input id="name" class="form-control" placeholder="Nhập tên sản phẩm" />
+              <input id="name" v-model="selected.Name" class="form-control" placeholder="Nhập tên sản phẩm" />
             </div>
 
             <div>
               <label for="count">Số lượng:</label>
-              <input id="count" class="form-control" placeholder="Nhập tên sản phẩm" />
-            </div>
-            <div class="row">
-              <div class="col-md-6" style="padding-left:0;">
-                <label>Giá vốn :</label>
-                <input class="form-control" placeholder="Giá vốn" />
-              </div>
-              <div class="col-md-6" style="padding-right:0;">
-                <label>Giá bán :</label>
-                <input class="form-control" placeholder="Giá bán" />
-              </div>
+              <input id="count" v-model="selected.productCount" class="form-control" placeholder="Nhập tên sản phẩm" />
             </div>
           </div>
         </div>
@@ -157,11 +159,9 @@
             <div>
               <label for="lsp">Loại sản phẩm:</label>
               <br />
-              <button
-                id="lsp"
-                class="btn btn-primary"
-                onclick="alert('Mở modal làm sau')"
-              >Chọn loại sản phẩm</button>
+              <select class="form-control">
+                <option v-for="(type, index) in storeProductTypeList" :key="index">{{type.name}}</option>
+              </select>
             </div>
 
             <div>
@@ -170,6 +170,16 @@
                 <option>ABC</option>
                 <option>123</option>
               </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6" style="margin:0;padding-left:0;">
+                <label>Giá vốn :</label>
+                <input class="form-control" placeholder="Giá vốn" />
+              </div>
+              <div class="col-md-6" style="margin:0;padding-right:0;">
+                <label>Giá bán :</label>
+                <input class="form-control" placeholder="Giá bán" />
+              </div>
             </div>
           </div>
         </div>
@@ -244,28 +254,68 @@ export default {
       control: false,
       insert: true,
       currentPage: 1,
-      selected: [],
+      selected: {},
       inputSearch: "",
-      selectedForUpdate: {}
+      perPage: 5,
+      fields: [
+        {
+          key: "id",
+          label: "Mã sản phẩm",
+          formatter: value => {
+            return "abc" + value;
+          }
+        },
+        { key: "Name", label: "Tên sản phẩm" },
+        { key: "Description", label: "Mô tả" },
+        { key: "product_category_id.name", label: "Danh mục" },
+        { key: "productCount", label: "Số lượng" },
+        { key: "Price", label: "Giá tiền" },
+        { key: "control", label: "" }
+      ],
+      product: {}
     };
   },
   props: {},
   watch: {},
   methods: {
+    fixFormatVND(nStr) {
+      nStr = nStr + "";
+      let x = nStr.split(".");
+      let x1 = x[0];
+      let x2 = x.length > 1 ? "." + x[1] : "";
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, "$1" + "," + "$2");
+      }
+      return x1 + x2;
+    },
+    formatProperty(property) {
+      if (property) {
+        let temp = property;
+        let arr = temp.split("___");
+        let str = "";
+        arr.forEach(function(item) {
+          if (item.length >= 30) {
+            item = "_ " + item.slice(0, 30) + "..." + "<br><br>";
+          } else {
+            item = "_ " + item + "<br><br>";
+          }
+          str += item;
+        });
+        return str;
+      }
+    },
+    formatName(name) {
+      if (name.length >= 30) {
+        return (name = name.slice(0, 30)) + "...";
+      } else {
+        return name;
+      }
+    },
     checkItem(category) {
       let index = this.selected.indexOf(category);
       if (index > -1) this.selected.splice(index, 1);
       else this.selected.push(category);
-    },
-    formatForSearch(category, inputSearch) {
-      let arr = Object.values(category);
-      //console.log(arr, "arr");
-      let string = "";
-      for (let i = 0; i < arr.length; i++) {
-        string += arr[i].toString().toLowerCase();
-      }
-      if (!string.includes(inputSearch.toLowerCase())) return "display: none;";
-      return "";
     },
     cancel() {
       this.selected = [];
@@ -274,12 +324,10 @@ export default {
       this.insert = true;
       this.control = true;
     },
-    setUpdate() {
+    setUpdate(product) {
       this.insert = false;
       this.control = true;
-    },
-    selectAll() {
-      this.selected = this.categoryList;
+      this.selected = product;
     },
     save() {
       // save
@@ -287,12 +335,18 @@ export default {
     },
     back() {
       this.control = false;
+    },
+    deleteProduct() {
+      console.log("delete");
     }
   },
   computed: {
     ...mapGetters({
       storeProductList: "storeProductList",
-      storeProductLoading: "storeProductLoading"
+      storeProductLoading: "storeProductLoading",
+      categoryList: "storeCategoryList",
+      storeProduct: "storeProduct",
+      storeProductTypeList: "storeProductTypeList"
     }),
     loadProductList() {
       console.log(this.storeProductList);
@@ -301,6 +355,8 @@ export default {
   },
   created() {
     this.$store.dispatch("getStoreProductList");
+    this.$store.dispatch("getStoreCategory", localStorage.token);
+    this.$store.dispatch("getStoreProductType")
   }
 };
 </script>

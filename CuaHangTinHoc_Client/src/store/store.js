@@ -14,6 +14,7 @@ export const store = new Vuex.Store({
     productState: {
       loading: false,
       list: [],
+      object: {},
       success: false,
       error: false
     },
@@ -59,13 +60,25 @@ export const store = new Vuex.Store({
     customerAccountState: {
       loading: false,
       list: [],
-      object: {},
+      object: {
+        name: ''
+      },
       token: '',
       success: false,
       error: false,
       msg: ''
     },
     store_categoryState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      errorToken: false,
+      success: false,
+      error: false,
+      msg: ''
+    },
+    store_productTypeState: {
       loading: false,
       list: [],
       object: {},

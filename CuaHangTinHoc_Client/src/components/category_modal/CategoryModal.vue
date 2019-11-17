@@ -1,6 +1,7 @@
 <template>
   <div>
     <div
+      ref="modal"
       class="modal fade"
       id="model_category"
       tabindex="-1"
@@ -23,6 +24,15 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-md-4">
+                <div class="container">
+                  <label for="name">Mã sản phẩm :</label>
+                  <input
+                    id="name"
+                    class="form-control"
+                    v-model="loadCategory.id"
+                    placeholder="Mã Sản Phẩm"
+                  />
+                </div>
                 <div class="container">
                   <label for="name">Tên Danh Mục :</label>
                   <input
@@ -81,19 +91,23 @@
                         <th style="width: 15rem;">Control</th>
                       </tr>
                       <tr
+                        v-if="!loadCategory.propertyList || loadCategory.propertyList.length == 0"
+                      >
+                        <td></td>
+                        <td class="text-center">Chưa có thuộc tính</td>
+                      </tr>
+                      <tr
                         class="text-center"
+                        v-else
                         v-for="(prop, index) in loadCategory.propertyList"
                         :key="index"
                       >
                         <td>{{index+1}}</td>
-                        <td>{{prop}}</td>
+                        <td v-if="!insert">{{prop}}</td>
+                        <td v-if="insert">{{prop}}</td>
                         <td>
                           <button v-on:click="DeleteProperty(prop)" class="btn btn-danger">Xóa</button>
                         </td>
-                      </tr>
-                      <tr v-if="loadCategory.propertyList == 0">
-                        <td></td>
-                        <td class="text-center">Chưa có thuộc tính</td>
                       </tr>
                     </tbody>
                   </table>
@@ -107,10 +121,12 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       category: {
+        _id: "",
         id: "",
         name: "",
         summaryName: "",
@@ -123,18 +139,32 @@ export default {
   watch: {
     insert(NewVal) {
       this.insert = NewVal;
+      if (NewVal) {
+        this.category = {};
+      }
+      console.log(NewVal);
     },
     categorySelected(NewVal) {
-      if (NewVal != null) {
-        this.categorySelected = NewVal;
-        this.category = NewVal;
-        console.log(this.category);
-      }
+      console.log("he 2", NewVal);
+      let myCategory = {};
+      this.categorySelected = NewVal;
+      myCategory._id = NewVal._id;
+      myCategory.id = NewVal.id;
+      myCategory.name = NewVal.name;
+      myCategory.summaryName = NewVal.summaryName;
+      myCategory.propertyList = NewVal.propertyList;
+
+      this.category = myCategory;
     }
   },
   computed: {
+    ...mapGetters({
+      storeCategory: "storeCategory"
+    }),
+    loadInsert() {
+      return this.insert;
+    },
     loadCategory() {
-      console.log("run");
       return this.category;
     }
   },
@@ -151,23 +181,26 @@ export default {
         this.inputProperty = "";
         let myTbody = document.getElementById("myTbody");
         myTbody.scrollTop = myTbody.scrollHeight;
-        //console.log(myTbody.scrollHeight);
       } else {
         alert("Thuộc tính không được chứa ký tự đặt biệt hoặc rỗng");
         return "";
       }
     },
     DeleteProperty(property) {
-      for (let i = 0; i < this.category.propertyList.length; i++) {
-        if (this.category.propertyList[i] == property) {
-          this.category.propertyList.splice(i, 1);
-          break;
+      if (this.category.propertyList.length == 1) {
+        alert("Phải có tối thiểu một thuộc tính, Không thể xóa !");
+      } else {
+        for (let i = 0; i < this.category.propertyList.length; i++) {
+          if (this.category.propertyList[i] == property) {
+            this.category.propertyList.splice(i, 1);
+            break;
+          }
         }
       }
     },
     checkSpecialCharacter() {
-      let regex = /^[a-zA-Z0-9 ]+$/;
-      if (regex.test(this.inputProperty)) {
+      let regex = /[*|/":<>[\]{}`\\()';@&$]/;
+      if (!regex.test(this.inputProperty)) {
         return true;
       }
       return false;
@@ -191,9 +224,29 @@ export default {
       if (this.checkInputCategory()) {
         if (this.insert) {
           this.category.propertyString = this.formatProperty();
-          this.$store.dispatch("insertStoreCategory", this.category);
+          this.$store
+            .dispatch("insertStoreCategory", this.category)
+            .then(() => {
+              this.handleRespone();
+            });
         } else {
-          console.log("update success");
+          this.category.propertyString = this.formatProperty();
+          this.$store
+            .dispatch("updateStoreCategory", this.category)
+            .then(() => {
+              this.handleRespone();
+            });
+        }
+      }
+    },
+    handleRespone() {
+      if (
+        this.storeCategory.msg.msg &&
+        this.storeCategory.msg.msg != undefined
+      ) {
+        alert("Thông Báo: " + this.storeCategory.msg.msg);
+        if (this.storeCategory.msg.RequestSuccess) {
+          window.location.reload();
         }
       }
     },

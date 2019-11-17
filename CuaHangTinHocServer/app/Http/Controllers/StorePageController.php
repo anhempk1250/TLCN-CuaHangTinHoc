@@ -19,4 +19,7 @@ class StorePageController extends BaseController
         $productCategory = new Product_Category();
         return $productCategory->createCategory($request);
     }
+
+
+
 }

@@ -71,32 +71,20 @@
         </div>
       </div>
     </div>
-    <div class="row" style="margin-top: 5rem">
+    <div class="row" style="margin-top: 3rem">
       <div class="col">
         <div class="container">
-          <table class="table table-bordered">
+          <table class="table text-left">
             <thead>
-              <tr>
-                <th style="width: 20%;">Properties</th>
-                <th>Description</th>
+              <tr style="font-size: 20px">
+                <th class="text-center" style="width: 10%">STT</th>
+                <th>Mô tả sản phẩm</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Property 1</td>
-                <td>abc</td>
-              </tr>
-              <tr>
-                <td>Property 2</td>
-                <td>abc</td>
-              </tr>
-              <tr>
-                <td>Property 3</td>
-                <td>abc</td>
-              </tr>
-              <tr>
-                <td>Property 4</td>
-                <td>abc</td>
+              <tr v-for="(des,index) in formatDescription" :key="index">
+                <td class="text-center"><strong>{{index +1 }}</strong></td>
+                <td>{{des}}</td>
               </tr>
             </tbody>
           </table>
@@ -150,8 +138,8 @@ export default {
   },
   computed: {
     loadImage() {
-      if (this.productDetailsObject.images != null && this.productDetailsObject.images != {} )
-        return this.productDetailsObject.images[this.indexImage].image_link;
+      if (this.productDetailsObject != null && this.productDetailsObject != {})
+        return this.productDetailsObject.image_link; //this.productDetailsObject.images[this.indexImage].image_link;
       return 0;
     },
     loadProductCount() {
@@ -160,7 +148,11 @@ export default {
     ...mapGetters({
       productDetailsObject: "productDetailsObject",
       productDetailsLoading: "productDetailsLoading"
-    })
+    }),
+    formatDescription() {
+      let arr = this.productDetailsObject.Description.split("___");
+      return arr;
+    }
   },
   created() {
     this.$store.dispatch("getProductDetail", this.$route.params.id);
@@ -203,9 +195,5 @@ export default {
 }
 .activeImage {
   border-color: orange;
-}
-
-.container {
-  background-color: #e9ebea;
 }
 </style>

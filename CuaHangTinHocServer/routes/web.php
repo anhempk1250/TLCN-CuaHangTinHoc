@@ -38,12 +38,16 @@ Route::get('/categories', 'CategoryPageController@getCategoryList');
 Route::get('/storeProducts','StorePageController@getProduct');
 Route::post('/storeProducts','StorePageController@createCategory');
 
-// account
+// customer account
+//temp register
+Route::get('/temp', 'AccountController@register');
+// register
 Route::post('/customerRegister','AccountController@sendConfirmEmailCustomerAccount');
 Route::get('/confirmEmail','AccountController@confirmEmail')->name('customerVerify');
+// login
+Route::get('/customerLogin', 'AccountController@login');
 
-Route::post('auth/register', 'UserController@register');
-Route::post('auth/login', 'UserController@login');
+// request with check token
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user-info', 'UserController@getUserInfo');
 });

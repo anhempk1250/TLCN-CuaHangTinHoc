@@ -10,6 +10,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Mail;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 class AccountController extends BaseController
 {
     public function setCustomerAccount(Request $request) {
@@ -58,9 +60,43 @@ class AccountController extends BaseController
         return 'confirm_fail';
     }
 
+    public function login(Request $request){
+        $credentials = $request->only('email', 'password');
+        $token = JWTAuth::attempt($credentials);
+
+        try {
+            if (!$token) {
+                return 'UserName or Password was wrong';
+            } else {
+
+                $customer = CustomerAccount::find($request->email);
+                $data = [
+                    'token' => $token,
+                    'userName' => $customer->name
+                ];
+                return $data;
+            }
+        } catch (JWTAuthException $e) {
+            return response()->json(['failed_to_create_token'], 500);
+        }
+
+        return '';
+    }
 
 
 
-
+    public function register()
+    {
+        //$params = $request->only('email', 'name', 'password');
+        $user = new CustomerAccount();
+        $user->email = 'vinhdlv';
+        $user->name = 'Đào Lê Văn Vinh';
+        $user->phone = '123';
+        $user->address = 'ahihi';
+        $user->activeCode = 'sads';
+        $user->password = bcrypt('123456');
+        $user->save();
+        return 'ss';
+    }
 
 }

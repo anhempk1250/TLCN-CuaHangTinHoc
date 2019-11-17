@@ -16,10 +16,22 @@
                   <div class="row">
                     <div class="col-7">
                       <div class="row">
-                        <input class="col form-control" type="email" placeholder="Email" />
+                        <input
+                          v-model="customer.email"
+                          class="col form-control"
+                          v-on:keyup.enter="login()"
+                          type="email"
+                          placeholder="Email"
+                        />
                       </div>
                       <div class="row">
-                        <input class="col form-control" type="password" placeholder="Mật Khẩu" />
+                        <input
+                          v-model="customer.password"
+                          class="col form-control"
+                          v-on:keyup.enter="login()"
+                          type="password"
+                          placeholder="Mật Khẩu"
+                        />
                       </div>
                       <div class="row">
                         <div class="col-6" style="padding: 0;color: black;">
@@ -35,17 +47,22 @@
                       </div>
                       <div class="row">
                         <div class="col" style="padding: 0;">
-                          <a href="/mypage" class="btn btn-primary" style="width: 100%;">Đăng Nhập</a>
+                          <a
+                            v-on:click="login()"
+                            class="btn btn-primary"
+                            style="width: 100%;"
+                          >Đăng Nhập</a>
                         </div>
                       </div>
                     </div>
                     <div class="col-5">
                       <div class="row">
                         <div class="col" style="padding: 0;">
-                          <button
+                          <a
                             style="width: 100%;"
                             class="btn btn-primary"
-                          >Đăng nhập với Facebook</button>
+                            href="https://localhost:8000/auth/fb"
+                          >Đăng nhập với Facebook</a>
                         </div>
                       </div>
                     </div>
@@ -201,11 +218,24 @@ export default {
       } else {
         this.$store.dispatch("insertAccountCustomer", this.customer);
       }
+    },
+    login() {
+      this.$store
+        .dispatch("customerLogin", this.customer)
+        .then(function(respone) {
+          if (respone.data.msg && respone.data.msg != "") {
+            alert(respone.data.msg);
+          }
+          if (respone.data.token) {
+            localStorage.token = respone.data.token;
+          }
+        });
     }
   },
   computed: {
     ...mapGetters({
-      customerAccountMessage: "customerAccountMessage"
+      customerAccountMessage: "customerAccountMessage",
+      customerAccountObject: "customerAccountObject"
     })
   }
 };

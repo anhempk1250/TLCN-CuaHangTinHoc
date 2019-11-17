@@ -26,7 +26,7 @@
             <i class="fa fa-search"></i> Search
           </button>
         </form>
-        <button class="btn">
+        <button class="leftNavbar-item btn">
           <i class="fa fa-star"></i> Khuyến Mãi
         </button>
         <button
@@ -34,9 +34,22 @@
           data-toggle="modal"
           data-target="#login_modal"
           data-backdrop="dynamic"
+          v-if="customerAccountObject.name && customerAccountObject.name != ''"
         >
-          <i class="fa fa-user"></i> Đăng Nhập
+          <i class="fas fa-user"></i>
+          {{customerAccountObject.name}}
         </button>
+
+        <button
+          class="leftNavbar-item btn"
+          data-toggle="modal"
+          data-target="#login_modal"
+          data-backdrop="dynamic"
+          v-else
+        >
+          <i class="fas fa-user"></i> Đăng Nhập
+        </button>
+
         <router-link :to="{name: 'cart'}">
           <button class="leftNavbar-item btn">
             <i class="fa fa-shopping-cart"></i> Giỏ Hàng
@@ -77,7 +90,7 @@
                       </li>
                     </ul>
                   </li>
-                  <div v-if="category.product_types.length > 0">
+                  <div v-if="category.product_types && category.product_types.length > 0">
                     <li v-for="(type,indexType) in category.product_types" :key="indexType">
                       <a class="dropdown-item" href="#">{{type.name}}</a>
                     </li>
@@ -145,11 +158,12 @@ export default {
       productCategoryLoading: "productCategoryLoading",
       producerList: "producerList",
       producerLoading: "producerLoading",
-      productHistoryList: "productHistoryList"
+      productHistoryList: "productHistoryList",
+      customerAccountObject: "customerAccountObject"
     })
   },
   created() {
-    /*if (this.productCategoryList.length == 0)
+    if (this.productCategoryList.length == 0)
       this.$store.dispatch("getProductCategory");
     if (this.producerList.length == 0) this.$store.dispatch("getProducerList");
 
@@ -157,7 +171,7 @@ export default {
       this.$store.dispatch(
         "updateProductHistory",
         localStorage.productHistoryList
-      );*/
+      );
   }
 };
 </script>
@@ -187,7 +201,7 @@ export default {
     .myFormSearch {
       width: 50%;
       display: grid;
-      grid-template-columns: 75% 20%;
+      grid-template-columns: 70% 30%;
     }
   }
 }

@@ -8,18 +8,16 @@
       <div class="dropdown-content1" style="padding: 0 3rem">
         <div class="row1">
           <div class="column1">
-              <div class="row" v-for="(category,index) in productCategoryList" :key="index">
-                <div class="col-3">
-                    {{category.name}}
-                </div>
-                <div class="col-9">
-                    <div v-for="(type,indexType) in category.product_types" :key="indexType">
-                        {{type.name}}
-                    </div>
-                </div>
+            <div class="row" v-for="(category,index) in productCategoryList" :key="index">
+              <div class="col-3">{{category.name}}</div>
+              <div class="col-9">
+                <div
+                  v-for="(type,indexType) in category.product_types"
+                  :key="indexType"
+                >{{type.name}}</div>
               </div>
+            </div>
           </div>
-          
         </div>
       </div>
     </div>
@@ -28,12 +26,15 @@
 <script>
 export default {
   data() {
-    return {
-
-    }
+    return {};
   },
   props: {
     productCategoryList: []
+  },
+  computed: {
+    ...mapGetters({
+      productHistoryList: "productHistoryList"
+    })
   }
 };
 </script>

@@ -10,6 +10,8 @@ Vue.use(BootstrapVue)
 Vue.prototype.$http = Axios
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+window.$ = require('jquery')
+window.JQuery = require('jquery')
 
 Vue.component('apexchart', VueApexCharts)
 

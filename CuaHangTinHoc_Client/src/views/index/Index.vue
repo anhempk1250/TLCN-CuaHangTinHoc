@@ -1,9 +1,9 @@
 <template>
-  <body id="index">
-    <Header/>
-    <router-view class='bodyContent' />
-    <Footer/>
-  </body>
+<body id="index">
+  <Header />
+  <router-view class="bodyContent" />
+  <Footer />
+</body>
 </template>
 <script>
 import Header from "../header/Header";
@@ -14,8 +14,11 @@ export default {
   },
   components: { Header, Footer },
   mounted() {
-        document.body.scrollTop = 0;
+    document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+  },
+  created() {
+    this.$store.dispatch('updateProductHistory', localStorage.productHistoryList);
   }
 };
 </script>
