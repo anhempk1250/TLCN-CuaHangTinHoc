@@ -56,16 +56,7 @@ class Product extends Model
     }
 
     public function getProduct(Request $request) {
-        $id = $request->input('product_id');
-        $myProduct = DB::table('Product')
-            ->leftjoin('Discount','Product.discount_id','=','Discount.ID')
-            ->leftjoin('Product_Category','Product.product_category_id','=','Product_Category.ID')
-            ->select('Product.ID','Product.Name','Product.Price','Product.Description',
-                'Product_Category.ID as Category_ID','Product_Category.Name as CategoryName','Product_Category.Property',
-                'Discount.ID as ID_Discount','Discount.Name as DiscountName','Discount.Percent_Discount')
-            ->where('Product.ID','=',$id)
-            ->get();
-
+        $id = $request->input('id');
         $product = Product::with(['images'])->find($id);
         return $product;
     }

@@ -1,6 +1,11 @@
 <template>
-  <div style="background-color: #e9ebea" v-if="!productDetailsLoading">
-    <div class="row">
+  <div style="background-color: #e9ebea">
+    <div v-if="productDetailsLoading">
+      <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
+      <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
+      <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
+    </div>
+    <div class="row" style="background-color: white;" v-if="!productDetailsLoading">
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-2">
@@ -13,9 +18,7 @@
             </div>
           </div>
           <div class="col-md-10">
-            <span>
-              <img :src="loadImage" alt="image" />
-            </span>
+            <zoom :url="loadImage" :scale="2"></zoom>
           </div>
         </div>
       </div>
@@ -61,9 +64,10 @@
               </div>
               <div class="col-10" style="text-align: left;">
                 <button
-                  style="margin-top:0.8rem;"
+                  style="margin-top:0.8rem;position: absolute; right: 0;"
                   class="btn btn-danger btn-lg"
                   v-on:click="test()"
+                  @click="insertCart()"
                 >Cho vào giỏ hàng</button>
               </div>
             </div>
@@ -71,31 +75,36 @@
         </div>
       </div>
     </div>
-    <div class="row" style="margin-top: 3rem">
-      <div class="col">
-        <div class="container">
-          <table class="table text-left">
-            <thead>
-              <tr style="font-size: 20px">
-                <th class="text-center" style="width: 10%">STT</th>
-                <th>Mô tả sản phẩm</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(des,index) in formatDescription" :key="index">
-                <td class="text-center"><strong>{{index +1 }}</strong></td>
-                <td>{{des}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <h3 class="text-left" style="margin-top: 3rem" v-if="!productDetailsLoading">Thông tin chi tiết</h3>
+    <div class="row" v-if="!productDetailsLoading">
+      <div class="col-md-8" style="padding:1rem 1rem 0 1rem;background-color: white;">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="width: 15%;">Số thứ tự</th>
+              <th>Thuộc tính sản phẩm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(prop, index) in formatDescription()" :key="index">
+              <td>{{index + 1}}</td>
+              <td>{{prop}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-4" style="padding:1rem 1rem 0 1rem;">
+        <img
+          style="width:100%;height:300px;"
+          src="https://salt.tikicdn.com/ts/banner/13/39/08/b5f8665c5ef6577d4886013f693d1458.jpg"
+        />
       </div>
     </div>
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
-
+import zoom from "vue-piczoom";
 export default {
   data() {
     return {
@@ -103,6 +112,7 @@ export default {
       productCount: 1
     };
   },
+  components: { zoom },
   methods: {
     test() {
       console.log(this.productDetailsObject);
@@ -134,12 +144,42 @@ export default {
       if (this.productCount == 1)
         alert("Số lượng sản phẩm không được phép nhỏ hơn 1 !");
       else this.productCount = this.productCount - 1;
+    },
+    formatDescription() {
+      let arr = this.productDetailsObject.Description.split("___");
+      console.log(arr);
+      return arr;
+    },
+    insertCart() {
+      let temp = [];
+      if (!localStorage.cart) {
+        localStorage.cart = "";
+      } else {
+        temp = JSON.parse(localStorage.cart);
+      }
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i].id == this.productDetailsObject.id) {
+          alert("Sản phẩn đã có trong giỏ hàng");
+          return -1;
+        }
+      }
+      temp.push({
+        id: this.productDetailsObject.id,
+        name: this.productDetailsObject.Name,
+        count: this.productCount,
+        image_link: this.productDetailsObject.images[0].image_link,
+        price: this.productDetailsObject.Price
+      });
+      localStorage.cart = JSON.stringify(temp);
     }
   },
   computed: {
     loadImage() {
-      if (this.productDetailsObject != null && this.productDetailsObject != {})
-        return this.productDetailsObject.image_link; //this.productDetailsObject.images[this.indexImage].image_link;
+      if (
+        this.productDetailsObject.images != null &&
+        this.productDetailsObject.images != {}
+      )
+        return this.productDetailsObject.images[this.indexImage].image_link;
       return 0;
     },
     loadProductCount() {
@@ -148,21 +188,18 @@ export default {
     ...mapGetters({
       productDetailsObject: "productDetailsObject",
       productDetailsLoading: "productDetailsLoading"
-    }),
-    formatDescription() {
-      let arr = this.productDetailsObject.Description.split("___");
-      return arr;
-    }
+    })
   },
   created() {
-    this.$store.dispatch("getProductDetail", this.$route.params.id);
-    console.log(this.productDetailsObject, "here");
+    this.$store.dispatch("getProductDetail", this.$route.params.id).then(() => {
+      if (this.productDetailsObject && this.productDetailsObject != {})
+        this.formatDescription();
+    });
   }
 };
 </script>
 <style lang="scss" scoped>
 .row {
-  background-color: white;
   margin: 0;
   .col-md-5 {
     .row {
@@ -195,5 +232,10 @@ export default {
 }
 .activeImage {
   border-color: orange;
+}
+table {
+  width: 100%;
+  border-left: none;
+  border-right: none;
 }
 </style>

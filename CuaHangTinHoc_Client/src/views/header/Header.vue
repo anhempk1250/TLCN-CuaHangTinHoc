@@ -29,21 +29,20 @@
         <button class="leftNavbar-item btn">
           <i class="fa fa-star"></i> Khuyến Mãi
         </button>
-        <button
-          class="leftNavbar-item btn"
-          data-toggle="modal"
-          data-target="#login_modal"
-          data-backdrop="dynamic"
+        <router-link
+          class="btn"
+          style="color: white;"
           v-if="customerAccountObject.name && customerAccountObject.name != ''"
+          :to="{name: 'mypage'}"
         >
           <i class="fas fa-user"></i>
           {{customerAccountObject.name}}
-        </button>
+        </router-link>
 
         <button
           class="leftNavbar-item btn"
           data-toggle="modal"
-          data-target="#login_modal"
+          data-target=".login_modal"
           data-backdrop="dynamic"
           v-else
         >
@@ -55,6 +54,15 @@
             <i class="fa fa-shopping-cart"></i> Giỏ Hàng
           </button>
         </router-link>
+        <button
+          class="btn"
+          style="color: white;"
+          v-if="customerAccountObject.name && customerAccountObject.name != ''"
+          @click="logout()"
+        >
+          <i class="fas fa-exit"></i>
+          Đăng Xuất
+        </button>
       </div>
     </nav>
 
@@ -145,6 +153,17 @@ export default {
   methods: {
     test() {
       console.log(this.productCategoryList);
+    },
+    logout() {
+      if (confirm("Bạn muốn đăng xuất ?")) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        if (this.$route.path != "/") {
+          this.$router.push({
+            path: "/"
+          });
+        } else location.reload();
+      }
     }
   },
   components: {

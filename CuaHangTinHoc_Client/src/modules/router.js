@@ -23,7 +23,7 @@ export default [
     },
     {
         path: '/mypage/',
-        name: 'my-page',
+        name: 'mypage',
         component: MyPage
     },
     {

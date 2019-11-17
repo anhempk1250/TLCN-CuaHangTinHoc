@@ -5,7 +5,11 @@ import Axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import { store } from './store/store.js'
 import VueApexCharts from 'vue-apexcharts'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
+
+Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
 Vue.prototype.$http = Axios
 import 'bootstrap/dist/css/bootstrap.css'
@@ -14,7 +18,6 @@ window.$ = require('jquery')
 window.JQuery = require('jquery')
 
 Vue.component('apexchart', VueApexCharts)
-
 
 
 Vue.prototype.$http = Axios

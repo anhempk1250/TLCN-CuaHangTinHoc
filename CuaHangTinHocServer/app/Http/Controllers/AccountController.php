@@ -61,29 +61,27 @@ class AccountController extends BaseController
     }
 
     public function login(Request $request){
-        $credentials = $request->only('email', 'password');
-        $token = JWTAuth::attempt($credentials);
-
-        try {
-            if (!$token) {
-                return 'UserName or Password was wrong';
-            } else {
-
-                $customer = CustomerAccount::find($request->email);
-                $data = [
-                    'token' => $token,
-                    'userName' => $customer->name
-                ];
-                return $data;
-            }
-        } catch (JWTAuthException $e) {
-            return response()->json(['failed_to_create_token'], 500);
+        $customer = CustomerAccount::find($request->input('email'));
+        if($customer && Hash::check($request->input('password'),$customer->password)) {
+            $credentials = $request->only('email', 'password');
+            $token = JWTAuth::attempt($credentials);
+            $data = [
+                'token' => $token,
+                'userName' => $customer->name
+            ];
+            return $data;
+        } else {
+            $errorData = [
+                'title' => 'Đăng nhập thất bại',
+                'msg' => 'Tài khoản hoặc mật khẩu không đúng'
+            ];
+            return $errorData;
         }
-
-        return '';
     }
 
-
+    public function checkLoginCustomer(Request $request) {
+        return 'true';
+    }
 
     public function register()
     {

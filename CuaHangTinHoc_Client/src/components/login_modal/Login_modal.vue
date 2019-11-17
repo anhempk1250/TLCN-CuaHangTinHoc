@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="modal fade" id="login_modal" tabindex="0" role="dialog">
+    <div class="modal fade login_modal" tabindex="0" role="dialog">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div>
@@ -222,14 +222,19 @@ export default {
     login() {
       this.$store
         .dispatch("customerLogin", this.customer)
-        .then(function(respone) {
-          if (respone.data.msg && respone.data.msg != "") {
-            alert(respone.data.msg);
-          }
-          if (respone.data.token) {
-            localStorage.token = respone.data.token;
-          }
+        .then(respone => this.affterLogin(respone));
+    },
+    affterLogin(respone) {
+      if (respone.data.msg && respone.data.msg != "") {
+        
+        this.$swal.fire({
+          title: respone.data.title,
+          text: respone.data.msg
         });
+      }
+      if (respone.data.token) {
+        location.reload();
+      }
     }
   },
   computed: {

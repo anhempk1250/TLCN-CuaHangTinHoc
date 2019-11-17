@@ -26,10 +26,13 @@ Route::post('/testLaravel',function (\Illuminate\Http\Request $request){
 
 // home page
 Route::get('/products','HomePageController@getSummaryProductList');
-Route::get('/productDetails','HomePageController@getProduct');
+
 Route::get('/productCategory','HomePageController@getProductCategoryList');
 Route::get('/producers', 'HomePageController@getProducerList');
 Route::get('/productType','HomePageController@getProductTypeList');
+// product detail page
+Route::get('/productDetails','ProductDetailController@getProduct');
+
 
 // category page
 Route::get('/categories', 'CategoryPageController@getCategoryList');
@@ -49,6 +52,8 @@ Route::post('/customerRegister','AccountController@sendConfirmEmailCustomerAccou
 Route::get('/confirmEmail','AccountController@confirmEmail')->name('customerVerify');
 // login
 Route::get('/customerLogin', 'AccountController@login');
+// checkLogin
+Route::get('/checkLoginCustomer', 'AccountController@checkLoginCustomer');
 
 // request with check token
 Route::group(['middleware' => 'jwt.auth'], function () {

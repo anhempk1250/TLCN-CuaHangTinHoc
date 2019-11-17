@@ -11,6 +11,7 @@ var apiUrl = {
   categories: apiAddress + "/categories",
   store_product: apiAddress + '/storeProduct',
   customerRegister: apiAddress + '/customerRegister',
+  checkLoginCustomer: apiAddress + "/checkLoginCustomer",
   store_category: apiAddress + "/storeCategory",
   store_authen: apiAddress + "/storeAuthen",
   store_productType: apiAddress + "/storeProductType",

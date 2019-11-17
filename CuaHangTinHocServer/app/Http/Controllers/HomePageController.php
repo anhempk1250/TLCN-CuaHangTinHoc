@@ -16,10 +16,7 @@ class HomePageController extends BaseController
         return $product->getSummaryProductList();
     }
 
-    public function getProduct(Request $request) {
-        $product = new Product();
-        return $product->getProduct($request);
-    }
+
 
     public function getProductCategoryList() {
         $category = new Product_Category();

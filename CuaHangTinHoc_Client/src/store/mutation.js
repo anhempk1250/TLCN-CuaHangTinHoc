@@ -81,6 +81,9 @@ export default {
   },
   productHistory_UPDATE(state, list) {
     state.productHistory.list = JSON.parse(list)
+    if (localStorage.token) {
+      state.customerAccountState.object.name = localStorage.name;
+    }
   },
   categoryList_request(state) {
     state.categoryState.loading = true
@@ -110,12 +113,21 @@ export default {
     state.customerAccountState.loading = true
   },
   customerAccount_success(state, data) {
+    console.log(data,'mutation')
     state.customerAccountState.loading = false
     state.customerAccountState.success = true
-    state.customerAccountState.msg = data.msg
-    state.customerAccountState.token = data.token
-    state.customerAccountState.object.name = data.userName;
-    console.log(state.customerAccountState.object);
+    if (data.msg)
+      state.customerAccountState.msg = data.msg
+    if (data.token) {
+      state.customerAccountState.token = data.token
+      localStorage.token = data.token
+    }
+      
+    if (data.userName) {
+      state.customerAccountState.object.name = data.userName
+      localStorage.name = data.userName
+    }
+
   },
   customerAccount_error(state) {
     state.customerAccountState.loading = false

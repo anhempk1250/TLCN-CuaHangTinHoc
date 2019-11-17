@@ -82,9 +82,10 @@ export default {
       return x1 + x2;
     },
     pushRouter() {
-      this.$store.dispatch("addProductHistory",this.product);
+      this.$store.dispatch("addProductHistory", this.product);
       this.$router.push({
-        path: "/product/" + this.product.id
+        name: "product",
+        params: { id: this.product.id }
       });
     }
   },

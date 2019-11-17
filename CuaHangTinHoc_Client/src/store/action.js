@@ -29,18 +29,23 @@ export default {
       })
   },
   getProductDetail({ commit }, product_id) {
-    console.log(product_id)
     const apiUrl = apiConfig.productDetails
-    commit('productDetails_request')
+    return new Promise((resolve, reject) => {
+      commit('productDetails_request')
 
-    axios.get(apiUrl, { params: { id: product_id } })
-      .then(function (response) {
-        commit('productDetails_success', response.data)
-        console.log(response.data, 'action detail')
-      })
-      .catch(function () {
-        commit('productDetails_error')
-      })
+      axios.get(apiUrl, { params: { id: product_id } })
+        .then(function (response) {
+          commit('productDetails_success', response.data)
+          console.log(response.data, 'action detail')
+          resolve(resolve)
+        })
+        .catch(function (err) {
+
+          commit('productDetails_error')
+          reject(err)
+        })
+    })
+
   },
   getProductCategory({ commit }) {
     console.log(apiConfig)
@@ -134,6 +139,25 @@ export default {
       .catch(function () {
         commit('customerAccount_error')
       })
+  },
+  checkLoginCustomer({ commit }) {
+    const apiUrl = apiConfig.checkLoginCustomer
+    return new Promise((resolve, reject) => {
+      let data = {
+        token: localStorage.token
+      }
+      commit('customerAccount_request')
+      axios.get(apiUrl, data)
+        .then(function (response) {
+          commit('customerAccount_success', response.data)
+          resolve(response)
+          console.log('1');
+        })
+        .catch(function (err) {
+          commit('customerAccount_error')
+          reject(err)
+        })
+    })
   },
   insertStoreCategory({ commit }, category) {
     const apiUrl = apiConfig.store_category
@@ -290,13 +314,12 @@ export default {
         })
         .then(function (response) {
           commit('customerAccount_success', response.data)
-          console.log(response.data)
+          console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
           commit('customerAccount_error')
           reject(err)
-          console.log(err);
         })
     })
   }
