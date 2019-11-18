@@ -16,10 +16,8 @@ class VerifyJWTToken
     {
         try {
             $user = JWTAuth::toUser($request->input('token'));
-            $user1 = Auth::user();
             $request->merge([
-                'user' => $user,
-                'user1' => $user1
+                'user' => $user
             ]);
 
         }catch (JWTException $e) {

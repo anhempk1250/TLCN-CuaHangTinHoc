@@ -165,10 +165,10 @@ export default {
           closeOnConfirm: false,
           closeOnCancel: false
         })
-        .then(isConfirm => this.handleLogout(isConfirm));
+        .then((result) => this.handleLogout(result));
     },
-    handleLogout(isConfirm) {
-      if (isConfirm) {
+    handleLogout(result) {
+      if (result.value) {
         this.$store.dispatch("customerLogout");
         this.$router.push({name: 'home-page'})
       }

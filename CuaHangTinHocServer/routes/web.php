@@ -30,23 +30,33 @@ Route::get('/products','HomePageController@getSummaryProductList');
 Route::get('/productCategory','HomePageController@getProductCategoryList');
 Route::get('/producers', 'HomePageController@getProducerList');
 Route::get('/productType','HomePageController@getProductTypeList');
+
+
+
+
+
 // product detail page
 Route::get('/productDetails','ProductDetailController@getProduct');
 
 
-// category page
-Route::get('/categories', 'CategoryPageController@getCategoryList');
-Route::post('/categories', 'CategoryPageController@createCategory');
-Route::patch('/categories', 'CategoryPageController@updateCategory');
-Route::delete('/categories', 'CategoryPageController@deleteCategory');
+
+
+
+
+
 
 // store - product-page
-Route::get('/storeProducts','StorePageController@getProduct');
-Route::post('/storeProducts','StorePageController@createCategory');
+Route::get('/storeProduct','StoreProductPageController@getProduct');
+Route::post('/storeProduct','StoreProductPageController@createCategory');
+
+
 
 // order - page
-Route::get('/orders','OrderPageController@getListOrder');
-Route::put('/orders','OrderPageController@updateOrderStatus');
+Route::get('/storeOrders','StoreOrderPageController@getListOrder');
+Route::put('/storeOrders','StoreOrderPageController@updateOrderStatus');
+
+
+
 
 // customer account
 //temp register
@@ -59,5 +69,15 @@ Route::get('/customerLogin', 'AccountController@login');
 
 // request with check token
 Route::group(['middleware' => 'jwt.auth'], function () {
+    // check login customer
     Route::get('/checkLoginCustomer', 'AccountController@checkLoginCustomer');
+
+
+
+
+// store category page
+    Route::get('/storeCategory', 'StoreCategoryPageController@getCategoryList');
+    Route::post('/storeCategory', 'StoreCategoryPageController@createCategory');
+    Route::patch('/storeCategory', 'StoreCategoryPageController@updateCategory');
+    Route::delete('/storeCategory', 'StoreCategoryPageController@deleteCategory');
 });

@@ -25,15 +25,6 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="container">
-                  <label for="name">Mã sản phẩm :</label>
-                  <input
-                    id="name"
-                    class="form-control"
-                    v-model="loadCategory.id"
-                    placeholder="Mã Sản Phẩm"
-                  />
-                </div>
-                <div class="container">
                   <label for="name">Tên Danh Mục :</label>
                   <input
                     id="name"
@@ -226,26 +217,27 @@ export default {
           this.category.propertyString = this.formatProperty();
           this.$store
             .dispatch("insertStoreCategory", this.category)
-            .then(() => {
-              this.handleRespone();
+            .then((respone) => {
+              this.handleRespone(respone);
             });
         } else {
           this.category.propertyString = this.formatProperty();
           this.$store
-            .dispatch("updateStoreCategory", this.category)
-            .then(() => {
-              this.handleRespone();
+            .dispatch("updateStoreCategory", this.category, 0)
+            .then(respone => {
+              this.handleRespone(respone);
             });
         }
       }
     },
-    handleRespone() {
-      if (
-        this.storeCategory.msg.msg &&
-        this.storeCategory.msg.msg != undefined
-      ) {
-        alert("Thông Báo: " + this.storeCategory.msg.msg);
-        if (this.storeCategory.msg.RequestSuccess) {
+    handleRespone(respone) {
+      if (respone.data.msg) {
+
+        this.$swal({
+          title: 'Thông báo',
+          text: respone.data.msg
+        })
+        if (respone.data.RequestSuccess) {
           window.location.reload();
         }
       }

@@ -31,10 +31,10 @@ class Product_Category extends Model
         $category = DB::table('product_category')
             ->leftJoin('employeeaccount','product_category.employee_id','=','employeeaccount.id')
             ->leftJoin('product','product_category.id','=','product.product_category_id')
-            ->select('product_category.id','product_category.name','product_category.property','product_category.summaryName',
+            ->select('product_category.id','product_category.name','product_category.property','product_category.status','product_category.summaryName',
                 DB::raw('COUNT(product.id) as numberOfProduct'),'employeeaccount.name as employeeName')
-            ->where('product_category.status',1)
-            ->groupBy('product_category.id','product_category.name','product_category.property','employeeaccount.name','product_category.summaryName')
+            //->where('product_category.status',1)
+            ->groupBy('product_category.id','product_category.name','product_category.property','product_category.status','employeeaccount.name','product_category.summaryName')
             ->get();
         return $category;
     }
@@ -42,29 +42,49 @@ class Product_Category extends Model
     public function createCategory(Request $request){
         $productCategory = new Product_Category();
         $productCategory->name =  $request->input("name");
-        $productCategory->employee_id =  $request->input("employee_id");
+        $productCategory->employee_id =  $request->input("user")->email;
         $productCategory->summaryName =  $request->input("summaryName");
         $productCategory->property =  $request->input("property");
+        $productCategory->status = true;
         $productCategory->save();
-        return $productCategory;
+        return [
+            'msg' => 'Thêm danh mục thành công',
+            'RequestSuccess' => true
+        ];
     }
 
     public function updateCategory(Request $request){
         $productCategory = Product_Category::find($request->id);
-        $productCategory->name =  $request->input("name");
-        $productCategory->employee_id =  $request->input("employee_id");
-        $productCategory->summaryName =  $request->input("summaryName");
-        $productCategory->property =  $request->input("property");
-        $productCategory->save();
-        return $productCategory;
+        if($productCategory) {
+            $productCategory->name =  $request->input("name");
+            $productCategory->employee_id =  $request->input("user")->email;
+            $productCategory->summaryName =  $request->input("summaryName");
+            $productCategory->property =  $request->input("property");
+            $productCategory->save();
+            return [
+                'msg' => 'Cập nhật danh mục thành công',
+                'RequestSuccess' => true
+            ];
+        }
+        return [
+            'msg' => 'Lỗi, không tìm thấy danh mục'
+        ];
     }
 
     public function deleteCategory(Request $request){
         $productCategory = Product_Category::find($request->id);
-        $productCategory->status = 0;
-        $productCategory->save();
-        $product = Product::where('product_category_id',$request->id)
-            ->update(['status' => 0]);
-        return $productCategory;
+        if($productCategory) {
+            $productCategory->status = 0;
+            $productCategory->save();
+            Product::where('product_category_id',$request->id)
+                ->update(['product_category_id' => 11]);
+            return [
+                'msg' => 'Xóa danh mục thành công',
+                'RequestSuccess' => true
+            ];
+        }
+        return [
+            'msg' => 'Lỗi, không tìm thấy danh mục'
+        ];
     }
 }

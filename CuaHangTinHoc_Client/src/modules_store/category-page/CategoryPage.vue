@@ -15,7 +15,7 @@
     </div>
 
     <div class="row" style="margin: 1rem 0;">
-      <div class="col-md-6" style="padding: 0;">
+      <div class="col-md-3" style="padding: 0;">
         <input
           id="categoryInputSearch"
           class="form-control"
@@ -25,15 +25,21 @@
         />
       </div>
       <div class="col-md-3">
+        <select @change="updateTempList()" v-model="status" class="form-control">
+          <option selected value="1">Còn kinh doanh</option>
+          <option value="0">Đã xóa</option>
+        </select>
+      </div>
+      <div class="col-md-3">
         <button class="btn btn-primary">
           <i class="fa fa-search"></i> Tìm kiếm
         </button>
       </div>
       <div class="col-md-3">
         <b-pagination
-          v-if="categoryList"
+          v-if="tempList"
           v-model="currentPage"
-          :total-rows="categoryList.length"
+          :total-rows="tempList.length"
           :per-page="perPage"
           align="fill"
           size="sm"
@@ -43,20 +49,19 @@
     </div>
 
     <b-table
-      fixed
-      v-if="categoryList"
+      v-if="tempList"
       select-mode="multi"
       @row-selected="selectRow"
       style="font-size: 14px;"
       head-variant="light"
       :busy="categoryLoading"
-      :items="categoryList"
+      :items="tempList"
       :current-page="currentPage"
       :per-page="perPage"
       :fields="fields"
       :filter="inputSearch"
       sort-desc.sync="true"
-      sort-by="name"
+      sort-by="id"
       :class="{'activeSelectAll': loadFlagSelectAll}"
     >
       <template v-slot:table-busy>
@@ -91,22 +96,34 @@
       </template>
 
       <template v-slot:cell(control)="row">
-        <i
-          id="1"
-          title="Sửa"
-          data-toggle="modal"
-          data-target="#model_category"
-          @click="setUpdate(row.item)"
-          class="fa fa-edit"
-          style="margin-right: 1rem;"
-          disable="disable"
-        ></i>
-        <i title="Xóa" class="fa fa-trash" @click="deleteCategory(row.item)"></i>
+        <div v-if="status==1">
+          <i
+            id="1"
+            title="Sửa"
+            data-toggle="modal"
+            data-target="#model_category"
+            @click="setUpdate(row.item)"
+            class="fa fa-edit"
+            style="margin-right: 1rem;"
+            disable="disable"
+          ></i>
+          <i title="Xóa" class="fa fa-trash" @click="deleteCategory(row.item)"></i>
+        </div>
+        <div v-else>
+          <i
+            id="1"
+            title="Bỏ xóa"
+            @click="setUpdate(row.item)"
+            class="fa fa-edit"
+            style="margin-right: 1rem;"
+            disable="disable"
+          ></i>
+        </div>
       </template>
     </b-table>
 
     <div id="control">
-      <button class="btn btn-danger" >
+      <button class="btn btn-danger">
         <i class="fa fa-trash"></i> Xóa
       </button>
       <button class="btn btn-info" @click="selectAll()">Chọn tất cả</button>
@@ -123,6 +140,8 @@ import ModalCategory from "../../components/category_modal/CategoryModal.vue";
 export default {
   data() {
     return {
+      tempList: [],
+      status: 1,
       flagSelectAll: false,
       currentPage: 1,
       perPage: 5,
@@ -172,6 +191,19 @@ export default {
     }
   },
   methods: {
+    updateTempList() {
+      let arr = [];
+      let count = this.categoryList.length;
+      console.log(this.categoryList);
+      this.categoryList.forEach(item => {
+        if (item.status == this.status) {
+          console.log("1");
+          arr.push(item);
+        }
+        count--;
+      });
+      if (count == 0) this.tempList = arr;
+    },
     formatProperty(property) {
       if (property) {
         let temp = property;
@@ -200,7 +232,7 @@ export default {
     },
     setUpdate(category) {
       console.log("he", category);
-      if (category) {
+      if (category && this.status == 0) {
         console.log("he", category);
         this.selectedForUpdate = category;
         this.selectedForUpdate.propertyList = [];
@@ -208,6 +240,10 @@ export default {
           this.selectedForUpdate.propertyList = this.selectedForUpdate.property.split(
             "___"
           );
+        }
+      } else {
+        if(category && this.status == 1) {
+          
         }
       }
       this.insert = false;
@@ -220,23 +256,35 @@ export default {
       this.selected = items;
     },
     loadCategoryList() {
-      this.$store.dispatch("getStoreCategory", localStorage.token);
+      this.$store.dispatch("getStoreCategory", localStorage.token).then(() => {
+        this.updateTempList();
+      });
     },
     deleteCategory(category) {
-      if (confirm("Bạn chắc chắn muốn xóa ?")) {
-        console.log(category, 'delete')
-        this.$store.dispatch("deleteStoreCategory", category).then(() => {
-          if (
-            this.storeCategory.msg.msg &&
-            this.storeCategory.msg.msg != undefined
-          ) {
-            alert("Thông Báo: " + this.storeCategory.msg.msg);
-            console.log(this.storeCategory.msg.RequestSuccess);
-            if (this.storeCategory.msg.RequestSuccess) {
-              location.reload();
-            }
-          }
+      this.$swal({
+        title: "Thông báo",
+        text:
+          "Các sản phẩm của danh mục sẽ bị xóa theo,  Bạn chắc chắn muốn xóa ?",
+        showCancelButton: true
+      }).then(result => this.handleDelete(result, category));
+    },
+    handleDelete(result, category) {
+      if (result.value) {
+        this.$store
+          .dispatch("deleteStoreCategory", category)
+          .then(respone => this.affterDelete(respone));
+      }
+    },
+    affterDelete(respone) {
+      console.log("after");
+      if (respone.data.msg) {
+        this.$swal({
+          title: "Thông báo",
+          text: respone.data.msg
         });
+      }
+      if (respone.data.RequestSuccess) {
+        location.reload();
       }
     }
   },
@@ -252,6 +300,7 @@ export default {
 }
 #control {
   margin-top: 1rem;
+  margin-bottom: 1rem;
   button {
     margin: 0 0.1rem;
   }

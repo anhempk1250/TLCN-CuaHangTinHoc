@@ -79,7 +79,8 @@ export const store = new Vuex.Store({
       errorToken: false,
       success: false,
       error: false,
-      msg: ''
+      msg: '',
+      employee: ''
     },
     store_productTypeState: {
       loading: false,

@@ -166,11 +166,9 @@ export default {
         {
           params: {
             token: localStorage.token,
-            id: category.id,
             name: category.name,
             property: category.propertyString,
-            summaryName: category.summaryName,
-            employee_id: category.employee_id
+            summaryName: category.summaryName
           }
         })
         .then(function (response) {
@@ -184,12 +182,12 @@ export default {
         })
     })
   },
-  updateStoreCategory({ commit }, category) {
+  updateStoreCategory({ commit }, category, type) {
     const apiUrl = apiConfig.store_category
     return new Promise((resolve, reject) => {
       commit('storeCategory_request')
       console.log(category)
-      axios.put(apiUrl, { category: category },
+      axios.patch(apiUrl, { category: category },
         {
           params: {
             token: localStorage.token,
@@ -198,7 +196,7 @@ export default {
             name: category.name,
             property: category.propertyString,
             summaryName: category.summaryName,
-            employee_id: category.employee_id
+            typeUpdate: type
           }
         })
         .then(function (response) {
@@ -238,11 +236,11 @@ export default {
         })
     })
   },
-  getStoreCategory({ commit }, token) {
+  getStoreCategory({ commit }) {
     const apiUrl = apiConfig.store_category
     return new Promise((resolve, reject) => {
       commit('storeCategory_request')
-      axios.get(apiUrl, { params: { token: token } })
+      axios.get(apiUrl, { params: { token: localStorage.token } })
         .then(function (response) {
           commit('storeCategory_success', response.data)
           console.log(response.data)

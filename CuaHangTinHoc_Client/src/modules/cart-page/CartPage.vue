@@ -135,7 +135,7 @@ export default {
     },
     checkLogin() {
       if (localStorage.token) {
-        console.log('here')
+        console.log("here");
         this.$store
           .dispatch("checkLoginCustomer")
           .then(respone => this.affterCheckLogin(respone));
@@ -144,7 +144,7 @@ export default {
       }
     },
     affterCheckLogin(respone) {
-      console.log(respone.data)
+      console.log(respone.data);
       if (respone.data.user) {
         this.$swal
           .fire({
@@ -157,13 +157,13 @@ export default {
             },
             showCancelButton: true
           })
-          .then(() => this.handleOrder());
+          .then((result) => this.handleOrder(result));
       } else {
         this.alertFailOrder();
       }
     },
-    handleOrder() {
-      this.$router.push({ name: "mypage" });
+    handleOrder(result) {
+      if (result.value) this.$router.push({ name: "mypage" });
     },
     alertFailOrder() {
       this.$swal

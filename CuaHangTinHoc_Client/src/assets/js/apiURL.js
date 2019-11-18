@@ -9,11 +9,11 @@ var apiUrl = {
   producer: apiAddress + "/producers",
   productType: apiAddress + "/productType",
   categories: apiAddress + "/categories",
-  store_product: apiAddress + '/storeProduct',
   customerRegister: apiAddress + '/customerRegister',
   checkLoginCustomer: apiAddress + "/checkLoginCustomer",
   store_category: apiAddress + "/storeCategory",
   store_authen: apiAddress + "/storeAuthen",
+  store_product: apiAddress + '/storeProduct',
   store_productType: apiAddress + "/storeProductType",
   customerLogin: apiAddress + "/customerLogin"
 }
