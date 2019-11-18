@@ -56,10 +56,8 @@ Route::post('/customerRegister','AccountController@sendConfirmEmailCustomerAccou
 Route::get('/confirmEmail','AccountController@confirmEmail')->name('customerVerify');
 // login
 Route::get('/customerLogin', 'AccountController@login');
-// checkLogin
-Route::get('/checkLoginCustomer', 'AccountController@checkLoginCustomer');
 
 // request with check token
 Route::group(['middleware' => 'jwt.auth'], function () {
-    Route::get('user-info', 'UserController@getUserInfo');
+    Route::get('/checkLoginCustomer', 'AccountController@checkLoginCustomer');
 });

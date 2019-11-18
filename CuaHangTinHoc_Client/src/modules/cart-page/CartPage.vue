@@ -5,9 +5,9 @@
       <div class="alert alert-danger col-12 col-md-12" role="alert">Mã discount không hợp lệ</div>
     </div>
     <div class="row">
-      <div class="col col-md-9">
+      <div class="col-12 col-md-9">
         <div
-          v-for="(product,index) in productList"
+          v-for="(product,index) in loadCart"
           :key="index"
           class="row product-item"
           style="background-color: white;"
@@ -30,14 +30,14 @@
                   <strong>Số lượng: {{product.count}}</strong>
                 </div>
                 <div style="margin-top: 1rem;">
-                  <button class="btn btn-danger btn-sm">Xóa</button>
+                  <button class="btn btn-danger btn-sm" @click="deleteCartItem(product.id)">Xóa</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col col-md-3">
+      <div class="col-12 col-md-3">
         <div class="row" style="background-color: #e9ebea;">
           <div class="col-12 col-md-11 offset-md-1" style="background-color: white;">
             <div class="row">
@@ -51,7 +51,7 @@
                       <b>Tạm tính :</b>
                     </span>
                     <span style="position: absolute;right: 1rem;">
-                      <b>{{fixFormatVND(loadTotalPrice)}}</b>
+                      <b>{{fixFormatVND(loadTotalPrice)}}đ</b>
                     </span>
                   </div>
 
@@ -64,7 +64,7 @@
                     </span>
                     <span style="position: absolute;right: 1rem;margin-top: -0.3rem;">
                       <h6 class="total-price">
-                        <b>{{fixFormatVND(loadTotalPrice * loadDiscount)}}</b>
+                        <b>{{fixFormatVND(loadTotalPrice * loadDiscount)}}đ</b>
                       </h6>
                     </span>
                   </div>
@@ -75,7 +75,7 @@
                     </span>
                     <span style="position: absolute;right: 1rem;margin-top: -0.3rem;">
                       <h6 class="total-price">
-                        <b>{{fixFormatVND(loadTotalPrice - loadTotalPrice*loadDiscount)}}</b>
+                        <b>{{fixFormatVND(loadTotalPrice - loadTotalPrice*loadDiscount)}}đ</b>
                       </h6>
                     </span>
                   </div>
@@ -104,11 +104,9 @@
         </div>
       </div>
     </div>
-    <LoginModal></LoginModal>
   </div>
 </template>
 <script>
-import LoginModal from "../../components/login_modal/Login_modal";
 export default {
   data() {
     return {
@@ -118,13 +116,9 @@ export default {
       discount: 0
     };
   },
-  components: { LoginModal },
   created() {
     if (localStorage.cart) {
       this.productList = JSON.parse(localStorage.cart);
-      this.productList.forEach(product => {
-        this.totalPrice += product.price;
-      });
     }
   },
   methods: {
@@ -141,31 +135,70 @@ export default {
     },
     checkLogin() {
       if (localStorage.token) {
-        this.$store.dispatch("checkLoginCustomer").then(respone => {
-          if (respone.data) {
-            this.$swal.fire({
-              title: 'Nhập địa chỉ giao hàng',
-              input: "textarea",
-              inputValue: '995/56 phường 12 quận 6',
-              inputPlaceholder: "Địa chỉ giao hàng",
-              inputAttributes: {
-                "aria-label": "Địa Chỉ giao hàng" 
-              },
-              showCancelButton: true
-            });
-            //this.$router.push({ name: "mypage" });
-          } else {
-            this.$router.push({ name: "login" });
-          }
-        });
+        console.log('here')
+        this.$store
+          .dispatch("checkLoginCustomer")
+          .then(respone => this.affterCheckLogin(respone));
       } else {
-        this.$router.push({ name: "login" });
+        this.alertFailOrder();
+      }
+    },
+    affterCheckLogin(respone) {
+      console.log(respone.data)
+      if (respone.data.user) {
+        this.$swal
+          .fire({
+            title: "Nhập địa chỉ giao hàng",
+            input: "textarea",
+            inputValue: "995/56 phường 12 quận 6",
+            inputPlaceholder: "Địa chỉ giao hàng",
+            inputAttributes: {
+              "aria-label": "Địa Chỉ giao hàng"
+            },
+            showCancelButton: true
+          })
+          .then(() => this.handleOrder());
+      } else {
+        this.alertFailOrder();
+      }
+    },
+    handleOrder() {
+      this.$router.push({ name: "mypage" });
+    },
+    alertFailOrder() {
+      this.$swal
+        .fire({
+          title: "Xác thực tài khoảng",
+          text: "Vui lòng đăng nhập để tiến hành đặt hàng"
+        })
+        .then(() => this.handleLoginForCart());
+    },
+    handleLoginForCart() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      this.$router.push({ name: "login" });
+    },
+    deleteCartItem(id) {
+      alert(this.productList);
+      for (let i = 0; i < this.productList.length; i++) {
+        if (this.productList[i].id == id) {
+          this.productList.splice(i, 1);
+          localStorage.cart = JSON.stringify(this.productList);
+          return 0;
+        }
       }
     }
   },
   computed: {
+    loadCart() {
+      return this.productList;
+    },
     loadTotalPrice() {
-      return this.totalPrice;
+      let totalPrice = 0;
+      this.productList.forEach(product => {
+        totalPrice += product.price;
+      });
+      return totalPrice;
     },
     loadDiscount() {
       return this.discount;

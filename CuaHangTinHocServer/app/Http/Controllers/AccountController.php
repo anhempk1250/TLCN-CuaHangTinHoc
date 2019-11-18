@@ -25,6 +25,8 @@ class AccountController extends BaseController
         return $customer;
     }
 
+
+
     public function sendConfirmEmailCustomerAccount(Request $request) {
 
         $email = $request->input('email');
@@ -80,7 +82,7 @@ class AccountController extends BaseController
     }
 
     public function checkLoginCustomer(Request $request) {
-        return 'true';
+        return $request;
     }
 
     public function register()
@@ -96,5 +98,7 @@ class AccountController extends BaseController
         $user->save();
         return 'ss';
     }
+
+
 
 }

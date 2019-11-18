@@ -108,6 +108,7 @@ import zoom from "vue-piczoom";
 export default {
   data() {
     return {
+      tempID: "",
       indexImage: 0,
       productCount: 1
     };
@@ -174,6 +175,10 @@ export default {
     }
   },
   computed: {
+    refresh() {
+      console.log(this.$route.params.id);
+      return this.$route.params.id;
+    },
     loadImage() {
       if (
         this.productDetailsObject.images != null &&
@@ -191,10 +196,16 @@ export default {
     })
   },
   created() {
+    this.tempID = this.$route.params.id;
     this.$store.dispatch("getProductDetail", this.$route.params.id).then(() => {
       if (this.productDetailsObject && this.productDetailsObject != {})
         this.formatDescription();
     });
+  },
+  watch: {
+    refresh() {
+      console.log('ahihi')
+    }
   }
 };
 </script>
@@ -224,7 +235,7 @@ export default {
         height: 100%;
         img {
           width: 100%;
-          height: 23rem;
+          height: 10rem;
         }
       }
     }

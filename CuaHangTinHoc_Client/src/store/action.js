@@ -147,11 +147,10 @@ export default {
         token: localStorage.token
       }
       commit('customerAccount_request')
-      axios.get(apiUrl, data)
+      axios.get(apiUrl, {params: data})
         .then(function (response) {
           commit('customerAccount_success', response.data)
           resolve(response)
-          console.log('1');
         })
         .catch(function (err) {
           commit('customerAccount_error')
@@ -322,5 +321,8 @@ export default {
           reject(err)
         })
     })
+  },
+  customerLogout({ commit }) {
+    commit('customerLogout')
   }
 }

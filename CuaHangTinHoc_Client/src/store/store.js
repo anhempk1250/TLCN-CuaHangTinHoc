@@ -61,7 +61,10 @@ export const store = new Vuex.Store({
       loading: false,
       list: [],
       object: {
-        name: ''
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
       },
       token: '',
       success: false,

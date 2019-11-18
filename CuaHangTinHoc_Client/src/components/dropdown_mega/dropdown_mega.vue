@@ -12,7 +12,7 @@
             style="position: absolute;margin: 4rem 45%;color:red"
           >Lịch sử rỗng</h4>
           <div class="column1" v-for="(product, index) in productHistoryList" :key="index">
-            <a href="#">
+            <a href="#" @click="goToProduct(product.id)">
               <div class="row">
                 <div class="col">
                   <img :src="product.first_image.image_link" alt="image" />
@@ -46,6 +46,14 @@ export default {
       else {
         return name;
       }
+    },
+    goToProduct(id) {
+      this.$router.replace(
+        {name: "product", params: {id: id}},
+        () => {
+          this.$router.go(0);
+        }
+      )
     }
   },
   computed: {

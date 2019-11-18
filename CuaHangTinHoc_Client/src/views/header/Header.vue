@@ -155,14 +155,22 @@ export default {
       console.log(this.productCategoryList);
     },
     logout() {
-      if (confirm("Bạn muốn đăng xuất ?")) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("name");
-        if (this.$route.path != "/") {
-          this.$router.push({
-            path: "/"
-          });
-        } else location.reload();
+      this.$swal
+        .fire({
+          title: "Đăng xuất",
+          text: "Có chắc bạn muốn đăng xuất",
+          showCancelButton: true,
+          confirmButtonText: "Có",
+          cancelButtonText: "Không",
+          closeOnConfirm: false,
+          closeOnCancel: false
+        })
+        .then(isConfirm => this.handleLogout(isConfirm));
+    },
+    handleLogout(isConfirm) {
+      if (isConfirm) {
+        this.$store.dispatch("customerLogout");
+        this.$router.push({name: 'home-page'})
       }
     }
   },

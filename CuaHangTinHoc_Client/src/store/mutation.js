@@ -113,16 +113,19 @@ export default {
     state.customerAccountState.loading = true
   },
   customerAccount_success(state, data) {
-    console.log(data,'mutation')
+    console.log(data, 'mutation')
     state.customerAccountState.loading = false
     state.customerAccountState.success = true
+    if (data.user) {
+      state.customerAccountState.object = data.user;
+    }
     if (data.msg)
       state.customerAccountState.msg = data.msg
     if (data.token) {
       state.customerAccountState.token = data.token
       localStorage.token = data.token
     }
-      
+
     if (data.userName) {
       state.customerAccountState.object.name = data.userName
       localStorage.name = data.userName
@@ -132,6 +135,11 @@ export default {
   customerAccount_error(state) {
     state.customerAccountState.loading = false
     state.customerAccountState.error = true
+  },
+  customerLogout(state) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    state.customerAccountState.object = {};
   },
   storeCategory_request(state) {
     state.store_categoryState.loading = true
