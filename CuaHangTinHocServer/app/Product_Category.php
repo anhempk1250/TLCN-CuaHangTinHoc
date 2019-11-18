@@ -33,6 +33,7 @@ class Product_Category extends Model
             ->leftJoin('product','product_category.id','=','product.product_category_id')
             ->select('product_category.id','product_category.name','product_category.property','product_category.summaryName',
                 DB::raw('COUNT(product.id) as numberOfProduct'),'employeeaccount.name as employeeName')
+            ->where('product_category.status',1)
             ->groupBy('product_category.id','product_category.name','product_category.property','employeeaccount.name','product_category.summaryName')
             ->get();
         return $category;

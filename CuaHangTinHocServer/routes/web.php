@@ -44,6 +44,10 @@ Route::delete('/categories', 'CategoryPageController@deleteCategory');
 Route::get('/storeProducts','StorePageController@getProduct');
 Route::post('/storeProducts','StorePageController@createCategory');
 
+// order - page
+Route::get('/orders','OrderPageController@getListOrder');
+Route::put('/orders','OrderPageController@updateOrderStatus');
+
 // customer account
 //temp register
 Route::get('/temp', 'AccountController@register');
