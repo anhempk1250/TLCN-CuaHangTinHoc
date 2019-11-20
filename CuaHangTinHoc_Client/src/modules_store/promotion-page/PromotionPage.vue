@@ -3,7 +3,9 @@
 </template>
 <script>
 export default {
-  
+    created(){
+      console.log('promotion')
+    }
 }
 </script>
 <style scoped>

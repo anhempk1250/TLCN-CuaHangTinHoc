@@ -22,9 +22,11 @@ export default {
   customerAccountMessage: state => state.customerAccountState.msg,
   storeCategoryList: state => state.store_categoryState.list,
   storeCategoryLoading: state => state.store_categoryState.loading,
-  storeAuthenMsg: state => state.authenState.msg,
-  storeEmployeeAccount: state => state.authenState.object,
+  storeAuthenMsg: state => state.store_authenState.msg,
+  storeEmployeeAccount: state => state.store_authenState.object,
   storeCategory: state => state.store_categoryState,
   storeProduct: state => state.store_productState,
-  storeProductTypeList: state => state.store_productTypeState.list
+  storeProductTypeList: state => state.store_productTypeState.list,
+  storeProducerList: state => state.store_producerState.list,
+  storeProducerLoading: state => state.store_producerState.loading
 }

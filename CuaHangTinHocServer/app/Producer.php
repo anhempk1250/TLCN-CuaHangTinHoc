@@ -9,7 +9,7 @@ class Producer extends Model
     protected $table = "producer";
 
     public function getProducerList() {
-        return Producer::all();
+        return Producer::all()->where('status','=',1);
     }
 
 }

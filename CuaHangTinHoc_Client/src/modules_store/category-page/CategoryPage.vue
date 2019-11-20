@@ -37,9 +37,9 @@
       </div>
       <div class="col-md-3">
         <b-pagination
-          v-if="tempList"
+          v-if="loadTempList"
           v-model="currentPage"
-          :total-rows="tempList.length"
+          :total-rows="loadTempList.length"
           :per-page="perPage"
           align="fill"
           size="sm"
@@ -49,13 +49,13 @@
     </div>
 
     <b-table
-      v-if="tempList"
+      v-if="loadTempList"
       select-mode="multi"
       @row-selected="selectRow"
       style="font-size: 14px;"
       head-variant="light"
       :busy="categoryLoading"
-      :items="tempList"
+      :items="loadTempList"
       :current-page="currentPage"
       :per-page="perPage"
       :fields="fields"
@@ -67,7 +67,7 @@
       <template v-slot:table-busy>
         <div class="text-center text-danger my-2">
           <b-spinner class="align-middle"></b-spinner>
-          <strong>Loading...</strong>
+          <strong> Loading...</strong>
         </div>
       </template>
 
@@ -96,7 +96,7 @@
       </template>
 
       <template v-slot:cell(control)="row">
-        <div v-if="status==1">
+        <div v-if="status==1 && row.item.id!=1">
           <i
             id="1"
             title="Sửa"
@@ -109,7 +109,7 @@
           ></i>
           <i title="Xóa" class="fa fa-trash" @click="deleteCategory(row.item)"></i>
         </div>
-        <div v-else>
+        <div v-else-if="status==0 && row.item.id!=1">
           <i
             id="1"
             title="Bỏ xóa"
@@ -188,6 +188,9 @@ export default {
     },
     loadFlagSelectAll() {
       return this.flagSelectAll;
+    },
+    loadTempList() {
+      return this.tempList;
     }
   },
   methods: {
@@ -232,18 +235,14 @@ export default {
     },
     setUpdate(category) {
       console.log("he", category);
-      if (category && this.status == 0) {
-        console.log("he", category);
+      if (category) {
+        console.log("he 2", category);
         this.selectedForUpdate = category;
         this.selectedForUpdate.propertyList = [];
         if (this.selectedForUpdate.property) {
           this.selectedForUpdate.propertyList = this.selectedForUpdate.property.split(
             "___"
           );
-        }
-      } else {
-        if(category && this.status == 1) {
-          
         }
       }
       this.insert = false;
@@ -256,7 +255,7 @@ export default {
       this.selected = items;
     },
     loadCategoryList() {
-      this.$store.dispatch("getStoreCategory", localStorage.token).then(() => {
+      this.$store.dispatch("getStoreCategory").then(() => {
         this.updateTempList();
       });
     },
@@ -284,13 +283,15 @@ export default {
         });
       }
       if (respone.data.RequestSuccess) {
-        location.reload();
+        this.loadCategoryList();
       }
     }
   },
   created() {
-    console.log("created");
-    this.loadCategoryList();
+    if(localStorage.token) {
+      
+      this.loadCategoryList();
+    }
   }
 };
 </script>

@@ -160,11 +160,17 @@ export default {
     }
   },
   methods: {
+    notification(title, text) {
+      this.$swal({
+        title: title,
+        text: text
+      });
+    },
     AddProperty() {
       if (this.checkSpecialCharacter()) {
         for (let i = 0; i < this.category.propertyList.length; i++) {
           if (this.category.propertyList[i] == this.inputProperty) {
-            alert("Thuộc tính này đã được thêm vào");
+            this.notification("Thông báo", "Thuộc tính này đã được thêm vào");
             return 0;
           }
         }
@@ -173,13 +179,19 @@ export default {
         let myTbody = document.getElementById("myTbody");
         myTbody.scrollTop = myTbody.scrollHeight;
       } else {
-        alert("Thuộc tính không được chứa ký tự đặt biệt hoặc rỗng");
+        this.notification(
+          "Thông báo",
+          "Thuộc tính không được chứa ký tự đặt biệt hoặc rỗng"
+        );
         return "";
       }
     },
     DeleteProperty(property) {
       if (this.category.propertyList.length == 1) {
-        alert("Phải có tối thiểu một thuộc tính, Không thể xóa !");
+        this.notification(
+          "Thông báo",
+          "Phải có tối thiểu một thuộc tính, Không thể xóa !"
+        );
       } else {
         for (let i = 0; i < this.category.propertyList.length; i++) {
           if (this.category.propertyList[i] == property) {
@@ -198,15 +210,15 @@ export default {
     },
     checkInputCategory() {
       if (this.category.name == "") {
-        alert("Chưa Nhập Tên Category");
+        this.notification("Thông báo", "Chưa Nhập Tên Category");
         return false;
       }
       if (this.category.summaryName == "") {
-        alert("Chưa Nhập Biểu Mẫu");
+        this.notification("Thông báo", "Chưa Nhập Biểu Mẫu");
         return false;
       }
       if (this.category.propertyList.length == 0) {
-        alert("Chưa Nhập Property");
+        this.notification("Thông báo", "Chưa nhập Property");
         return false;
       }
       return true;
@@ -217,7 +229,7 @@ export default {
           this.category.propertyString = this.formatProperty();
           this.$store
             .dispatch("insertStoreCategory", this.category)
-            .then((respone) => {
+            .then(respone => {
               this.handleRespone(respone);
             });
         } else {
@@ -232,11 +244,10 @@ export default {
     },
     handleRespone(respone) {
       if (respone.data.msg) {
-
         this.$swal({
-          title: 'Thông báo',
+          title: "Thông báo",
           text: respone.data.msg
-        })
+        });
         if (respone.data.RequestSuccess) {
           window.location.reload();
         }

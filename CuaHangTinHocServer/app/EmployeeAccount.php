@@ -3,13 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class EmployeeAccount extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class EmployeeAccount extends Authenticatable
 {
     //
     protected $table = "employeeaccount";
 
     public function Product_Category() {
         $this->hasMany(Product_Category::class,'employee_id');
+    }
+
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims() {
+        return [];
     }
 }

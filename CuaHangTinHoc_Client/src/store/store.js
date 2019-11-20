@@ -92,7 +92,17 @@ export const store = new Vuex.Store({
       error: false,
       msg: ''
     },
-    authenState: {
+    store_producerState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      errorToken: false,
+      success: false,
+      error: false,
+      msg: ''
+    },
+    store_authenState: {
       loading: false,
       list: [],
       object: {},

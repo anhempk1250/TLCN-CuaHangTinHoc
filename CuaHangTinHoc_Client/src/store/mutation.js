@@ -97,17 +97,18 @@ export default {
     state.categoryState.loading = false
     state.categoryState.error = true
   },
-  storeProduct_request(state) {
-    state.store_productState.loading = true
+
+  storeProducer_request(state) {
+    state.store_producerState.loading = true
   },
-  storeProduct_success(state, data) {
-    state.store_productState.loading = false
-    state.store_productState.list = data.list
-    state.store_productState.success = true
+  storeProducer_success(state, data) {
+    state.store_producerState.loading = false
+    state.store_producerState.list = data.list
+    state.store_producerState.success = true
   },
-  storeProduct_error(state) {
-    state.store_productState.loading = false
-    state.store_productState.error = true
+  storeProducer_error(state) {
+    state.store_producerState.loading = false
+    state.store_producerState.error = true
   },
   customerAccount_request(state) {
     state.customerAccountState.loading = true
@@ -146,36 +147,52 @@ export default {
   },
   storeCategory_success(state, data) {
     if (data.errorToken) {
-      state.authenState.token = '';
-      state.store_categoryState.errorToken = data.errorToken;
-      localStorage.errorAuthentication = "There was an authentication error";
-      location.reload();
+      localStorage.removeItem('token');
+      //location.reload();
     }
     state.store_categoryState.loading = false;
     state.store_categoryState.success = true;
     state.store_categoryState.list = data.list;
     state.store_categoryState.msg = data.msg;
     state.store_categoryState.object = data.object;
-
   },
   storeCategory_error(state) {
     state.store_categoryState.loading = false
     state.store_categoryState.error = true
   },
+  storeProduct_request(state) {
+    state.store_productState.loading = true
+  },
+  storeProduct_success(state, data) {
+    if (data.errorToken) {
+      localStorage.removeItem('token');
+      location.reload();
+    }
+    state.store_productState.loading = false
+    state.store_productState.list = data.list
+    state.store_productState.success = true
+  },
+  storeProduct_error(state) {
+    state.store_productState.loading = false
+    state.store_productState.error = true
+  },
   authenState_request(state) {
-    state.authenState.loading = true
+    state.store_authenState.loading = true
   },
   authenState_success(state, data) {
-    state.authenState.loading = false;
-    state.authenState.success = true;
-    state.authenState.msg = data.msg;
-    state.authenState.list = data.list;
-    state.authenState.object = data.employee;
-    state.authenState.token = data.token;
+    state.store_authenState.loading = false;
+    state.store_authenState.success = true;
+    state.store_authenState.msg = data.msg;
+    state.store_authenState.list = data.list;
+    state.store_authenState.object = data.employee;
+    state.store_authenState.token = data.token;
+    if (data.errorToken) {
+      state.store_authenState.msg = data.errorToken;
+    }
   },
   authenState_error(state) {
-    state.authenState.loading = false
-    state.authenState.error = true
+    state.store_authenState.loading = false
+    state.store_authenState.error = true
   },
   storeProductType_request(state) {
     state.store_productTypeState.loading = true

@@ -10,9 +10,14 @@ use Illuminate\Routing\Controller as BaseController;
 class StoreCategoryPageController extends BaseController
 {
 
-    public function getCategoryList() {
+    public function getCategoryList(Request $request) {
         $category = new Product_Category();
         return ['list' => $category->getCategoryList()];
+    }
+
+    public function getCategoryListFromProductPage() {
+        $category = new Product_Category();
+        return ['list' => $category->getCategoryListFromProductPage()];
     }
 
     public function createCategory(Request $request) {

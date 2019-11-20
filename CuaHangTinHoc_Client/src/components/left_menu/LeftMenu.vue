@@ -16,6 +16,11 @@
           <i class="fa fa-barcode"></i> Sẩn Phẩm
         </button>
       </router-link>
+      <router-link :to="{name: 'productType'}" style="width: 100%;">
+        <button class="btn" :class="{'active': $route.name == 'productType'}">
+          <i class="fa fa-barcode"></i> Sẩn Phẩm
+        </button>
+      </router-link>
       <router-link :to="{name: 'order'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'order'}">
           <i class="fa fa-shopping-cart"></i> Đơn Hàng

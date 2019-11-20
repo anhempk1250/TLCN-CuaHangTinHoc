@@ -8,6 +8,7 @@ import CustomerPage from './customer-page/CustomerPage'
 import ProfitPage from './profit-page/ProfitPage'
 import SalesPage from './sales-page/SalesPage'
 import OverviewPage from './overview-page/OverviewPage'
+import ProductTypePAge from './product-type-page/ProductTypePage'
 export default [
     {
         path: '/store',
@@ -27,6 +28,12 @@ export default [
                 path: 'products',
                 name: 'products',
                 component: ProductPage
+            },
+            {
+                path: 'productType',
+                name: 'productType',
+                component: ProductTypePAge
+
             },
             {
                 path: 'order',

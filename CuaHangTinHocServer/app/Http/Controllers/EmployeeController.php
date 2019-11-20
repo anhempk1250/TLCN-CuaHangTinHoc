@@ -3,36 +3,33 @@
 
 namespace App\Http\Controllers;
 
-use App\CustomerAccount;
 use App\EmployeeAccount;
-use App\Http\Controllers\Request\LoginRequest;
+use Faker\Provider\Base;
+use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
-use Mail;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-
-class AccountController extends BaseController
+use Illuminate\Routing\Controller as BaseController;
+class EmployeeController extends  BaseController
 {
     function __construct()
     {
         Config::set('jwt.user', EmployeeAccount::class);
+        Config::set('jwt.identifier', 'id');
         Config::set('auth.providers', ['users' => [
             'driver' => 'eloquent',
             'model' => EmployeeAccount::class,
         ]]);
     }
 
-    // for customer
 
 
-    // for employee
+
+
     public function storeCheckToken(Request $request) {
-        return [
-            'msg' => 'token correct'
-        ];
+        return 'ss';
     }
 
     public function storeLogin(Request $request) {

@@ -28,7 +28,7 @@ class Product_Category extends Model
 
 
     public function getCategoryList() {
-        $category = DB::table('product_category')
+         $category = DB::table('product_category')
             ->leftJoin('employeeaccount','product_category.employee_id','=','employeeaccount.id')
             ->leftJoin('product','product_category.id','=','product.product_category_id')
             ->select('product_category.id','product_category.name','product_category.property','product_category.status','product_category.summaryName',
@@ -37,6 +37,10 @@ class Product_Category extends Model
             ->groupBy('product_category.id','product_category.name','product_category.property','product_category.status','employeeaccount.name','product_category.summaryName')
             ->get();
         return $category;
+    }
+
+    public function getCategoryListFromProductPage() {
+        return Product_Category::with('productTypes')->where('status','=',1)->get();
     }
 
     public function createCategory(Request $request){
@@ -77,7 +81,7 @@ class Product_Category extends Model
             $productCategory->status = 0;
             $productCategory->save();
             Product::where('product_category_id',$request->id)
-                ->update(['product_category_id' => 11]);
+                ->update(['product_category_id' => 1]);
             return [
                 'msg' => 'Xóa danh mục thành công',
                 'RequestSuccess' => true

@@ -4,7 +4,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\FileUpload;
 class Product extends Model
 {
     //
@@ -35,6 +35,11 @@ class Product extends Model
         return $this->belongsTo(Producer::class);
     }
 
+    public function productTypeList() {
+        return $this
+            ->belongsToMany(Product_Type::class,"list_product_with_type","product_id","product_type_id");
+    }
+
     public function category()
     {
         return $this->belongsTo(Product_Category::class,'product_category_id');
@@ -62,8 +67,21 @@ class Product extends Model
     }
 
     public function getStoreProductList() {
-        $products = Product::with('category','producer','discounts','images','employee')->get();
+        $products = Product::with('category','producer','productTypeList','discounts','images','employee')
+            ->get();
         return $products;
+    }
+
+    public function insertProduct(Request $request) {
+        $str = '';
+        if($request->get('image'))
+        {
+            $image = $request->get('image');
+            $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('image'))->save(public_path('images/').$name);
+            return $name;
+        }
+        return $str;
     }
 
 }

@@ -86,10 +86,7 @@ export default {
     })
   },
   created() {
-    if (localStorage.errorAuthentication) {
-      this.error = localStorage.errorAuthentication;
-      localStorage.removeItem("errorAuthentication");
-    }
+    
   }
 };
 </script>
