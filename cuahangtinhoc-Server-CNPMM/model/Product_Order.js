@@ -2,9 +2,9 @@ let mongooes = require('mongoose')
 let schema = mongooes.Schema
 
 let product_order = new schema({
-  id_product : Number,
-  id_order: Number,
+  product : { type: schema.Types.ObjectId, ref: 'product' },
+  order:{ type: schema.Types.ObjectId, ref: 'order' },
   productCount: Number
-}) 
+}, {collection: 'product_order'}) 
 
 module.exports = mongooes.model('product_order', product_order)
