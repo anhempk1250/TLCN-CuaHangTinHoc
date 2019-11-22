@@ -11,14 +11,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use JWTAuth;
 use Illuminate\Routing\Controller as BaseController;
 class CustomerController  extends BaseController
 {
     function __construct()
     {
         Config::set('jwt.user', User::class);
-        Config::set('jwt.', 'email');
+        Config::set('jwt.identifier', 'email');
         Config::set('auth.providers', ['users' => [
             'driver' => 'eloquent',
             'model' => User::class,

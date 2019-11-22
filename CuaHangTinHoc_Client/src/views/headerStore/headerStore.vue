@@ -1,13 +1,10 @@
 <template>
-  <div>
-    header
+  <div class="container">
+    
   </div>
 </template>
 <script>
-export default {
-  
-}
+export default {};
 </script>
-<style scoped>
-
+<style lang="scss" scoped>
 </style>

@@ -57,26 +57,36 @@ export default {
   },
   methods: {
     checkLogin() {
-      this.error = '';
+      this.error = "";
       if (this.employeeAccount.id == "") {
-        alert("Chưa nhập tài khoản");
+        this.$swal({
+          title: "Thông báo",
+          text: "Chưa nhập tài khoản"
+        });
         return -1;
       }
       if (this.employeeAccount.password == "") {
-        alert("Chưa nhập mật khẩu");
+        this.$swal({
+          title: "Thông báo",
+          text: "Chưa nhập mật khẩu"
+        });
         return -1;
       }
       this.$store
         .dispatch("storeLogin", this.employeeAccount)
-        .then(response => {
-          if (response.data.msg && response.data.msg != "") {
-            alert(response.data.msg);
-          } else {
-            if (response.data.token != null)
-              localStorage.token = response.data.token;
-            this.$router.push({ name: "overview" });
-          }
+        .then(response => this.affterLogin(response));
+    },
+    affterLogin(response) {
+      if (response.data.msg && response.data.msg != "") {
+        this.$swal({
+          title: response.data.msg.title,
+          text: response.data.msg.msg
         });
+      } else {
+        if (response.data.token != null)
+          localStorage.token = response.data.token;
+        this.$router.push({ name: "overview" });
+      }
     }
   },
   computed: {
@@ -85,9 +95,7 @@ export default {
       storeEmployeeAccount: "storeEmployeeAccount"
     })
   },
-  created() {
-    
-  }
+  created() {}
 };
 </script>
 <style lang="scss" scoped>

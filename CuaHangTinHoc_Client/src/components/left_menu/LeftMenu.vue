@@ -18,7 +18,7 @@
       </router-link>
       <router-link :to="{name: 'productType'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'productType'}">
-          <i class="fa fa-barcode"></i> Sẩn Phẩm
+          <i class="fa fa-barcode"></i> Loại Sản Phẩm
         </button>
       </router-link>
       <router-link :to="{name: 'order'}" style="width: 100%;">

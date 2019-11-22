@@ -82,7 +82,7 @@
                         <th style="width: 15rem;">Control</th>
                       </tr>
                       <tr
-                        v-if="!loadCategory.propertyList || loadCategory.propertyList.length == 0"
+                        v-if="!category.propertyList || category.propertyList.length == 0"
                       >
                         <td></td>
                         <td class="text-center">Chưa có thuộc tính</td>
@@ -90,7 +90,7 @@
                       <tr
                         class="text-center"
                         v-else
-                        v-for="(prop, index) in loadCategory.propertyList"
+                        v-for="(prop, index) in unformatProperty(loadCategory.propertyList)"
                         :key="index"
                       >
                         <td>{{index+1}}</td>
@@ -263,6 +263,12 @@ export default {
         }
       }
       return string;
+    },
+    unformatProperty(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = arr[i].split("_")[1];
+      }
+      return arr;
     }
   }
 };

@@ -46,7 +46,7 @@ class Product_Category extends Model
     public function createCategory(Request $request){
         $productCategory = new Product_Category();
         $productCategory->name =  $request->input("name");
-        $productCategory->employee_id =  $request->input("user")->email;
+        $productCategory->employee_id =  $request->input("user")->id;
         $productCategory->summaryName =  $request->input("summaryName");
         $productCategory->property =  $request->input("property");
         $productCategory->status = true;
@@ -61,7 +61,7 @@ class Product_Category extends Model
         $productCategory = Product_Category::find($request->id);
         if($productCategory) {
             $productCategory->name =  $request->input("name");
-            $productCategory->employee_id =  $request->input("user")->email;
+            $productCategory->employee_id =  $request->input("user")->id;
             $productCategory->summaryName =  $request->input("summaryName");
             $productCategory->property =  $request->input("property");
             $productCategory->save();

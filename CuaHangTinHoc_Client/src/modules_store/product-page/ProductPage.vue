@@ -35,12 +35,12 @@
             v-model="inputSearch"
           />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <button class="btn btn-primary">
             <i class="fa fa-search"></i> Tìm kiếm
           </button>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <b-pagination
             v-if="loadTempList"
             v-model="currentPage"
@@ -235,10 +235,10 @@
       </div>
       <div>
         <div>
-          <p>Chọn tối đa 4 tấm hình :</p>
+          <p>Chọn 4 tấm hình :</p>
         </div>
         <div style="margin: 1rem 0;">
-          <input ref="inputFile" id="inputFile" @change="upload()" type="file" multiple />
+          <input ref="inputFile" id="inputFile" @change="upload" type="file" multiple />
         </div>
         <div class="row containerImg">
           <div class="col-md-3">
@@ -333,19 +333,17 @@ export default {
   props: {},
   watch: {},
   methods: {
-    upload() {
-      let input = this.$refs.inputFile;
-      if (input && input.files) {
+    upload(event) {
+      let files = event.target.files;
+      if (files) {
         for (let i = 0; i < 4; i++) {
-          if (input.files[i]) {
+          if (files[i]) {
+            this.images[i] = files[i];
             let reader = new FileReader();
-            let vm = this;
-            reader.onload = e => {
-              console.log(this.images);
-              vm.images[i] = e.target.result;
-              $("#img" + (i + 1)).attr("src", e.target.result);
+            reader.readAsDataURL(files[i]);
+            reader.onload = event => {
+              $("#img" + (i + 1)).attr("src", event.target.result);
             };
-            reader.readAsDataURL(input.files[i]);
           }
         }
       }
@@ -501,27 +499,66 @@ export default {
       this.categoryIdSelected = product.product_category_id;
       this.producerIdSelected = product.producer_id;
     },
-    save() {
-      let propertyString = "";
-      for (let i = 0; i < this.propertyCount; i++) {
-        let id = "prop" + i;
-        if (i == this.propertyCount - 1) propertyString += $("#" + id).val();
-        else propertyString += $("#" + id).val() + "___";
+    checkImage() {
+      for (let i = 0; i < 4; i++) {
+        if (!this.images[i]) {
+          console.log(this.images[i]);
+          return true;
+        }
       }
-      this.selected.propertyString = propertyString;
-      this.selected.image1 = this.images[0];
-      this.selected.image2 = this.images[1];
-      this.selected.image3 = this.images[2];
-      this.selected.image4 = this.images[3];
-      if (this.insert) {
+      return false;
+    },
+    checkProp() {
+      for (let i = 0; i < this.propertyCount; i++) {
+        console.log($("#prop" + i));
+        if ($("#prop" + i).val() == "") return true;
+      }
+      return false;
+    },
+    checkEmpty() {
+      if (
+        this.selected.id == "" ||
+        this.selected.name == "" ||
+        this.selected.productCount == "" ||
+        this.selected.price == "" ||
+        this.selected.costPrice == "" ||
+        this.categoryIdSelected == -1 ||
+        this.producerIdSelected == -1 ||
+        this.checkImage() ||
+        this.checkProp()
+      ) {
+        return true;
+      } else return false;
+    },
+    save() {
+      if (!this.checkEmpty()) {
+        this.selected.product_category_id = this.categoryIdSelected;
+        this.selected.producer_id = this.producerIdSelected;
+        this.selected.images = this.images;
+        let str = "";
+        for (let i = 0; i < this.propertyCount; i++) {
+          if (i == this.propertyCount - 1) {
+            str += $("#prop" + i).val();
+          } else {
+            str += $("#prop" + i).val() + "___";
+          }
+        }
+        this.selected.propertyString = str;
         this.$store
           .dispatch("insertStoreProduct", this.selected)
           .then(response => this.handleSubmit(response));
+      } else {
+        this.$swal({
+          title: "Thông báo",
+          text: "Thông tin nhập thiếu !!!"
+        });
       }
-      this.back();
     },
     handleSubmit(response) {
-      console.log(response.data,'kajsdjasdjkashdkj');
+      this.$swal({
+        text: response.data.msg
+      });
+      this.back();
     },
     back() {
       this.control = false;
@@ -550,7 +587,7 @@ export default {
     },
     loadSelectCategory() {
       let temp = {};
-      if (this.categoryIdSelected) {
+      if (this.categoryIdSelected != -1) {
         for (let i = 0; i < this.categoryList.length; i++) {
           if (this.categoryList[i].id == this.categoryIdSelected) {
             temp = this.categoryList[i];

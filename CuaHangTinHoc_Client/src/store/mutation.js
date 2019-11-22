@@ -166,7 +166,7 @@ export default {
   storeProduct_success(state, data) {
     if (data.errorToken) {
       localStorage.removeItem('token');
-      location.reload();
+      //location.reload();
     }
     state.store_productState.loading = false
     state.store_productState.list = data.list
@@ -182,12 +182,15 @@ export default {
   authenState_success(state, data) {
     state.store_authenState.loading = false;
     state.store_authenState.success = true;
-    state.store_authenState.msg = data.msg;
+    if(data.msg)
+      state.store_authenState.msg = data.msg.msg;
     state.store_authenState.list = data.list;
     state.store_authenState.object = data.employee;
     state.store_authenState.token = data.token;
+    localStorage.userName = data.userName;
     if (data.errorToken) {
       state.store_authenState.msg = data.errorToken;
+      
     }
   },
   authenState_error(state) {

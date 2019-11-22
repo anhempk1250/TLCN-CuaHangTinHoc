@@ -11,7 +11,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
-Vue.prototype.$http = Axios
+
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 window.$ = require('jquery')

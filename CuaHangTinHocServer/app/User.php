@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     protected $table = "customerAccount";
-    use Notifiable;
 
     public function getJWTIdentifier() {
         return $this->getKey();
@@ -18,4 +17,5 @@ class User extends Authenticatable
     public function getJWTCustomClaims() {
         return [];
     }
+
 }

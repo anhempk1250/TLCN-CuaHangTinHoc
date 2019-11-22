@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use JWTAuth;
 use Illuminate\Routing\Controller as BaseController;
 class EmployeeController extends  BaseController
 {
@@ -33,8 +33,7 @@ class EmployeeController extends  BaseController
     }
 
     public function storeLogin(Request $request) {
-        $employee = EmployeeAccount::find($request->id);
-
+        $employee = EmployeeAccount::find($request->input('id'));
         if($employee && Hash::check($request->password, $employee->password)) {
 
             $credentials = $request->only('id', 'password');
@@ -49,7 +48,7 @@ class EmployeeController extends  BaseController
                 'title' => 'Đăng nhập thất bại',
                 'msg' => 'Tài khoản hoặc mật khẩu không đúng'
             ];
-            return $errorData;
+            return ['msg' => $errorData];
         }
         return ['msg' => 'Tài khoản hoặc mật khẩu không chính xác'];
     }

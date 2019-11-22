@@ -226,7 +226,6 @@ export default {
     },
     affterLogin(respone) {
       if (respone.data.msg && respone.data.msg != "") {
-        
         this.$swal.fire({
           title: respone.data.title,
           text: respone.data.msg

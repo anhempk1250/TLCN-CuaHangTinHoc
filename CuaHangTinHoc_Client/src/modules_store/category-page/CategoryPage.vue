@@ -234,9 +234,7 @@ export default {
       this.insert = true;
     },
     setUpdate(category) {
-      console.log("he", category);
       if (category) {
-        console.log("he 2", category);
         this.selectedForUpdate = category;
         this.selectedForUpdate.propertyList = [];
         if (this.selectedForUpdate.property) {

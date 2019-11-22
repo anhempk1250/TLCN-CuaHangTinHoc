@@ -281,7 +281,7 @@ export default {
         })
         .then(function (response) {
           commit('authenState_success', response.data)
-          //console.log(response.data)
+          console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
@@ -321,7 +321,7 @@ export default {
       axios.get(apiUrl,
         {
           params: {
-            token: localStorage.token
+            token: localStorage.token, employee: true
           }
         })
         .then(function (response) {
@@ -343,7 +343,7 @@ export default {
       axios.get(apiUrl,
         {
           params: {
-            token: localStorage.token
+            token: localStorage.token, employee: true
           }
         })
         .then(function (response) {
@@ -360,7 +360,7 @@ export default {
     const apiUrl = apiConfig.store_categoryFromProductPage
     return new Promise((resolve, reject) => {
       commit('storeCategory_request')
-      axios.get(apiUrl, { params: { token: localStorage.token } })
+      axios.get(apiUrl, { params: { token: localStorage.token }, employee: true })
         .then(function (response) {
           commit('storeCategory_success', response.data)
           console.log(response.data)
@@ -375,27 +375,42 @@ export default {
   },
   insertStoreProduct({ commit }, product) {
     const apiUrl = apiConfig.store_product
-    
+
     return new Promise((resolve, reject) => {
       commit('storeProduct_request')
-      axios.post(apiUrl,{}, {
-        params: {
-          token: localStorage.token,
-          employee: true,
-          id: product.id,
-          name: product.name,
-          product_category_id: product.product_category_id,
-          productCount: product.productCount,
-          producer_id: product.producer_id,
-          price: product.price,
-          costPrice: product.costPrice,
-          image1: product.image1,
-          image2: product.image2,
-          image3: product.image3,
-          image4: product.image4,
-          property: product.propertyString
-        }
-      })
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' }
+      }
+      let formData = new FormData();
+      formData.append('image1', product.images[0]);
+      formData.append('image2', product.images[1]);
+      formData.append('image3', product.images[2]);
+      formData.append('image4', product.images[3]);
+      formData.append('id', product.id);
+      formData.append('name', product.name);
+      formData.append('product_category_id', product.product_category_id);
+      formData.append('producer_id', product.producer_id);
+      formData.append('productCount', product.productCount);
+      formData.append('price', product.price);
+      formData.append('costPrice', product.costPrice);
+      formData.append('property', product.propertyString);
+      formData.append('token', localStorage.token);
+      console.log(formData);
+      /*
+      
+      product = {
+        id: product.id,
+        name: product.name,
+        product_category_id: product.product_category_id,
+        producer_id: product.producer,
+        productCount: product.productCount,
+        price: product.price,
+        costPrice: product.costPrice,
+        property: product.propertyString,
+        token: localStorage.token,
+      }
+      */
+      axios.post(apiUrl, formData, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
           resolve(response)

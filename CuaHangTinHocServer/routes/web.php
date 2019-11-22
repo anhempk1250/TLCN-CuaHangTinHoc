@@ -70,17 +70,19 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 //Route::get('/checkToken','EmployeeController@storeCheckToken', 'EmployeeController@text');
 
-
 Route::get('/storeAuthen', 'EmployeeController@storeLogin');
 
 
 
 // request with check token of employee
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group([
+    'middleware' => ['jwt.auth'],
+], function ($router) {
     // check  token (customer && employee)
     Route::get('/checkToken','EmployeeController@storeCheckToken');
 
     // store category page
+
     Route::get('/storeCategory', 'StoreCategoryPageController@getCategoryList');
     Route::post('/storeCategory', 'StoreCategoryPageController@createCategory');
     Route::patch('/storeCategory', 'StoreCategoryPageController@updateCategory');
@@ -96,3 +98,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/storeProducer','StoreProducerPageController@getProducer');
 
 });
+
+
+Route::get('/testNe', 'AccountController@register');
