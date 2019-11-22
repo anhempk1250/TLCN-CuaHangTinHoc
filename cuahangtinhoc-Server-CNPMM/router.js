@@ -3,6 +3,8 @@ let router = express.Router();
 let middleware = require('./middleware');
 let HomePageController = require('./controler/HomePageController');
 let StorePageController = require('./controler/StorePageController');
+let MyPageController = require('./controler/MyPageController');
+
 // product
 router.get('/products', HomePageController.productList);
 router.get('/productDetails', HomePageController.product)
@@ -25,3 +27,9 @@ router.get('/storeProduct',middleware.requireLogin, StorePageController.productL
 
 // store type product
 router.get('/storeProductType',middleware.requireLogin, StorePageController.productTypeList)
+
+// mypage
+router.get('/customerInfo', MyPageController.getCustomerInfo)
+router.get('/listOrders', MyPageController.getListOders)
+router.get('/orderDetail', MyPageController.detailOrder)
+router.get('/listBoughtProduct', MyPageController.getListBoughtProduct)
