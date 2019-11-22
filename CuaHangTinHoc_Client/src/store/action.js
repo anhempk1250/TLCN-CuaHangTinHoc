@@ -40,11 +40,11 @@ export default {
     const apiUrl = apiConfig.productDetails
     return new Promise((resolve, reject) => {
       commit('productDetails_request')
-
+      console.log(product_id,'vinh');
       axios.get(apiUrl, { params: { id: product_id } })
         .then(function (response) {
           commit('productDetails_success', response.data)
-          //console.log(response.data, 'action detail')
+          console.log(response.data, 'action detail')
           resolve(resolve)
         })
         .catch(function (err) {

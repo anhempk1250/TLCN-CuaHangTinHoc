@@ -3,7 +3,8 @@ let schema = mongooes.Schema
 
 let producer = new schema({
   id : Number,
-  name: String
-}) 
+  name: String,
+  status: Boolean
+}, {collection: 'producer'}) 
 
 module.exports = mongooes.model('producer', producer)

@@ -4,9 +4,10 @@ let schema = mongooes.Schema
 let product_type = new schema({
   _id: schema.Types.ObjectId,
   name: String,
-  HomePage: String,
-  list_product_with_type: [{ type: schema.Types.ObjectId, ref: 'list_product_with_type' }]
-}, { collection: 'product_type' })
+  HomePage: Boolean,
+  status: Boolean,
+  product_list_with_type: [{ type: schema.Types.ObjectId, ref: 'product' }]
+}, { collection: 'product_type' },)
 
 
 

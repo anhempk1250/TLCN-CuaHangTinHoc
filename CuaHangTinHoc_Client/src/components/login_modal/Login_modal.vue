@@ -61,7 +61,7 @@
                           <a
                             style="width: 100%;"
                             class="btn btn-primary"
-                            href="https://localhost:8000/auth/fb"
+                            href="https://localhost:8001/auth/facebook"
                           >Đăng nhập với Facebook</a>
                         </div>
                       </div>

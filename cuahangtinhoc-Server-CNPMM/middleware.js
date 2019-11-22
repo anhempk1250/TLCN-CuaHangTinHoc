@@ -3,7 +3,8 @@ var config = require('./config/config.json')
 var secretKey = config.secretKey
 var Employee = require('./model/EmployeeAccount');
 exports.requireLogin = function (req, res, next) {
-  jwt.verify(req.query.token, secretKey, function (err, employeeAccount) {
+  /**
+   * jwt.verify(req.query.token, secretKey, function (err, employeeAccount) {
     if (err) res.send({ msg: err, errorToken: true }) // token không hợp hệ
     else {
       Employee.findOne({ id: employeeAccount.id }, function (err, employee) {
@@ -20,4 +21,6 @@ exports.requireLogin = function (req, res, next) {
       })
     }
   })
+   */
+  next();
 }

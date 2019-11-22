@@ -29,7 +29,8 @@
       </div>
     </div>
     <div style="margin: 3rem 0;" v-for="(productType,index) in productTypeList" :key="index">
-      <h3 class="text-left" style="color : #1D99DB">{{productType.name}}</h3>
+      <div v-if="productType.product_list_with_type.length > 0">
+        <h3 class="text-left" style="color : #1D99DB">{{productType.name}}</h3>
       <div class="ListProductContainer">
         <div class="bodyContentHomePage">
           <div
@@ -41,6 +42,7 @@
           </div>
         </div>
         <a href="#" class="btn btn-outline-primary">Xem Thêm (nhớ sửa router link)</a>
+      </div>
       </div>
     </div>
   </div>

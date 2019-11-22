@@ -1,49 +1,35 @@
 let Product = require('../model/Product');
 let ListProductWithType = require('../model/List_Product_With_Type')
 let Product_Type = require("../model/Product_Type");
+let Producer = require('../model/Producer');
+let Image = require('../model/Image');
 let Category = require("../model/Product_Category")
-let mongoose = require('mongoose');
-exports.productList = function (req, res) {
+let db = require('mongoose').connection;
 
-  Product.find(function(err,list){
-    if(err) res.send(err);
-    else {
+
+exports.productCategoryList = function (req, res) {
+  Category.find({ active: true }, function (err, list) {
+    if (!err && list) {
       res.json(list)
     }
   })
+}
 
-  /**Product_Type.find({ HomePage: '1' }, function (err, typeList) {
-    if(err) res.send(err)
-    let temp = [];
-    let count = typeList.length;
-    typeList.forEach(function (type) {
-      ListProductWithType.find({ product_type_id: type._id }, function (err, productList) {
-        if(err) res.send(err)
-        temp.push(productList)
-        count -= 1;
-        if (count == 0) {
-          res.json(temp)
-        }
+exports.producerList = function (req, res) {
+  Producer.find({ status: true }, function (err, list) {
+    if (!err && list) {
+      res.json(list)
+    }
+  })
+}
+
+
+exports.productTypeList = function (req, res) {
+    Product_Type.find({status: true, HomePage: true}).populate({
+      path: 'product_list_with_type'
+    }).exec(function(err,list){
+      Product.populate(list,{path: 'product_list_with_type.images', model:'image'}, function(err, list2) {
+        res.json({list: list2})
       })
     })
-
-  }) */
-
-}
-
-exports.product = function(req,res) {
-  Product.findOne({id: req.query.id}, function(err, product){
-    if(err) res.send({msg: err})
-    else {
-      res.send(product);
-    }
-  })
-}
-
-exports.productCategoryList = function(req, res) {
-  Category.find({active: true},function(err,list){
-    if(!err && list) {
-      res.json(list)
-    }
-  })
 }

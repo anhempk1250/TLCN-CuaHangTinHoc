@@ -26,7 +26,7 @@
         <div class="row">
           <div class="col">
             <br />
-            <h4 style="text-align: left;font-weight: 450;">{{productDetailsObject.Name}}</h4>
+            <h4 style="text-align: left;font-weight: 450;">{{productDetailsObject.name}}</h4>
           </div>
         </div>
         <div class="row">
@@ -34,14 +34,8 @@
             <hr />
             <h4 style="text-align: left;font-weight: 450;">
               Giá :
-              <span style="color: red;">{{fixFormatVND(productDetailsObject.Price)}} đ</span>
+              <span style="color: red;">{{fixFormatVND(productDetailsObject.price)}} đ</span>
             </h4>
-          </div>
-        </div>
-        <div class="row" style="background-color:white">
-          <div class="col">
-            <hr />
-            <h4 style="text-align: left;font-weight: 450;">Detail</h4>
           </div>
         </div>
         <div class="row">

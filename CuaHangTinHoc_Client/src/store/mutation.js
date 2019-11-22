@@ -62,9 +62,10 @@ export default {
   productType_request(state) {
     state.productTypeState.loading = true
   },
-  productType_success(state, list) {
+  productType_success(state, data) {
     state.productTypeState.loading = false
-    state.productTypeState.list = list
+    state.productTypeState.list = data.list
+    console.log(data.list)
     state.productTypeState.success = true
   },
   productType_error(state) {
@@ -80,7 +81,9 @@ export default {
     localStorage.setItem('productHistoryList', JSON.stringify(state.productHistory.list));
   },
   productHistory_UPDATE(state, list) {
-    state.productHistory.list = JSON.parse(list)
+    if(list) {
+      state.productHistory.list = JSON.parse(list)
+    }
     if (localStorage.token) {
       state.customerAccountState.object.name = localStorage.name;
     }

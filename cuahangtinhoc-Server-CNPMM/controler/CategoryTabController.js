@@ -26,7 +26,8 @@ exports.categoryList = function (req, res) {
                 property: category.property,
                 summaryName: category.summaryName,
                 employeeName: employee.name,
-                numberOfProduct: countProduct
+                numberOfProduct: countProduct,
+                products: productList
               }
               temp.push(data);
               count -= 1;

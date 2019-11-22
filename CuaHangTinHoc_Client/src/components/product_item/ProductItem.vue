@@ -19,14 +19,14 @@
           <div v-if="product.ID_Discount!=null">
             <b
               style="color: red;"
-            >{{fixFormatVND(product.Price - (product.Price / product.Percent_Discount)/1)}} đ</b>
+            >{{fixFormatVND(product.price - (product.price / product.Percent_Discount)/1)}} đ</b>
 
             <div
               style="text-decoration: line-through;margin-top: 5px;"
-            >{{fixFormatVND(product.Price)}} đ</div>
+            >{{fixFormatVND(product.price)}} đ</div>
           </div>
           <div v-else-if="product.ID_Discount==null">
-            <b style="color: red;">{{fixFormatVND(product.Price)}} đ</b>
+            <b style="color: red;">{{fixFormatVND(product.price)}} đ</b>
           </div>
         </div>
 
@@ -94,12 +94,17 @@ export default {
       return this.isHover;
     },
     fixProductName() {
-      let name = this.product.Name;
-      if (this.product.Name.length > 45) return name.substring(0, 45) + " ...";
+      let name = this.product.name;
+      if (this.product.name.length > 45) return name.substring(0, 45) + " ...";
       else {
         return name;
       }
     }
+  },
+  created() {
+    if(!this.product.first_image)
+      this.product.first_image = {};
+    this.product.first_image.image_link = this.product.images[0].image_link
   }
 };
 </script>
