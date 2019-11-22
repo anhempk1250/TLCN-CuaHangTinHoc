@@ -81,9 +81,7 @@
                         <th style="width: 40rem;">Tên thuộc tính</th>
                         <th style="width: 15rem;">Control</th>
                       </tr>
-                      <tr
-                        v-if="!category.propertyList || category.propertyList.length == 0"
-                      >
+                      <tr v-if="!category.propertyList || category.propertyList.length == 0">
                         <td></td>
                         <td class="text-center">Chưa có thuộc tính</td>
                       </tr>
@@ -265,10 +263,12 @@ export default {
       return string;
     },
     unformatProperty(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].split("_")[1];
+      if (arr) {
+        for (let i = 0; i < arr.length; i++) {
+          arr[i] = arr[i].split("_")[1];
+        }
+        return arr;
       }
-      return arr;
     }
   }
 };
