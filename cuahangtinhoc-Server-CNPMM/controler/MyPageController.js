@@ -34,7 +34,7 @@ exports.detailOrder = function (req, res) {
   }).exec(function (err, list) {
     if (err) res.send({ msg: err })
     else
-      ProductOrder.populate(list, { path: 'product_list_with_order.product', model: 'product',  select: 'Name -_id'}, function (err, list2) {
+      ProductOrder.populate(list, { path: 'product_list_with_order.product', model: 'product', select: 'Name -_id' }, function (err, list2) {
         if (err) res.send({ msg: err })
         else
           res.send(list2)
@@ -49,10 +49,33 @@ exports.getListBoughtProduct = function (req, res) {
   }).exec(function (err, list) {
     if (err) res.send({ msg: err })
     else
-      ProductOrder.populate(list, { path: 'product_list_with_order.product', model: 'product',  select: 'Name -_id'}, function (err, list2) {
+      ProductOrder.populate(list, { path: 'product_list_with_order.product', model: 'product', select: 'Name -_id' }, function (err, list2) {
         if (err) res.send({ msg: err })
         else
           res.send(list2.product_list_with_order)
       })
   });
+}
+
+exports.changePassword = function (req, res) {
+  CustomerAccount.findOne({ _id: req.query._id }, function (err, customer) {
+    if (err) res.send(err)
+    else if (!customer) {
+      res.json({ msg: { msg: 'tài khoản không tồn tại', RequestSuccess: false } })
+    }
+    else if (req.query.oldpass != customer.passsword) {
+      res.json({ msg: { msg: 'sai mật khẩu', RequestSuccess: false } })
+    }
+    else if (req.query.newpass1 != req.query.newpass2) {
+      res.json({ msg: { msg: 'nhập lại mật khẩu không trùng khớp', RequestSuccess: false } })
+    }
+    else if (!req.query.newpass1 ){
+      res.json({ msg: { msg: 'vui lòng nhập mật khẩu mới', RequestSuccess: false } })
+    }
+    else {
+      customer.passsword = req.query.newpass1
+      customer.save()
+      res.json({ msg: { msg: 'success', RequestSuccess: true } })
+    }
+  })
 }

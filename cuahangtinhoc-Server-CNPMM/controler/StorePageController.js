@@ -33,6 +33,18 @@ exports.productList = function (req, res) {
   ProductTabController.productList(req, res)
 }
 
+exports.insertProduct = function (req, res){
+  ProductTabController.insertProduct(req, res)
+}
+
+exports.updateProduct = function (req, res){
+  ProductTabController.updateProduct(req, res)
+}
+
+exports.deleteProduct = function (req, res){
+  ProductTabController.deleteProduct(req, res)
+}
+
 // store product type
 
 exports.productTypeList = function(req,res) {

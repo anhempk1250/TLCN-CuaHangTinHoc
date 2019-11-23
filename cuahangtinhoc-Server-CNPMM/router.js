@@ -29,6 +29,9 @@ router.post('/storeOrder',middleware.requireLogin, StorePageController.insertOrd
 
 // store product
 router.get('/storeProduct',middleware.requireLogin, StorePageController.productList)
+router.post('/insertProduct', StorePageController.insertProduct)
+router.post('/updateProduct', StorePageController.updateProduct)
+router.post('/deleteProduct', StorePageController.deleteProduct)
 
 // store type product
 router.get('/storeProductType',middleware.requireLogin, StorePageController.productTypeList)
@@ -62,3 +65,4 @@ router.get('/customerInfo', MyPageController.getCustomerInfo)
 router.get('/listOrders', MyPageController.getListOders)
 router.get('/orderDetail', MyPageController.detailOrder)
 router.get('/listBoughtProduct', MyPageController.getListBoughtProduct)
+router.post('/changePassword', MyPageController.changePassword)
