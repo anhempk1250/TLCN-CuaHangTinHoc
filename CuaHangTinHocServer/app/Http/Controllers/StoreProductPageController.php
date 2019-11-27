@@ -25,11 +25,11 @@ class StoreProductPageController extends BaseController
     public function getProduct() {
 
         $product = new Product();
-        return ['list' => $product->getStoreProductList()];
+        return $product->getStoreProductList();
     }
     public function insertProduct(Request $request) {
         $product = new Product();
-        return ['msg' => $product->insertProduct($request)];
+        return $product->insertProduct($request);
     }
 
     public function updateProduct() {

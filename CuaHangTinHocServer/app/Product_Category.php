@@ -52,8 +52,10 @@ class Product_Category extends Model
         $productCategory->status = true;
         $productCategory->save();
         return [
-            'msg' => 'Thêm danh mục thành công',
-            'RequestSuccess' => true
+            'msg' => [
+                'msg' => 'Thêm danh mục thành công',
+                'RequestSuccess' => true
+            ]
         ];
     }
 
@@ -66,12 +68,16 @@ class Product_Category extends Model
             $productCategory->property =  $request->input("property");
             $productCategory->save();
             return [
-                'msg' => 'Cập nhật danh mục thành công',
-                'RequestSuccess' => true
+                'msg' => [
+                            'msg' => 'Cập nhật danh mục thành công',
+                            'RequestSuccess' => true
+                ]
             ];
         }
         return [
-            'msg' => 'Lỗi, không tìm thấy danh mục'
+            'msg' => [
+                'msg' => 'Lỗi, không tìm thấy danh mục'
+            ]
         ];
     }
 
@@ -83,12 +89,16 @@ class Product_Category extends Model
             Product::where('product_category_id',$request->id)
                 ->update(['product_category_id' => 1]);
             return [
-                'msg' => 'Xóa danh mục thành công',
-                'RequestSuccess' => true
+                'msg' => [
+                    'msg' => 'Xóa danh mục thành công',
+                    'RequestSuccess' => true
+                ]
             ];
         }
         return [
-            'msg' => 'Lỗi, không tìm thấy danh mục'
+            'msg' => [
+                'msg' => 'Lỗi, không tìm thấy danh mục'
+            ]
         ];
     }
 }

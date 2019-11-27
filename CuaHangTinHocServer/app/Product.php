@@ -71,7 +71,7 @@ class Product extends Model
     public function getStoreProductList() {
         $products = Product::with('category','producer','productTypeList','discounts','images','employee')
             ->get();
-        return $products;
+        return ['list' => $products];
     }
 
     public function insertProduct(Request $request) {
@@ -84,48 +84,31 @@ class Product extends Model
             $product->product_category_id = $request->product_category_id;
             $product->producer_id = $request->producer_id;
             $product->price = $request->price;
-            $product->costPrice = $request->costPrice;
+            $product->cost_price = $request->cost_price;
             $product->employee_id = $request->user->id;
             $product->status = 1;
             $product->save();
-            $str = 0;
 
+             for($i =1;$i<=4;$i++) {
+                 $imageName = $request->id.'_'.$i.'.'.$request->file('image'.$i)->getClientOriginalExtension();
+                 $key = 'image'.$i;
+                 $path = Storage::putFileAs('public/images', $request->file($key), $imageName);
+                 $image = new Image();
+                 $image->image_link = $imageName;
+                 $image->product_id = $product->id;
+                 $image->save();
+             }
 
-            $imageName1 = $request->id.'_2.'.$request->file('image2')->getClientOriginalExtension();
-            $image1 = new Image();
-            $image1->image_link = $imageName1;
-            $image1->product_id = $product->id;
-            $image1->save();
-            $path1 = Storage::putFileAs('public/images',$request->file('image1'),$imageName1);
-
-
-
-            $imageName2 =$request->id.'_2.'.$request->file('image3')->getClientOriginalExtension();
-            $image2 = new Image();
-            $image2->image_link = $imageName2;
-            $image2->product_id = $product->id;
-            $image2->save();
-            $path2 = Storage::putFileAs('public/images',$request->file('image2'),$imageName2);
-
-
-            $imageName3 = $request->id.'_3.'.$request->file('image3')->getClientOriginalExtension();
-            $path3 = Storage::putFileAs('public/images',$request->file('image3'),$imageName3);
-             $image3 = new Image();
-             $image3->image_link = $imageName3;
-             $image3->product_id = $product->id;
-             $image3->save();
-
-
-             $imageName4 = $request->id.'_4.'.$request->file('image4')->getClientOriginalExtension();
-            $path4 = Storage::putFileAs('public/images',$request->file('image4'),$imageName4);
-             $image4 = new Image();
-             $image4->image_link = $imageName4;
-             $image4->product_id = $product->id;
-             $image4->save();
-            return 'Thêm thành công';
+            return [
+                'msg' => 'Thêm thành công',
+                'RequestSuccess' => true
+            ];
         }
         else
-            return 'Mã sản phẩm đã tồn tại';
+            return [
+                'msg' => 'Mã sản phẩm đã tồn tại',
+                'RequestSuccess' => false
+            ];
 
         return 'Thêm sản phẩm thất bại';
 

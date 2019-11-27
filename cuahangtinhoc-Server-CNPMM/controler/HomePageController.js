@@ -8,7 +8,7 @@ let db = require('mongoose').connection;
 
 
 exports.productCategoryList = function (req, res) {
-  Category.find({ active: true }, function (err, list) {
+  Category.find({ status: 1}, function (err, list) {
     if (!err && list) {
       res.json(list)
     }
@@ -25,7 +25,7 @@ exports.producerList = function (req, res) {
 
 
 exports.productTypeList = function (req, res) {
-    Product_Type.find({status: true, HomePage: true}).populate({
+    Product_Type.find({status: 1, HomePage: true}).populate({
       path: 'product_list_with_type'
     }).exec(function(err,list){
       Product.populate(list,{path: 'product_list_with_type.images', model:'image'}, function(err, list2) {

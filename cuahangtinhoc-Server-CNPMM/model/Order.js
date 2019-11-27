@@ -5,7 +5,7 @@ let order = new schema({
   time: String,
   order_status_id: Number,
   total_Price: Number,
-  employee_id: { type: schema.Types.ObjectId, ref: 'employeeaccount' },
+  employee_id: String,
   customer_id: { type: schema.Types.ObjectId, ref: 'customeraccount' },
   product_list_with_order: [{ type: schema.Types.ObjectId, ref: 'product_order' }]
 }, {collection: 'orders'}) 

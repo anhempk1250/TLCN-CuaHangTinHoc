@@ -82,3 +82,8 @@ exports.deleteProduct = function (req, res) {
     }
   })
 }
+
+exports.insertProduct = function(req, res) {
+    let product = new Product();
+    return req.query;
+}

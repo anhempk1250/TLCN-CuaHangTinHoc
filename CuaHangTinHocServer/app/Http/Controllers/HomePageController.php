@@ -29,6 +29,6 @@ class HomePageController extends BaseController
     }
 
     public function getProductTypeList() {
-        return Product_Type::getProductTypeList();
+        return ['list' => Product_Type::getProductTypeList()];
     }
 }

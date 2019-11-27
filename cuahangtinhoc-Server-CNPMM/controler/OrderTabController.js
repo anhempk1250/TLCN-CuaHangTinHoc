@@ -24,3 +24,9 @@ exports.insertOrder = function (req, res) {
     myID = findAndInserOrder(index, req, res);
   });
 }
+
+exports.getOrder = function(req,res) {
+  Order.find(function(err,list){
+    res.send({list: list})
+  })
+}

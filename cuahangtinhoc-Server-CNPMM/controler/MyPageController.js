@@ -3,8 +3,9 @@ let Order = require('../model/Order')
 let ProductOrder = require('../model/Product_Order')
 let Product = require('../model/Product')
 
-exports.getCustomerInfo = function (req, res) {
-  CustomerAccount.findOne({ email: req.query.email }, function (err, CustomerAccount) {
+exports.checkLoginCustomer = function (req, res) {
+  /**
+   * CustomerAccount.findOne({ _id: req.query.id }, function (err, CustomerAccount) {
     if (err) res.send({ msg: err })
     else if (CustomerAccount == null) {
       res.send('customer does not exist')
@@ -12,7 +13,8 @@ exports.getCustomerInfo = function (req, res) {
     else {
       res.send(CustomerAccount)
     }
-  })
+  }) */
+  res.json({ user: req.query.customer, token: req.query.token });
 }
 
 exports.getListOders = function (req, res) {

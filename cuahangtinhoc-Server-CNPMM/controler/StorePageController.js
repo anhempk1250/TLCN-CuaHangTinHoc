@@ -28,6 +28,10 @@ exports.insertOrder = function (req, res) {
   OrderTabController.insertOrder(req, res)
 }
 
+exports.getOrder = function(req,res) {
+  OrderTabController.getOrder(req,res)
+}
+
 // store product
 exports.productList = function (req, res) {
   ProductTabController.productList(req, res)
@@ -50,3 +54,8 @@ exports.deleteProduct = function (req, res){
 exports.productTypeList = function(req,res) {
   ProductTabController.productTypeList(req,res)
 }
+
+exports.insertProduct = function(req, res) {
+  ProductTabController.insertProduct(req, res);
+}
+
