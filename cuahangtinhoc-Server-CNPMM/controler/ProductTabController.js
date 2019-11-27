@@ -1,5 +1,10 @@
 let Product = require('../model/Product');
 let ProductType = require("../model/Product_Type");
+let Image = require("../model/Image")
+var multer = require('multer')
+let Producer = require("../model/Producer")
+let Category = require("../model/Product_Category")
+let fs = require('fs-extra')
 
 exports.productList = function (req, res) {
   Product.find().populate('product_category_id').exec(function (err, productList) {
@@ -19,7 +24,7 @@ exports.productTypeList = function (req, res) {
   })
 }
 
-exports.insertProduct = function (req, res) {
+exports.insertProduct = function (req, res, next) {
   let product = new Product(req.query);
   Product.findOne({ id: product.id }, function (err, product) {
     if (!err && product) {
@@ -28,12 +33,23 @@ exports.insertProduct = function (req, res) {
       if (!product) {
         let newProduct = new Product(req.query)
         newProduct.active = 1;
-        newProduct.save(function (err) {
-          if (err) res.json({ msg: err }, { RequestSuccess: false })
-          else {
-            res.json({ msg: { msg: 'Thêm thành công !', RequestSuccess: true } })
-          }
-        })
+        images = []
+        for (let i = 0; i < 4; i++) {
+          image = new Image()
+          image.product_id = newProduct._id
+          image.image_link = req.files[i].originalname
+          image.save(function (err, img) {
+            images.push(img._id)
+            let destination = 'public/images/' + newProduct.id;
+            fs.mkdirsSync(destination)
+            fs.move('uploads/' + req.files[i].originalname, destination + "/" + (i + 1)+'.png')
+            if (i == 3) {
+              newProduct.images = images;
+              newProduct.save();
+              res.send('ss')
+            }
+          })
+        }
       }
     }
   })
@@ -73,7 +89,7 @@ exports.deleteProduct = function (req, res) {
     else {
       if (!product) {
         res.send({ msg: { msg: 'Product không tồn tại', RequestSuccess: false } });
-      }else {
+      } else {
         product.status = 0;
         product.save(function (err) {
           if (!err) res.json({ msg: { msg: 'Xóa thành công !', RequestSuccess: true } })
@@ -81,4 +97,20 @@ exports.deleteProduct = function (req, res) {
       }
     }
   })
+}
+
+exports.loadProducer = function (req, res) {
+  Producer.find().select('_id name').exec(function (err, list) {
+    if (!err) {
+      res.send({ list: list })
+    }
+  });
+}
+
+exports.loadCategory = function (req, res) {
+  Category.find().select('_id name').exec(function (err, list) {
+    if (!err) {
+      res.send({ list: list })
+    }
+  });
 }

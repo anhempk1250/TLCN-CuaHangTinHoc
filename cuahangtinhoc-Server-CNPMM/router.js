@@ -9,7 +9,20 @@ let ProductDetailController = require('./controler/ProductDetailController');
 let AuthenController = require('./controler/AuthenController');
 router.get('/productType', HomePageController.productTypeList)
 let MyPageController = require('./controler/MyPageController');
+let Image = require('./model/Image')
+var multer = require('multer')
+let fs = require('fs-extra')
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+var upload = multer({ storage: storage })
 
 // producer
 router.get('/producers', HomePageController.producerList)
@@ -29,17 +42,20 @@ router.get('/checkToken', middleware.requireLogin, AuthenController.checkLoginEm
 module.exports = router;
 
 // store order
-router.post('/storeOrder',middleware.requireLogin, StorePageController.insertOrder)
-router.get('/storeOrder',middleware.requireLogin, StorePageController.getOrder)
+router.post('/storeOrder', middleware.requireLogin, StorePageController.insertOrder)
+router.get('/storeOrder', middleware.requireLogin, StorePageController.getOrder)
+
 // store product
-router.get('/storeProduct',middleware.requireLogin, StorePageController.productList)
-//router.post('/storeProduct', StorePageController.insertProduct)
-router.patch('/storeProduct', StorePageController.updateProduct)
-router.delete('/storeProduct', StorePageController.deleteProduct)
+router.get('/storeProduct', middleware.requireLogin, StorePageController.productList)
+router.post('/storeProduct', middleware.requireLogin, upload.array('images'), StorePageController.insertProduct)
+router.patch('/storeProduct', middleware.requireLogin, upload.array('images'), StorePageController.updateProduct)
+router.delete('/storeProduct', middleware.requireLogin, StorePageController.deleteProduct)
+router.get('/storeProducerFromProductPage', middleware.requireLogin, StorePageController.loadProducer)
+router.get('/storeCategoryFromProductPage', middleware.requireLogin, StorePageController.loadCategory)
 
 //router.post('/storeProduct', upload.array('images',4), StorePageController.insertProduct)
 // store type product
-router.get('/storeProductType',middleware.requireLogin, StorePageController.productTypeList)
+router.get('/storeProductType', middleware.requireLogin, StorePageController.productTypeList)
 
 
 
@@ -57,22 +73,22 @@ function ensureAuthenticated(req, res, next) {
 }
 
 /// facebook
-router.get('/account', ensureAuthenticated, function(req, res){
+router.get('/account', ensureAuthenticated, function (req, res) {
   res.render('account', { user: req.user });
 });
 
-router.get('/auth/facebook', passport.authenticate('facebook',{scope:'email'}));
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 
 router.get('/auth/facebook/callback',
-  passport.authenticate('facebook'), function(req,res){
-    res.send({token: req.user.token, name: req.user.name})
-  });  
+  passport.authenticate('facebook'), function (req, res) {
+    res.send({ token: req.user.token, name: req.user.name })
+  });
 // mypage 
 //router.get('/customerInfo',middleware.requireLoginCustomer, MyPageController.getCustomerInfo)
 router.get('/orderList', MyPageController.getListOders)
 router.get('/orderDetail', MyPageController.detailOrder)
 router.get('/listBoughtProduct', MyPageController.getListBoughtProduct)
 router.post('/changePassword', MyPageController.changePassword)
-router.get('/checkLoginCustomer' , middleware.requireLoginCustomer, MyPageController.checkLoginCustomer)
+router.get('/checkLoginCustomer', middleware.requireLoginCustomer, MyPageController.checkLoginCustomer)
 router.get('/customerLogin', AuthenController.customerLogin)
 

@@ -49,6 +49,14 @@ exports.deleteProduct = function (req, res){
   ProductTabController.deleteProduct(req, res)
 }
 
+exports.loadProducer = function (req, res){
+  ProductTabController.loadProducer(req, res)
+}
+
+exports.loadCategory = function (req, res){
+  ProductTabController.loadCategory(req, res)
+}
+
 // store product type
 
 exports.productTypeList = function(req,res) {

@@ -4,9 +4,9 @@ var secretKey = config.secretKey
 var Employee = require('./model/EmployeeAccount');
 var Customer = require('./model/CustomerAccount')
 exports.requireLogin = function (req, res, next) {
-    let token = req.body.token || req.query.token;
-   jwt.verify(req.query.token, secretKey, function (err, employeeAccount) {
-    if (err) res.send({ msg: req.params, errorToken: true }) // token không hợp hệ
+    let token = req.query.token;
+    jwt.verify(token, secretKey, function (err, employeeAccount) {
+    if (err) res.send({ msg: req.body.id, errorToken: true }) // token không hợp hệ
     else {
       Employee.findOne({ id: employeeAccount.id }, function (err, employee) {
         if (err) res.send(err)

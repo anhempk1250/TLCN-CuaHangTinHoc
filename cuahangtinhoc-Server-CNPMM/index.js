@@ -88,24 +88,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(__dirname + '/public'))
-
 app.use(router)
-
-var multer = require('multer')
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
-var upload = multer({storage: storage})
-app.post('/storeProduct', upload.array('images'), function (req, res) {
-  console.log(req);
-  res.send(req.files)
-})
-
 
 app.listen(8000, function () {
   console.log('server is running on 8000');

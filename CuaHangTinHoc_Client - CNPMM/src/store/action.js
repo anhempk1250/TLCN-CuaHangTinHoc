@@ -356,6 +356,26 @@ export default {
         })
     })
   },
+  getStoreProducerFromProductPage({ commit }) {
+    const apiUrl = apiConfig.store_producerFromProductPage;
+    return new Promise((resolve, reject) => {
+      commit('storeProducer_request')
+      axios.get(apiUrl,
+        {
+          params: {
+            token: localStorage.token, employee: true
+          }
+        })
+        .then(function (response) {
+          commit('storeProducer_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProducer_error')
+          reject(err)
+        })
+    })
+  },
   getStoreCategoryFromProductPage({ commit }) {
     const apiUrl = apiConfig.store_categoryFromProductPage
     return new Promise((resolve, reject) => {
@@ -386,17 +406,20 @@ export default {
       formData.append('images', product.images[1]);
       formData.append('images', product.images[2]);
       formData.append('images', product.images[3]);
-      formData.append('id', product.id);
-      formData.append('name', product.name);
-      formData.append('product_category_id', product.product_category_id);
-      formData.append('producer_id', product.producer_id);
-      formData.append('productCount', product.productCount);
-      formData.append('price', product.price);
-      formData.append('cost_price', product.cost_price);
-      formData.append('property', product.propertyString);
-      formData.append('token', localStorage.token);
+      let params = {
+        _id: product._id,
+        id: product.id,
+        name: product.name,
+        product_category_id: product.product_category_id,
+        producer_id: product.producer_id,
+        productCount: product.productCount,
+        price: product.price,
+        cost_price: product.cost_price,
+        property: product.propertyString,
+        token: localStorage.token
+      }
       console.log(formData);
-      axios.post(apiUrl, formData, config)
+      axios.post(apiUrl, formData, {params: params}, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
           resolve(response)
