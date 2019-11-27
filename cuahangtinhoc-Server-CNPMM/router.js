@@ -33,9 +33,9 @@ router.post('/storeOrder',middleware.requireLogin, StorePageController.insertOrd
 router.get('/storeOrder',middleware.requireLogin, StorePageController.getOrder)
 // store product
 router.get('/storeProduct',middleware.requireLogin, StorePageController.productList)
-router.post('/insertProduct', StorePageController.insertProduct)
-router.post('/updateProduct', StorePageController.updateProduct)
-router.post('/deleteProduct', StorePageController.deleteProduct)
+//router.post('/storeProduct', StorePageController.insertProduct)
+router.patch('/storeProduct', StorePageController.updateProduct)
+router.delete('/storeProduct', StorePageController.deleteProduct)
 
 //router.post('/storeProduct', upload.array('images',4), StorePageController.insertProduct)
 // store type product

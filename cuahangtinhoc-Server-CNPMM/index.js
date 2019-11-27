@@ -92,8 +92,15 @@ app.use(express.static(__dirname + '/public'))
 app.use(router)
 
 var multer = require('multer')
-var upload = multer({ dest: 'uploads/', limits: { fileSize: 1000000 } })
-//app.use(upload.array())
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+var upload = multer({storage: storage})
 app.post('/storeProduct', upload.array('images'), function (req, res) {
   console.log(req);
   res.send(req.files)

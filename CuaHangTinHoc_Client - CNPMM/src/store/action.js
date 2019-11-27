@@ -382,16 +382,10 @@ export default {
         headers: { 'content-type': 'multipart/form-data' }
       }
       let formData = new FormData();
-      /**
-       * formData.append('images', product.images[0]);
+      formData.append('images', product.images[0]);
       formData.append('images', product.images[1]);
       formData.append('images', product.images[2]);
       formData.append('images', product.images[3]);
-       */
-      formData.append('image1', product.images[0]);
-      formData.append('image2', product.images[1]);
-      formData.append('image3', product.images[2]);
-      formData.append('image4', product.images[3]);
       formData.append('id', product.id);
       formData.append('name', product.name);
       formData.append('product_category_id', product.product_category_id);
