@@ -1,6 +1,6 @@
 var apiConfig = require('../../configs/api.json')
 var apiAddress = apiConfig.api_url
-
+var apiAddressHttps = apiConfig.api_url_https;
 var apiUrl = {
   products: apiAddress + '/products',
   product: apiAddress + '/product',
@@ -21,7 +21,7 @@ var apiUrl = {
   store_producer: apiAddress + "/storeProducer",
   store_order: apiAddress + "/storeOrder",
   customerLogin: apiAddress + "/customerLogin",
-  customerLoginFB: apiAddress + "/auth/facebook",
+  customerLoginFB: apiAddressHttps + "/auth/facebook",
   customerLoginGG: apiAddress + "/auth/google",
   customerOrderList : apiAddress + "/orderList"
 }

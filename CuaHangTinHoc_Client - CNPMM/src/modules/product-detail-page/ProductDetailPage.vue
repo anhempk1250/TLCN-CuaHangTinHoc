@@ -141,7 +141,7 @@ export default {
       else this.productCount = this.productCount - 1;
     },
     formatDescription() {
-      let arr = this.productDetailsObject.Description.split("___");
+      let arr = this.productDetailsObject.description.split("___");
       console.log(arr);
       return arr;
     },

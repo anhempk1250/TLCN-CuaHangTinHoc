@@ -36,23 +36,22 @@ export default {
   },
   methods: {
     handleGetCusInfo(response) {
+      this.$router.push({ name: "home-page" });
+      if (localStorage.token) localStorage.removeItem('token');
+      if( localStorage.userName) localStorage.removeItem('userName')
       if (response.data.errorToken) {
         this.$swal({
           title: "Thông báo",
           text: response.data.msg
         });
-        if(localStorage.token)
-        localStorage.removeItem(localStorage.token);
-        this.$router.push({ name: "home-page" });
       } else {
         localStorage.userName = this.customerAccountObject.name;
       }
     }
   },
   created() {
-
     this.$store
-      .dispatch("checkLoginCustomer")
+      .dispatch("checkLoginCustomer", this.$route.query.token)
       .then(response => this.handleGetCusInfo(response));
   }
 };

@@ -12,7 +12,7 @@ exports.requireLogin = function (req, res, next) {
         if (err) res.send(err)
         else {
           if (!employee)
-            res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập2', errorToken: true }) // token không hợp hệ
+            res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập', errorToken: true }) // token không hợp hệ
           else {
             req.query.employee = employee._id;
             next();

@@ -1,22 +1,19 @@
 <template>
   <div>
     <div
-      ref="modal"
+      ref="vuemodal"
       class="modal fade"
-      id="model_category"
+      id="modal_category"
       tabindex="-1"
       role="dialog"
-      aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true"
       style="margin-top:0;padding:0;"
-      @close="showModal"
     >
       <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title text-center" id="exampleModalCenterTitle">
               <span v-if="insert">Thêm Category</span>
-              <span v-else>Sửa Category : {{category.id}}</span>
+              <span v-else>Sửa Category : {{category.name}}</span>
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -96,7 +93,7 @@
                         <td v-if="!insert">{{prop}}</td>
                         <td v-if="insert">{{prop}}</td>
                         <td>
-                          <button v-on:click="DeleteProperty(prop)" class="btn btn-danger">Xóa</button>
+                          <button v-on:click="DeleteProperty(prop,index)" class="btn btn-danger">Xóa</button>
                         </td>
                       </tr>
                     </tbody>
@@ -115,6 +112,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      deletedProp: [],
       showModal: false,
       category: {
         _id: "",
@@ -127,9 +125,7 @@ export default {
       propertyList: []
     };
   },
-  created() {
-    //this.mySwal = new this.$swal();
-  },
+
   props: ["insert", "categorySelected"],
   watch: {
     insert(NewVal) {
@@ -170,6 +166,9 @@ export default {
     }
   },
   methods: {
+    doSomethingOnHidden(){
+      alert('hidden')
+    },
     notification(title, text) {
       this.$swal({
         title: title,
@@ -197,13 +196,14 @@ export default {
         return "";
       }
     },
-    DeleteProperty(property) {
+    DeleteProperty(property, index) {
       if (this.category.propertyList.length == 1) {
         this.notification(
           "Thông báo",
           "Phải có tối thiểu một thuộc tính, Không thể xóa !"
         );
       } else {
+        this.deletedProp.push(index);
         for (let i = 0; i < this.category.propertyList.length; i++) {
           if (this.category.propertyList[i] == property) {
             this.category.propertyList.splice(i, 1);
@@ -247,6 +247,7 @@ export default {
             });
         } else {
           this.category.propertyString = this.formatProperty();
+          this.category.deletedProp = this.deletedProp;
           this.$store
             .dispatch("updateStoreCategory", this.category, 0)
             .then(respone => {

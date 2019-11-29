@@ -129,7 +129,7 @@
         <template v-slot:cell(price)="row">{{fixFormatVND(row.item.price)}}đ</template>
         <template v-slot:cell(cost_price)="row">{{fixFormatVND(row.item.cost_price)}}đ</template>
         <template v-slot:cell(control)="data">
-          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;"></i>
+          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;" @click="setView(data.item)"></i>
           <i
             title="Sửa"
             @click="setUpdate(data.item)"
@@ -152,7 +152,13 @@
     </div>
 
     <div v-if="control" id="controlContainer">
-      <form ref='form' id="formData" action="http://localhost:8000/storeProduct" method="post" enctype="multipart/form-data">
+      <form
+        ref="form"
+        id="formData"
+        action="http://localhost:8000/storeProduct"
+        method="post"
+        enctype="multipart/form-data"
+      >
         <div class="row" style="margin: 1rem 0;">
           <div class="col-md-4">
             <div class="input">
@@ -163,6 +169,7 @@
                   v-model="categoryIdSelected"
                   ref="selectCetegory"
                   class="form-control"
+                  :disabled="view"
                 >
                   <option value="-1" selected>-- Danh Mục --</option>
                   <option
@@ -178,12 +185,18 @@
             <div class="input">
               <div>
                 <label for="id">Mã sản phẩm:</label>
-                <input v-model="selected.id" class="form-control" placeholder="Nhập mã sản phẩm" />
+                <input
+                  v-model="selected.id"
+                  class="form-control"
+                  :disabled="!insert || view"
+                  placeholder="Nhập mã sản phẩm"
+                  
+                />
               </div>
 
               <div>
                 <label for="name">Tên sản phẩm:</label>
-                <input v-model="selected.name" class="form-control" placeholder="Nhập tên sản phẩm" />
+                <input v-model="selected.name" class="form-control" :disabled="view" placeholder="Nhập tên sản phẩm" />
               </div>
 
               <div>
@@ -192,7 +205,8 @@
                   type="number"
                   v-model="selected.productCount"
                   class="form-control"
-                  placeholder="Nhập tên sản phẩm"
+                  placeholder="Nhập số lượng sản phẩm"
+                  :disabled="view"
                 />
               </div>
             </div>
@@ -201,12 +215,13 @@
             <div class="input">
               <div>
                 <label for="nxs">Nhà sản xuất:</label>
-                <select v-model="producerIdSelected" id="nxs" class="form-control">
+                <select :disabled="view" v-model="producerIdSelected" class="form-control">
                   <option
                     v-for="(producer,index) in storeProducerList"
                     selected
                     :key="index"
                     :value="producer.id"
+                    :disabled="view"
                   >{{producer.name}}</option>
                 </select>
               </div>
@@ -218,6 +233,7 @@
                     type="number"
                     class="form-control"
                     placeholder="Giá vốn"
+                    :disabled="view"
                   />
                 </div>
                 <div class="col-md-6" style="margin:0;padding-right:0;">
@@ -227,19 +243,40 @@
                     type="number"
                     class="form-control"
                     placeholder="Giá bán"
+                    :disabled="view"
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="!insert || view" class="row containerImg">
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/1.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/2.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/3.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/4.png'" alt="image" />
+          </div>
+        </div>
+        <div v-if="!view">
           <div>
             <p>Chọn 4 tấm hình :</p>
           </div>
           <div style="margin: 1rem 0;">
-            <input ref="inputFile" id="inputFile" name="inputFile" @change="upload" type="file" multiple />
-            <button type="submit">submit</button>
+            <input
+              ref="inputFile"
+              id="inputFile"
+              name="inputFile"
+              @change="upload"
+              type="file"
+              multiple
+            />
           </div>
           <div class="row containerImg">
             <div class="col-md-3">
@@ -275,13 +312,25 @@
                     <td style="padding-top:1.1rem">{{index+1}}</td>
                     <td style="padding-top:1.1rem">{{prop}}</td>
                     <td>
-                      <input :id="'prop'+index" class="form-control" />
+                      <input
+                        v-if="selected.property"
+                        :id="'prop'+index"
+                        :disabled="view"
+                        :value="selected.property[index]"
+                        class="form-control"
+                      />
+                      <input v-else :id="'prop'+index" class="form-control" />
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div v-if="control" style="position: absolute;right: 2rem;">
-                <button class="btn btn-primary" type="button" @click="save()" style="margin-right:0.1rem;">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  @click="save()"
+                  style="margin-right:0.1rem;"
+                >
                   <i class="fa fa-check"></i> Lưu
                 </button>
                 <button class="btn btn-danger" @click="back()">
@@ -301,6 +350,7 @@ import $ from "jquery";
 export default {
   data() {
     return {
+      imgLink: "http://localhost:8000/images/",
       images: ["", "", "", ""],
       imagesNewTech: [],
       propertyCount: 0,
@@ -312,6 +362,7 @@ export default {
       status: 1,
       control: false,
       insert: true,
+      view: false,
       currentPage: 1,
       selected: {},
       inputSearch: "",
@@ -355,31 +406,20 @@ export default {
     updateTempList() {
       if (!this.control) {
         this.updateActiveTempList();
-      } else {
-        if (this.categoryIdSelected != -1) {
-          for (let i = 0; i < this.categoryList.length; i++) {
-            if (this.categoryList[i].id == this.categoryIdSelected) {
-              this.typeListSelected = this.categoryList[i].product_types;
-            }
-          }
-        }
       }
     },
     updateActiveTempList() {
-      if (this.categoryIdSelected != -1) {
-        let arr = [];
-        let productList = this.storeProductList;
-        for (let i = 0; i < productList.length; i++) {
-          if (productList[i].status == this.status) {
-            arr.push(productList[i]);
-          }
+      let arr = [];
+      let productList = this.storeProductList;
+      for (let i = 0; i < productList.length; i++) {
+        if (productList[i].status == this.status) {
+          arr.push(productList[i]);
         }
-        this.updateForCategoryTempList(arr);
-      } else {
-        this.tempList = this.storeProductList;
       }
+      this.updateForCategoryTempList(arr);
     },
     updateForCategoryTempList(productList) {
+      console.log("her", productList);
       if (this.categoryIdSelected != -1) {
         let arr = [];
         for (let i = 0; i < productList.length; i++) {
@@ -390,28 +430,30 @@ export default {
         this.updateTypeListSelected();
         this.updateForTypeTempList(arr);
       } else {
+        this.tempList = productList;
         this.typeProductIdSelected = -1;
       }
     },
     updateForTypeTempList(productList) {
       if (this.typeProductIdSelected != -1) {
         let arr = [];
-        for (let i = 0; i < productList.length; i++) {
-          if (this.checkProductType(productList[i].product_type_list)) {
-            arr.push(productList[i]);
+        for (let i = 0; i < this.typeListSelected.length; i++) {
+          if (this.typeListSelected[i].id == this.typeProductIdSelected) {
+            arr = this.typeListSelected[i].product_list_with_type;
           }
         }
         this.updateForProducerTempList(arr);
       } else this.updateForProducerTempList(productList);
     },
     checkProductType(typeList) {
-      console.log(typeList, "type ne");
-      for (let i = 0; i < typeList.length; i++) {
-        if (typeList[i].id == this.typeProductIdSelected) {
-          return true;
+      if (typeList) {
+        for (let i = 0; i < typeList.length; i++) {
+          if (typeList[i].id == this.typeProductIdSelected) {
+            return true;
+          }
         }
-      }
-      return false;
+        return false;
+      } else return false;
     },
     updateTypeListSelected() {
       if (this.categoryIdSelected == -1) this.typeListSelected = [];
@@ -420,6 +462,7 @@ export default {
         for (let i = 0; i < categories.length; i++) {
           if (categories[i].id == this.categoryIdSelected) {
             this.typeListSelected = categories[i].product_types;
+            console.log("type ", this.typeListSelected);
           }
         }
       }
@@ -429,7 +472,12 @@ export default {
       if (this.producerIdSelected != -1) {
         let arr = [];
         for (let i = 0; i < productList.length; i++) {
-          if (productList[i].producer.id == this.producerIdSelected) {
+          console.log(
+            productList[i].producer,
+            this.producerIdSelected,
+            "here ne vinh"
+          );
+          if (productList[i].producer == this.producerIdSelected) {
             arr.push(productList[i]);
           }
         }
@@ -464,6 +512,7 @@ export default {
       }
     },
     formatProperty(category) {
+      console.log(category);
       let property = category.property;
       if (property) {
         let arr = property.split("___");
@@ -502,8 +551,17 @@ export default {
       this.insert = false;
       this.control = true;
       this.selected = product;
+      this.selected.property = product.description.split("___");
       this.categoryIdSelected = product.product_category_id;
-      this.producerIdSelected = product.producer_id;
+      this.producerIdSelected = product.producer;
+    },
+    setView(product) {
+      this.view = true;
+      this.control = true;
+      this.selected = product;
+      this.selected.property = product.description.split("___");
+      this.categoryIdSelected = product.product_category_id;
+      this.producerIdSelected = product.producer;
     },
     checkImage() {
       for (let i = 0; i < 4; i++) {
@@ -522,9 +580,7 @@ export default {
       return false;
     },
     checkEmpty() {
-      /**
-       * 
-       * if (
+      if (
         this.selected.id == "" ||
         this.selected.name == "" ||
         this.selected.productCount == "" ||
@@ -537,8 +593,6 @@ export default {
       ) {
         return true;
       } else return false;
-       */
-      return false;
     },
     save() {
       if (!this.checkEmpty()) {
@@ -555,11 +609,17 @@ export default {
         }
         this.selected.propertyString = str;
         this.selected.imagesNewTech = this.$refs.inputFile.files;
-        this.selected.form = this.$refs.form, $('#formData')
-        console.log(this.$refs.form, $('#formData'));
-        this.$store
-          .dispatch("insertStoreProduct", this.selected)
-          .then(response => this.handleSubmit(response));
+        (this.selected.form = this.$refs.form), $("#formData");
+        console.log(this.$refs.form, $("#formData"));
+        if (this.insert) {
+          this.$store
+            .dispatch("insertStoreProduct", this.selected)
+            .then(response => this.handleSubmit(response));
+        } else {
+          this.$store
+            .dispatch("updateStoreProduct", this.selected)
+            .then(response => this.handleSubmit(response));
+        }
       } else {
         this.$swal({
           title: "Thông báo",
@@ -574,7 +634,8 @@ export default {
         });
       }
       if (response.data.RequestSuccess) {
-        this.back();
+        //this.back();
+        location.reload();
       }
     },
     back() {
@@ -582,6 +643,7 @@ export default {
       this.typeProductIdSelected = -1;
       this.categoryIdSelected = -1;
       this.producerIdSelected = -1;
+      this.view = false;
     },
     deleteProduct() {
       console.log("delete");

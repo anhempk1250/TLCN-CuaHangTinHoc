@@ -27,55 +27,26 @@
       <div class="col-5">
         <div class="row" style="padding:0;">
           <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Ngày</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
+            <select title="Ngày" class="form-control">
+              <option selected value="-1">Ngày</option>
+              <option v-for="index in 31" :key="index" :value="index">{{index}}</option>
+            </select>
           </div>
           <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Tháng</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
+            <select title="Tháng" class="form-control">
+              <option selected value="-1">Tháng</option>
+              <option v-for="index in 12" :key="index" :value="index">{{index}}</option>
+            </select>
           </div>
           <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Năm</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
+            <select title="Năm" class="form-control">
+              <option selected value="-1">Năm</option>
+              <option
+                v-for="index in (new Date().getFullYear() - 1981)"
+                :key="index"
+                :value="index"
+              >{{1980 + index}}</option>
+            </select>
           </div>
         </div>
       </div>
@@ -100,37 +71,37 @@
       </div>
     </div>
 
-    <div v-if="!customer.facebook_id">
+    <div v-if="false">
       <div class="row">
-      <div class="col-5 offset-2 text-left">
-        <label>
-          <input type="checkbox" data-toggle="collapse" data-target="#changePassword" /> Thay đổi mật khẩu
-        </label>
-      </div>
-    </div>
-
-    <div class="collapse" id="changePassword">
-      <div class="row">
-        <div class="col-2">Mật khẩu củ</div>
-        <div class="col-5">
-          <input type="text" placeholder="Nhập mật khẩu củ" class="form-control" />
+        <div class="col-5 offset-2 text-left">
+          <label>
+            <input type="checkbox" data-toggle="collapse" data-target="#changePassword" /> Thay đổi mật khẩu
+          </label>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-2">Mật khẩu củ</div>
-        <div class="col-5">
-          <input type="text" placeholder="Nhập mật khẩu mới" class="form-control" />
+      <div class="collapse" id="changePassword">
+        <div class="row">
+          <div class="col-2">Mật khẩu củ</div>
+          <div class="col-5">
+            <input type="text" placeholder="Nhập mật khẩu củ" class="form-control" />
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-2">Mật khẩu củ</div>
-        <div class="col-5">
-          <input type="text" placeholder="Nhập lại" class="form-control" />
+        <div class="row">
+          <div class="col-2">Mật khẩu củ</div>
+          <div class="col-5">
+            <input type="text" placeholder="Nhập mật khẩu mới" class="form-control" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-2">Mật khẩu củ</div>
+          <div class="col-5">
+            <input type="text" placeholder="Nhập lại" class="form-control" />
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
     <div class="row">
@@ -152,7 +123,7 @@ export default {
       this.changePassword = !this.changePassword;
     }
   },
-  props: ['customer'],
+  props: ["customer"],
   computed: {
     loadChangePassword() {
       return this.changePassword;

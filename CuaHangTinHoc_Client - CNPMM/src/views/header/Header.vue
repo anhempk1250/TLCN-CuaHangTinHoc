@@ -175,8 +175,6 @@ export default {
     handleLogout(result) {
       if (result.value) {
         this.$store.dispatch("customerLogout");
-        if (this.$route.name != "home-page")
-          this.$router.push({ name: "home-page" });
       }
     }
   },

@@ -22,21 +22,6 @@
 
       <div class="row">
         <div class="col-md-4">
-          <b>Ngày bán</b>
-        </div>
-        <div class="col-md-8">
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Hôm nay"
-              aria-describedby="button-addon2"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
           <b>Ghi chú</b>
         </div>
         <div class="col-md-8">

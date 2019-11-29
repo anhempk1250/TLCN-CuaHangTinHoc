@@ -20,6 +20,10 @@ window.JQuery = require('jquery')
 Vue.component('apexchart', VueApexCharts)
 
 
+Axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
+
+
+
 Vue.prototype.$http = Axios
 
 new Vue({

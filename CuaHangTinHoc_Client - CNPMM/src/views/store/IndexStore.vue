@@ -11,6 +11,10 @@ export default {
   created() {
     if (!localStorage.token) {
       this.$router.push({ name: "storeLoginPage" });
+      this.$swal({
+        title: "Error",
+        text: "Vui lòng xác thực lại"
+      })
     } else {
       this.$store
         .dispatch("storeCheckToken")
@@ -22,7 +26,7 @@ export default {
       if (respone.data.errorToken) {
         this.$swal({
           title: "Error",
-          text: respone.data.errorToken 
+          text: respone.data.msg
         }).then(() => this.affterCheckLogin());
       }
     },

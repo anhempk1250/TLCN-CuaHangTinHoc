@@ -19,7 +19,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col" style="word-break: break-all;">{{fixProductName(product.Name)}}</div>
+                <div class="col" style="word-break: break-all;">{{fixProductName(product.name)}}</div>
               </div>
             </a>
           </div>

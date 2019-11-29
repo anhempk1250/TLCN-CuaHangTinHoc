@@ -154,11 +154,15 @@ export default {
         commit('customerAccount_error')
       })
   },
-  checkLoginCustomer({ commit }) {
+  checkLoginCustomer({ commit }, token) {
     const apiUrl = apiConfig.checkLoginCustomer
+    let tk = '';
+    if(token)
+      tk = token
+      else tk = localStorage.token;
     return new Promise((resolve, reject) => {
       let data = {
-        token: localStorage.token
+        token: tk
       }
       commit('customerAccount_request')
       axios.get(apiUrl, { params: data })
@@ -210,6 +214,7 @@ export default {
             name: category.name,
             property: category.propertyString,
             summaryName: category.summaryName,
+            deletedProp: category.deletedProp,
             typeUpdate: type
           }
         })
@@ -411,7 +416,7 @@ export default {
         id: product.id,
         name: product.name,
         product_category_id: product.product_category_id,
-        producer_id: product.producer_id,
+        producer: product.producer_id,
         productCount: product.productCount,
         price: product.price,
         cost_price: product.cost_price,
@@ -419,7 +424,7 @@ export default {
         token: localStorage.token
       }
       console.log(formData);
-      axios.post(apiUrl, formData, {params: params}, config)
+      axios.post(apiUrl, formData, { params: params }, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
           resolve(response)
@@ -430,25 +435,33 @@ export default {
         })
     })
   },
-  updateStoreProduct({ commit }, product, images) {
+  updateStoreProduct({ commit }, product) {
     const apiUrl = apiConfig.store_product
+    console.log(product.form);
     return new Promise((resolve, reject) => {
       commit('storeProduct_request')
-      axios.put(apiUrl, {
-        params: {
-          token: localStorage.token,
-          employee: true,
-          id: product.id,
-          name: product.name,
-          product_category_id: product.product_category_id,
-          productCount: product.productCount,
-          producer_id: product.producer_id,
-          price: product.price,
-          costPrice: product.costPrice,
-          images: images,
-          property: product.propertyString
-        }
-      })
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' }
+      }
+      let formData = new FormData();
+      formData.append('images', product.images[0]);
+      formData.append('images', product.images[1]);
+      formData.append('images', product.images[2]);
+      formData.append('images', product.images[3]);
+      let params = {
+        _id: product._id,
+        id: product.id,
+        name: product.name,
+        product_category_id: product.product_category_id,
+        producer: product.producer_id,
+        productCount: product.productCount,
+        price: product.price,
+        cost_price: product.cost_price,
+        property: product.propertyString,
+        token: localStorage.token
+      }
+      console.log(formData);
+      axios.patch(apiUrl, formData, { params: params }, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
           resolve(response)
@@ -459,27 +472,20 @@ export default {
         })
     })
   },
-  customerLogin({ commit }, customerAccount, typeLogin) {
+  customerLogin({ commit }, customerAccount) {
+    let typeLogin = customerAccount.typeLogin
     let apiUrl = apiConfig.customerLogin;
-    let config = {};
-    if (typeLogin==1) {
+    //let config = {};
+    if (typeLogin == 1) {
       apiUrl = apiConfig.customerLoginGG
     } else {
-      if (typeLogin==2) {
+      if (typeLogin == 2) {
         apiUrl = apiConfig.customerLoginFB;
-      } else
-        if (typeLogin==0 &&customerAccount) {
-          apiUrl = apiConfig.customerLogin;
-          config = {
-            id: customerAccount.id,
-            password: customerAccount.password
-          }
-        }
+      } 
     }
     return new Promise((resolve, reject) => {
       commit('customerAccount_request')
-      axios.get(apiUrl,
-        { params: config })
+      axios.get(apiUrl)
         .then(function (response) {
           commit('customerAccount_success', response.data)
           //console.log(response.data);

@@ -7,7 +7,7 @@
         class="btn btn-primary"
         style="position: absolute;right: 2rem;"
         data-toggle="modal"
-        data-target="#model_category"
+        data-target="#modal_category"
         @click="setInsert()"
       >
         <i class="fas fa-plus"></i> Thêm mới danh mục
@@ -101,7 +101,7 @@
             id="1"
             title="Sửa"
             data-toggle="modal"
-            data-target="#model_category"
+            data-target="#modal_category"
             @click="setUpdate(row.item)"
             class="fa fa-edit"
             style="margin-right: 1rem;"

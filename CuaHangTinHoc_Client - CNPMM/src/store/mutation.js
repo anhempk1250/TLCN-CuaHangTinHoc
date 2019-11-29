@@ -144,6 +144,7 @@ export default {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     state.customerAccountState.object = {};
+    window.location.href = 'http://localhost:8081/'
   },
   storeCategory_request(state) {
     state.store_categoryState.loading = true

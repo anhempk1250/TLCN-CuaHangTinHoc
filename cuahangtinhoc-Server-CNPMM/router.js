@@ -15,7 +15,6 @@ let fs = require('fs-extra')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    
     cb(null, 'uploads/')
   },
   filename: function (req, file, cb) {
@@ -77,11 +76,23 @@ router.get('/account', ensureAuthenticated, function (req, res) {
   res.render('account', { user: req.user });
 });
 
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+router.get('/auth/google/callback', passport.authenticate('google'), function (req, res) {
+  res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
+  //res.send({ token: req.user.token, name: req.user.name })
+})
+
+
+
+
 router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+
 
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook'), function (req, res) {
-    res.send({ token: req.user.token, name: req.user.name })
+    res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
+    //res.send({ token: req.user.token, name: req.user.name })
   });
 // mypage 
 //router.get('/customerInfo',middleware.requireLoginCustomer, MyPageController.getCustomerInfo)
