@@ -43,6 +43,7 @@ module.exports = router;
 // store order
 router.post('/storeOrder', middleware.requireLogin, StorePageController.insertOrder)
 router.get('/storeOrder', middleware.requireLogin, StorePageController.getOrder)
+router.get('/storeCustomer', middleware.requireLogin, StorePageController.getCustomerList)
 
 // store product
 router.get('/storeProduct', middleware.requireLogin, StorePageController.productList)
@@ -52,16 +53,8 @@ router.delete('/storeProduct', middleware.requireLogin, StorePageController.dele
 router.get('/storeProducerFromProductPage', middleware.requireLogin, StorePageController.loadProducer)
 router.get('/storeCategoryFromProductPage', middleware.requireLogin, StorePageController.loadCategory)
 
-//router.post('/storeProduct', upload.array('images',4), StorePageController.insertProduct)
-// store type product
+
 router.get('/storeProductType', middleware.requireLogin, StorePageController.productTypeList)
-
-
-
-
-
-
-
 
 
 

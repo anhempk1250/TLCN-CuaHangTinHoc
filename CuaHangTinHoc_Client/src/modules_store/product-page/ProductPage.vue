@@ -624,7 +624,7 @@ export default {
       this.$store.dispatch("getStoreCategoryFromProductPage").then(() => {
         console.log("create", this.categoryList);
       });
-      this.$store.dispatch("getStoreProducer");
+      this.$store.dispatch("getStoreProducerFromProductPage");
     }
   }
 };

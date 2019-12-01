@@ -376,7 +376,6 @@ export default {
           }
         },
         { key: "Name", label: "Tên sản phẩm" },
-        { key: "productCount", label: "Số lượng" },
         { key: "price", label: "Giá tiền" },
         { key: "cost_price", label: "Giá gốc" },
         { key: "control", label: "" }

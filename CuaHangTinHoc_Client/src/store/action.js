@@ -373,6 +373,26 @@ export default {
         })
     })
   },
+  getStoreProducerFromProductPage({ commit }) {
+    const apiUrl = apiConfig.store_producerFromProductPage;
+    return new Promise((resolve, reject) => {
+      commit('storeProducer_request')
+      axios.get(apiUrl,
+        {
+          params: {
+            token: localStorage.token, employee: true
+          }
+        })
+        .then(function (response) {
+          commit('storeProducer_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProducer_error')
+          reject(err)
+        })
+    })
+  },
   insertStoreProduct({ commit }, product) {
     const apiUrl = apiConfig.store_product
     console.log(product.form);

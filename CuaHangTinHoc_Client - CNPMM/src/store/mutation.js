@@ -126,7 +126,7 @@ export default {
       state.customerAccountState.msg = data.msg
     if (data.token) {
       state.customerAccountState.token = data.token
-      localStorage.token = data.token
+      localStorage.ctoken = data.token
     }
 
     if (data.userName) {
@@ -172,7 +172,7 @@ export default {
       localStorage.removeItem('token');
       //location.reload();
     }
-    console.log(data.list)
+    //console.log(data.list)
     state.store_orderState.loading = false;
     state.store_orderState.success = true;
     state.store_orderState.list = data.list;
@@ -231,5 +231,17 @@ export default {
   storeProductType_error(state) {
     state.store_productTypeState.loading = false
     state.store_productTypeState.error = true
+  },
+  storeCustomer_request(state) {
+    state.store_customerState.loading = true
+  },
+  storeCustomer_success(state, data) {
+    state.store_customerState.loading = false
+    state.store_customerState.list = data.list
+    state.store_customerState.success = true
+  },
+  storeCustomer_error(state) {
+    state.store_customerState.loading = false
+    state.store_customerState.error = true
   }
 }

@@ -93,9 +93,8 @@ Route::group([
     Route::post('/storeProduct','StoreProductPageController@insertProduct');
     Route::put('/storeProduct','StoreProductPageController@updateProduct');
     Route::get('/storeCategoryFromProductPage', 'StoreCategoryPageController@getCategoryListFromProductPage');
+    Route::get('/storeProducerFromProductPage','StoreProducerPageController@getProducer');
 
-    // store product-page -> get producer list
-    Route::get('/storeProducer','StoreProducerPageController@getProducer');
 
 });
 

@@ -36,10 +36,11 @@ export default {
   },
   methods: {
     handleGetCusInfo(response) {
-      this.$router.push({ name: "home-page" });
+      
+      if (response.data.errorToken) {
+        this.$router.push({ name: "home-page" });
       if (localStorage.token) localStorage.removeItem('token');
       if( localStorage.userName) localStorage.removeItem('userName')
-      if (response.data.errorToken) {
         this.$swal({
           title: "Thông báo",
           text: response.data.msg

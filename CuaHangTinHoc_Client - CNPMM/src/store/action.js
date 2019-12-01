@@ -126,6 +126,7 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.token } })
         .then(function (response) {
           commit('storeProduct_success', response.data)
+          console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
@@ -159,7 +160,7 @@ export default {
     let tk = '';
     if(token)
       tk = token
-      else tk = localStorage.token;
+      else tk = localStorage.ctoken;
     return new Promise((resolve, reject) => {
       let data = {
         token: tk
@@ -510,6 +511,56 @@ export default {
             token: localStorage.token
           }
         })
+        .then(function (response) {
+          commit('storeOrder_success', response.data)
+          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrder_error')
+          reject(err)
+        })
+    })
+  },
+  getStoreCustomerList({commit}) {
+    const apiUrl = apiConfig.store_customer;
+    return new Promise((resolve, reject) => {
+      commit('storeCustomer_request')
+      axios.get(apiUrl,
+        {
+          params: {
+            token: localStorage.token
+          }
+        })
+        .then(function (response) {
+          commit('storeCustomer_success', response.data)
+          console.log(response.data, 'cus')
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeCustomer_error')
+          reject(err)
+        })
+    })
+  },
+  insertStoreOrder({commit}, order) {
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    }
+    let params = {
+        token: localStorage.token,
+        customer: order.customer,
+        total_price: order.total_price,
+        product_order: order.product_order
+    }
+    console.log(order)
+    const apiUrl = apiConfig.store_order; 
+    return new Promise((resolve, reject) => {
+      commit('storeOrder_request')
+      axios.post(apiUrl,{},
+        {
+          params: params
+        }, config)
         .then(function (response) {
           commit('storeOrder_success', response.data)
           console.log(response.data)

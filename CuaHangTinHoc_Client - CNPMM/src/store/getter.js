@@ -30,5 +30,7 @@ export default {
   storeProduct: state => state.store_productState,
   storeProductTypeList: state => state.store_productTypeState.list,
   storeProducerList: state => state.store_producerState.list,
-  storeProducerLoading: state => state.store_producerState.loading
+  storeProducerLoading: state => state.store_producerState.loading,
+  storeCustomerList: state => state.store_customerState.list,
+  storeCustomerLoading: state => state.store_customerState.loading
 }

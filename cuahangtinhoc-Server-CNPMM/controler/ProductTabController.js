@@ -46,8 +46,12 @@ exports.insertProduct = function (req, res, next) {
             fs.move('uploads/' + req.files[i].originalname, destination + "/" + (i + 1) + '.png')
             if (i == 3) {
               newProduct.images = images;
-              newProduct.save();
-              res.json({ msg: 'Thêm thành công', RequestSuccess: true })
+              ProductType.findOne({ _id: '5dc921718588d63874d0258c' }, function (err, type) {
+                type.product_list_with_type.push(newProduct._id);
+                type.save();
+                newProduct.save();
+                res.json({ msg: 'Thêm thành công', RequestSuccess: true })
+              })
             }
           })
         }

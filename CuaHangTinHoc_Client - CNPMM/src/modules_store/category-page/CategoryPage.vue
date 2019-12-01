@@ -161,7 +161,6 @@ export default {
         },
         { key: "summaryName", label: "Viết Tắt" },
         { key: "employeeName", label: "Tên Nhân Viên" },
-        { key: "numberOfProduct", label: "Số Lượng" },
         { key: "control", label: "" }
       ]
     };

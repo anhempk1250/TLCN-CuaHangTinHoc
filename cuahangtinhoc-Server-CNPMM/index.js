@@ -40,7 +40,7 @@ passport.use(new GoogleStrategy({
   callbackURL: config.google_callback_url
 },
   function (accessToken, refreshToken, profile, done) {
-    Customer.findOne({ id: profile._json.id }, (err, cus) => {
+    Customer.findOne({ id: profile._json.sub }, (err, cus) => {
       if (err) return done(err)
 
       if (cus && cus != {}) {

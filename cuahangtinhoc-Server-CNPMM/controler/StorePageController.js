@@ -32,6 +32,10 @@ exports.getOrder = function(req,res) {
   OrderTabController.getOrder(req,res)
 }
 
+exports.getCustomerList = function(req, res) {
+  OrderTabController.getCustomerList(req, res)
+}
+
 // store product
 exports.productList = function (req, res) {
   ProductTabController.productList(req, res)

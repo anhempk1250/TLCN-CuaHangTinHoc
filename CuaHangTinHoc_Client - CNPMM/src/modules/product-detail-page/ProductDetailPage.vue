@@ -9,10 +9,13 @@
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-2">
-            <div class="row" v-for="(image,index) in productDetailsObject.images" :key="index">
+            <div class="row" v-for="(index) in 4" :key="index">
               <div class="col">
-                <span>
-                  <img :src="image.image_link" v-on:click="changeImage(index)" />
+                <span>{{index}}
+                  <img
+                    :src="image_link + productDetailsObject.id + '/'+(index)+'.png'"
+                    v-on:click="changeImage(index)"
+                  />
                 </span>
               </div>
             </div>
@@ -103,8 +106,9 @@ export default {
   data() {
     return {
       tempID: "",
-      indexImage: 0,
-      productCount: 1
+      indexImage: 1,
+      productCount: 1,
+      image_link: "http://localhost:8000/images/"
     };
   },
   components: { zoom },
@@ -174,12 +178,13 @@ export default {
       return this.$route.params.id;
     },
     loadImage() {
-      if (
-        this.productDetailsObject.images != null &&
-        this.productDetailsObject.images != {}
-      )
-        return this.productDetailsObject.images[this.indexImage].image_link;
-      return 0;
+      return (
+        this.image_link +
+        this.productDetailsObject.id +
+        "/" +
+        (this.indexImage) +
+        ".png"
+      );
     },
     loadProductCount() {
       return this.productCount;
@@ -198,7 +203,7 @@ export default {
   },
   watch: {
     refresh() {
-      console.log('ahihi')
+      console.log("ahihi");
     }
   }
 };

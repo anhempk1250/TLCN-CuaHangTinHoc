@@ -19,11 +19,13 @@ var apiUrl = {
   store_productType: apiAddress + "/storeProductType",
   store_checkToken: apiAddress + "/checkToken",
   store_producer: apiAddress + "/storeProducer",
+  store_customer: apiAddress + "/storeCustomer",
   store_order: apiAddress + "/storeOrder",
   customerLogin: apiAddress + "/customerLogin",
   customerLoginFB: apiAddressHttps + "/auth/facebook",
   customerLoginGG: apiAddress + "/auth/google",
-  customerOrderList : apiAddress + "/orderList"
+  customerOrderList : apiAddress + "/orderList",
+
 }
 
 exports.apiUrl = apiUrl
