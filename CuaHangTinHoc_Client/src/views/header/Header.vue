@@ -127,10 +127,10 @@
             </a>
           </li>
           <li class="nav-item active ml-auto">
-            <a class="nav-link" href="#">
+            <router-link :to="{name: 'policy'}" class="nav-link" href="#">
               <i class="fa fa-wrench"></i>
               Kiểm tra bảo hành
-            </a>
+            </router-link>
           </li>
           <li class="nav-item active ml-auto">
             <a class="nav-link" href="#">

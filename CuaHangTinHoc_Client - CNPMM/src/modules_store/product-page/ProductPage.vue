@@ -350,7 +350,7 @@ import $ from "jquery";
 export default {
   data() {
     return {
-      imgLink: "http://localhost:8000/images/",
+      imgLink: "http://localhost:8000/storage/images/",
       images: ["", "", "", ""],
       imagesNewTech: [],
       propertyCount: 0,
@@ -595,6 +595,7 @@ export default {
     },
     save() {
       if (!this.checkEmpty()) {
+        this.$swal.showLoading();
         this.selected.product_category_id = this.categoryIdSelected;
         this.selected.producer_id = this.producerIdSelected;
         this.selected.images = this.images;

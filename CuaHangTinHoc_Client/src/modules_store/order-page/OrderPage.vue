@@ -36,28 +36,35 @@
           />
           <div class="row">
             <div class="col-md-4">
-              <select style="font-size: 14px;" class="form-control">
-                <option>Thành công</option>
-                <option>Chờ xác nhận</option>
-                <option>Trả lại</option>
+              <select
+                @change="updateTempList"
+                v-model="orderStatus"
+                style="font-size: 14px;"
+                class="form-control"
+              >
+                <option
+                  v-for="(status,index) in storeOrderStatusList"
+                  :key="index"
+                  :value="status.id"
+                >{{status.name}}</option>
               </select>
             </div>
             <div class="col-md-8">
               <div class="row">
                 <div class="col-md-5">
-                  <date-pick v-model="dateFrom" :format="'YYYY.MM.DD'" style="font-size:14px;"></date-pick>
+                  <date-pick v-model="dateFrom" :format="'MM/DD/YYYY'" style="font-size:14px;"></date-pick>
                 </div>
                 <div class="col-md-1" style="padding: 0.5rem 0 0.5rem 0.6rem;">to</div>
                 <div class="col-md-5">
-                  <date-pick v-model="dateTo" :format="'YYYY.MM.DD'" style="font-size:14px;"></date-pick>
+                  <date-pick v-model="dateTo" :format="'MM/DD/YYYY'" style="font-size:14px;"></date-pick>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-3">
-          <button class="btn btn-primary">
-            <i class="fa fa-search"></i> Tìm kiếm
+          <button class="btn btn-primary" @click="updateTempList(true)">
+            <i class="fa fa-search"></i> Tìm kiếm theo ngày
           </button>
         </div>
         <div class="col-md-3">
@@ -71,50 +78,82 @@
         </div>
       </div>
 
-      <table class="table" id="categoryTable">
-        <thead class="thead-light" style="font-size: 14px;">
-          <tr class="text-center">
-            <th style="width: 15%;">STT</th>
-            <th style="width: 15%;">Ngày bán</th>
-            <th style="width: 10%;">Nhân viên</th>
-            <th style="width: 15%">Khách hàng</th>
-            <th style="width: 15%;">Trạng thái</th>
-            <th style="width: 15%">Tổng tiền</th>
-            <th style="width: 15%"></th>
-          </tr>
-        </thead>
-        <tbody style="font-size: 14px;">
-          <tr class="text-center" v-for="(order,index) in storeOrderList" :key="index">
-            <td>{{index+1}}</td>
-            <td>20/11/2019</td>
-            <td>{{order.employee_id}}</td>
-            <td v-if="index%2==0">Vinh Đào Lê Văn</td>
-            <td v-else>Tăng Anh Hào</td>
-            <td>Chờ xác nhận</td>
-            <td>{{fixFormatVND(order.total_Price)}}đ</td>
-            <td>
-              <i
-                title="Sửa"
-                data-toggle="modal"
-                data-target="#model_category"
-                @click="setUpdate()"
-                class="fas fa-edit"
-                style="margin-right: 1rem;"
-              ></i>
-              <i title="Xóa" class="fas fa-trash"></i>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <b-table
+        :busy="storeOrderLoading"
+        head-variant="light"
+        :fields="fields"
+        sticky-header
+        :items="tempList"
+      >
+        <template v-slot:table-busy>
+          <div class="text-center text-danger my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
 
-      <div id="control">
-        <button class="btn btn-danger">
-          <i class="fas fa-trash"></i> Xóa
-        </button>
-        <button class="btn btn-info">Chọn tất cả</button>
-        <button class="btn btn-dark">
-          <i class="fas fa-window-close"></i> Hủy
-        </button>
+        <template v-slot:cell(customer)="data">{{data.item.customer.name}}</template>
+
+        <template v-slot:cell(employee)="data">{{data.item.employee.name}}</template>
+
+        <template v-slot:cell(status)="data">{{data.item.status.name}}</template>
+
+        <template v-slot:cell(total_price)="data">{{fixFormatVND(data.item.total_price)}}đ</template>
+
+        <template v-slot:cell(control)="data">
+          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;"></i>
+          <i
+            title="Sửa"
+            data-toggle="modal"
+            data-target="#order_modal"
+            @click="setUpdate(data.item)"
+            class="fa fa-edit"
+            style="margin-right: 1rem;"
+          ></i>
+          <i title="Xóa" class="fa fa-trash"></i>
+        </template>
+      </b-table>
+      <div
+        ref="modal"
+        class="modal fade"
+        id="order_modal"
+        tabindex="-1"
+        role="dialog"
+        style="margin-top:0;padding:0;"
+      >
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Chi tiết đơn hàng</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div v-if="loadSelected!= {}" class="row">
+                <label class="col-md-3">Mã đơn hàng: {{loadSelected.id}}</label>
+                <label class="col-md-3">Khách hàng: {{loadSelected.customer.name}}</label>
+                <label class="col-md-3">Ngày bán: {{loadSelected.created_at}}</label>
+                <label class="col-md-3">Trạng thái: {{loadSelected.status.name}}</label>
+              </div>
+              <b-table
+                small
+                bordered
+                head-variant="light"
+                :items="loadSelected.product_list"
+                :fields="fieldsDetailProduct"
+              >
+                <template v-slot:cell(price)="data">{{fixFormatVND(data.item.price)}}đ</template>
+                <template
+                  v-slot:cell(total_price)="data"
+                >{{fixFormatVND(data.item.price * data.item.pivot.ProductCount)}}đ</template>
+              </b-table>
+
+              <label>Tổng tiền: {{loadSelected.total_price}}</label>
+              <button v-if="loadSelected.status.id != 1" class="btn btn-primary">Xác nhận đơn hàng</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -126,34 +165,39 @@
               class="form-control"
               style="margin-bottom: 0.5rem;"
               placeholder="thuộc tính sản phẩm"
-              v-model="inputProperty"
-              v-on:keyup.enter="AddProperty()"
+              v-model="product_id"
+              v-on:keyup.enter="addProduct()"
               id="property"
             />
           </div>
-          <table class="table fixed_header" style="width: 100%;">
-            <thead class="thead-light"></thead>
-            <tbody id="myTbody" style="width: 100%;">
-              <tr class="text-center thead-light">
-                <th style="width: 10%;">STT</th>
-                <th style="width: 18%;">Mã sản phẩm</th>
-                <th style="width: 25%;">Tên sản phẩm</th>
-                <th style="width: 10%">Số lượng</th>
-                <th style="width: 10%">Giá bán</th>
-                <th style="width: 12%">Thành tiền</th>
-                <th style="width: 10%;"></th>
-              </tr>
-              <tr class="text-center">
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-              </tr>
-            </tbody>
-          </table>
+          <b-table
+            :fields="fieldsOfProduct"
+            head-variant="light"
+            :items="loadProductList"
+            responsive="sm"
+            fixed
+          >
+            <template v-slot:cell(name)="data">{{formatName(data.item.name)}}</template>
+
+            <template v-slot:cell(control)="data">
+              <i title="Chi tiết" class="fa fa-eye" aria-hidden="true" style="margin-right: 1rem;"></i>
+              <i class="fas fa-trash" @click="removeProduct(data.item)" title="Xóa"></i>
+            </template>
+
+            <template v-slot:cell(productCount)="data">
+              <input
+                @change="calculatePrice()"
+                v-model="data.item.productCount"
+                class="form-control"
+                type="number"
+              />
+            </template>
+
+            <template v-slot:cell(price)="data">{{fixFormatVND(data.item.price)}}đ</template>
+            <template
+              v-slot:cell(total_price)="data"
+            >{{fixFormatVND(data.item.price * data.item.productCount)}}đ</template>
+          </b-table>
           <div
             class="alert alert-success"
             role="alert"
@@ -161,7 +205,88 @@
         </div>
 
         <div class="col-md-4">
-          <RightMenu />
+          <div id="rightMenu">
+            <div class="customerContainer myfont">
+              <div class="row">
+                <div class="col-md-4">
+                  <b>Khách hàng</b>
+                </div>
+                <div class="col-md-8">
+                  <div class="input-group mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Tìm khách hàng"
+                      aria-describedby="button-addon2"
+                      v-model="customer_id"
+                      @change="checkCustomer"
+                      @keyup.enter="checkCustomer"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="button-addon2"
+                      >Thêm</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <b>Ghi chú</b>
+                </div>
+                <div class="col-md-8">
+                  <textarea v-model="note" class="form-control"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="infoPayment myfont">
+              <h5>
+                <i class="fa fa-info-circle blue"></i> Thông tin thanh toán
+              </h5>
+              <hr />
+
+              <div class="row">
+                <div class="col-md-4">
+                  <b>Tổng tiền</b>
+                </div>
+                <div class="col-md-8" style="padding-left: 28px">
+                  <label>{{fixFormatVND(loadTotalPrice)}}</label>đ
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <b>Khách đưa</b>
+                </div>
+                <div class="col-md-8">
+                  <input v-model="customerGive" class="form-control" type="number" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <b>Tiền thừa</b>
+                </div>
+                <div
+                  class="col-md-8"
+                  style="padding-left: 28px"
+                >{{fixFormatVND(customerGive - total_price)}}đ</div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-primary save" @click="insertOrder">
+                    <i class="fa fa-check"></i> Lưu
+                  </button>
+                  <button class="btn btn-danger cancel">
+                    <i class="fa fa-arrow-left"></i> Trở về
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -170,99 +295,252 @@
 <script>
 import { mapGetters } from "vuex";
 import DatePick from "../../../node_modules/vue-date-pick/src/vueDatePick.vue";
-import RightMenu from "../../components/store_order_right_menu/StoreOrderRightMenu.vue";
+
+import { CommonService } from "../../service/common.service";
+var commonService = new CommonService();
 export default {
   data() {
     return {
+      fields: [
+        { key: "id", label: "Mã đơn hàng" },
+        { key: "customer", label: "Tên khách hàng" },
+        { key: "created_at", label: "Ngày bán" },
+        { key: "status", label: "Trạng thái" },
+        { key: "total_price", label: "Tổng tiền" },
+        { key: "employee", label: "Tên nhân viên" },
+        { key: "control", label: "" }
+      ],
+      fieldsOfProduct: [
+        { key: "id", label: "Mã sản phẩm" },
+        { key: "name", label: "Sản phẩm" },
+        { key: "productCount", label: "Số lượng" },
+        { key: "price", label: "Giá" },
+        { key: "total_price", label: "Thành tiền" },
+        { key: "control", label: "" }
+      ],
+      fieldsDetailProduct: [
+        { key: "id", label: "Mã sản phẩm" },
+        { key: "name", label: "Sản phẩm" },
+        { key: "pivot.ProductCount", label: "Số lượng" },
+        { key: "price", label: "Giá" },
+        { key: "total_price", label: "Thành tiền" }
+      ],
+      note: "",
+      customerGive: 0,
+      customer_id: "",
+      customer_check: false,
       control: false,
       insert: true,
       currentPage: 1,
-      selected: [],
       inputSearch: "",
       selectedForUpdate: {},
-      dateFrom: "2019.01.01",
-      dateTo: "2019.01.01",
-      productList: []
+      dateFrom: "",
+      dateTo: "",
+      product_id: "",
+      productList: [],
+      total_price: 0,
+      orderStatus: "",
+      tempList: [],
+      selected: {
+        customer: {},
+        employee: {},
+        status: {},
+        product_list: []
+      }
     };
   },
-  components: { DatePick, RightMenu },
+  components: { DatePick },
   props: {},
   watch: {},
   methods: {
+    removeProduct(product) {
+      for (let i = 0; i < this.productList.length; i++) {
+        if (this.productList[i].id == product.id) {
+          this.productList.splice(i, 1);
+          return 0;
+        }
+      }
+    },
     fixFormatVND(nStr) {
-      nStr = nStr + "";
-      let x = nStr.split(".");
-      let x1 = x[0];
-      let x2 = x.length > 1 ? "." + x[1] : "";
-      var rgx = /(\d+)(\d{3})/;
-      while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, "$1" + "," + "$2");
-      }
-      return x1 + x2;
-    },
-    checkItem(category) {
-      let index = this.selected.indexOf(category);
-      if (index > -1) this.selected.splice(index, 1);
-      else this.selected.push(category);
-    },
-    formatForSearch(category, inputSearch) {
-      let arr = Object.values(category);
-      //console.log(arr, "arr");
-      let string = "";
-      for (let i = 0; i < arr.length; i++) {
-        string += arr[i].toString().toLowerCase();
-      }
-      if (!string.includes(inputSearch.toLowerCase())) return "display: none;";
-      return "";
-    },
-    cancel() {
-      this.selected = [];
+      return commonService.fixFormatVND(nStr);
     },
     setInsert() {
       this.insert = true;
       this.control = true;
     },
-    setUpdate() {
-      this.insert = false;
-      this.control = true;
-    },
-    selectAll() {
-      this.selected = this.categoryList;
+    setUpdate(order) {
+      console.log(order);
+      this.selected = order;
     },
     save() {
-      // save
       this.back();
     },
     back() {
       this.control = false;
+      this.productList = [];
+      this.total_price = 0;
+      this.customerGive = 0;
+      this.customer_id = 0;
+      this.customer_check = false;
     },
     clearDate() {
       this.date = "";
     },
-    AddProperty() {
-      if (this.checkSpecialCharacter()) {
-        for (let i = 0; i < this.category.propertyList.length; i++) {
-          if (this.category.propertyList[i] == this.inputProperty) {
-            alert("Thuộc tính này đã được thêm vào");
+    formatName(name) {
+      if (name.length > 30) return name.slice(0, 30) + "...";
+      else return name;
+    },
+    isExist(product_id) {
+      for (let i = 0; i < this.productList.length; i++) {
+        if (this.productList[i].id == product_id) {
+          return true;
+        }
+      }
+      return false;
+    },
+    addProduct() {
+      if (!this.isExist(this.product_id)) {
+        let temp = this.storeProductList;
+        for (let i = 0; i < temp.length; i++) {
+          if (temp[i].id == this.product_id) {
+            temp[i].productCount = 1;
+            this.productList.push(temp[i]);
+            this.calculatePrice();
             return 0;
           }
         }
-        this.category.propertyList.push(this.inputProperty);
-        this.inputProperty = "";
-        let myTbody = document.getElementById("myTbody");
-        myTbody.scrollTop = myTbody.scrollHeight;
-        //console.log(myTbody.scrollHeight);
+        this.$swal({
+          title: "Thông báo",
+          text: "Mã sản phẩm không tồn tại"
+        });
       } else {
-        alert("Thuộc tính không được chứa ký tự đặt biệt hoặc rỗng");
-        return "";
+        this.$swal({
+          title: "Thông báo",
+          text: "Sản phẩm đã được thêm vào danh sách"
+        });
       }
     },
-    DeleteProperty(property) {
-      for (let i = 0; i < this.category.propertyList.length; i++) {
-        if (this.category.propertyList[i] == property) {
-          this.category.propertyList.splice(i, 1);
-          break;
+    calculatePrice() {
+      let price = 0;
+      for (let i = 0; i < this.productList.length; i++) {
+        price += this.productList[i].price * this.productList[i].productCount;
+      }
+      this.total_price = price;
+    },
+    checkCustomer() {
+      for (let i = 0; i < this.storeCustomerList.length; i++) {
+        if (this.storeCustomerList[i].id == this.customer_id) {
+          this.$swal({
+            title: "Thông báo",
+            text: "Xác nhận khách hàng thành công"
+          });
+          this.customer_check = true;
+          return 0;
         }
+      }
+      this.$swal({
+        title: "Thông báo",
+        text: "Không tìm thấy khách hàng"
+      });
+      this.customer_check = false;
+    },
+    insertOrder() {
+      this.$swal({
+        title: "Thông báo",
+        text: "Bạn muốn nhập đơn hàng ?",
+        showCancelButton: true
+      }).then(result => this.handleInsertOrder(result));
+    },
+    handleInsertOrder(result) {
+      if (result.value) {
+        if (
+          this.productList.length > 0 &&
+          this.customerGive > 0 &&
+          this.total_price > 0 &&
+          this.customerGive >= this.total_price &&
+          this.customer_check
+        ) {
+          let order = {
+            total_price: this.total_price,
+            customer_id: this.customer_id,
+            note: this.note,
+            productList: JSON.stringify(this.productList)
+          };
+          this.$store
+            .dispatch("insertStoreOrder", order)
+            .then(response => this.afterInsertOrder(response));
+        } else {
+          this.$swal({
+            title: "Thông báo",
+            text: "Nhập thông tin sai"
+          });
+        }
+      }
+    },
+    afterInsertOrder(response) {
+      if (commonService.checkErrorToken(response, this)) {
+        this.$swal({
+          title: "Thông báo",
+          text: response.data.msg
+        });
+        if (response.data.RequestSuccess) {
+          this.control = false;
+          this.customer_id = "";
+          this.customer_check = false;
+          this.productList = [];
+          this.total_price = 0;
+          this.note = "";
+        }
+      }
+      /* 
+      if (response.data.errorToken) {
+        this.$swal({
+          title: "Error",
+          text: response.data.errorToken
+        });
+      } else {
+        this.$swal({
+          title: "Thông báo",
+          text: response.data.msg
+        });
+        if (response.data.RequestSuccess) {
+          this.control = false;
+          this.customer_id = "";
+          this.customer_check = false;
+          this.productList = [];
+          this.total_price = 0;
+          this.note = "";
+        }
+      }
+      */
+    },
+    updateTempList(flag) {
+      let temp = [];
+      for (let i = 0; i < this.storeOrderList.length; i++) {
+        if (this.storeOrderList[i].status.id == this.orderStatus) {
+          temp.push(this.storeOrderList[i]);
+        }
+      }
+      this.tempList = temp;
+      if (flag) this.updateForDate();
+    },
+    updateForDate() {
+      let dateFrom = new Date(this.dateFrom).getTime();
+      let dateTo = new Date(this.dateTo).getTime();
+      if (dateFrom > dateTo) {
+        this.$swal({
+          title: "Thông báo",
+          text: "Chọn ngày sai"
+        });
+      } else {
+        let arr = [];
+        for (let i = 0; i < this.tempList.length; i++) {
+          let orderDate = new Date(this.tempList[i].created_at).getTime();
+          if (dateFrom <= orderDate && dateTo >= orderDate) {
+            arr.push(this.tempList[i]);
+          }
+        }
+        this.tempList = arr;
       }
     }
   },
@@ -271,15 +549,44 @@ export default {
       storeProductList: "storeProductList",
       storeProductLoading: "storeProductLoading",
       storeOrderList: "storeOrderList",
-      storeOrderLoading: "storeOrderLoading"
+      storeOrderLoading: "storeOrderLoading",
+      storeCustomerList: "storeCustomerList",
+      storeCustomerLoading: "storeCustomerLoading",
+      storeOrderStatusList: "storeOrderStatusList"
     }),
     loadProductList() {
       return this.productList;
+    },
+    loadTotalPrice() {
+      return this.total_price;
+    },
+    loadTempList() {
+      return this.tempList;
+    },
+    loadSelected() {
+      return this.selected;
     }
   },
   created() {
-    this.$store.dispatch("getStoreProductList");
-    this.$store.dispatch("getStoreOrderList");
+    this.$store
+      .dispatch("getStoreProductListFromProductTypePage")
+      .then(response => {
+        commonService.checkErrorToken(response, this);
+      });
+    this.$store.dispatch("getStoreOrderList").then(response => {
+      commonService.checkErrorToken(response, this);
+    });
+    this.$store.dispatch("getCustomerList").then(response => {
+      commonService.checkErrorToken(response, this);
+    });
+    this.$store.dispatch("getOrderStatusList").then(response => {
+      if (commonService.checkErrorToken(response, this)) {
+        if (response.data.list) {
+          this.orderStatus = response.data.list[0].id;
+          this.updateTempList();
+        }
+      }
+    });
   }
 };
 </script>
@@ -342,5 +649,40 @@ img {
 #orderPage {
   font-family: sans-serif;
   font-size: 14px;
+}
+
+.myfont {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+}
+.col-md-4 {
+  b {
+    margin-left: 0.5rem;
+  }
+}
+
+.customerContainer {
+  margin-bottom: 2rem;
+}
+.infoPayment {
+  h5 {
+    color: blue;
+  }
+  .row {
+    margin-bottom: 0.5rem;
+  }
+  button {
+    position: absolute;
+    margin-top: 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .save {
+    right: 6rem;
+  }
+  .cancel {
+    right: 0;
+  }
 }
 </style>

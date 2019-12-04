@@ -15,11 +15,11 @@
             <a href="#" @click="goToProduct(product.id)">
               <div class="row">
                 <div class="col">
-                  <img :src="product.first_image.image_link" alt="image" />
+                  <img :src="image_link + product.id+'/1.png'" alt="image" />
                 </div>
               </div>
               <div class="row">
-                <div class="col" style="word-break: break-all;">{{fixProductName(product.Name)}}</div>
+                <div class="col" style="word-break: break-all;">{{fixProductName(product.name)}}</div>
               </div>
             </a>
           </div>
@@ -31,7 +31,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      image_link: "http://localhost:8000/storage/images/"
+    };
   },
   props: ["productHistoryList"],
   watch: {

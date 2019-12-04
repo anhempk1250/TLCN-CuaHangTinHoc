@@ -6,7 +6,6 @@
           class="form-control row"
           style="width: 100%;margin:0;margin-bottom: 0.5rem;"
           placeholder="Nhập tên hoặc mã khách hàng"
-          v-model="inputSearch"
         />
       </div>
       <div class="col-md-3">
@@ -24,7 +23,6 @@
       <div class="col-md-3">
         <b-pagination
           style="right:1rem;position:absolute;"
-          v-model="currentPage"
           :total-rows="2"
           :per-page="1"
           aria-controls="my-table"
@@ -44,26 +42,6 @@
           <th style="width: 10%"></th>
         </tr>
       </thead>
-      <tbody style="font-size: 14px;">
-        <tr class="text-center" v-for="(product,index) in loadProductList" :key="index">
-          <td>{{product.id}}</td>
-          <td>{{product.Name}}</td>
-          <td>{{product.productCount}}</td>
-          <td>{{product.Price}}</td>
-          <td>{{product.category.name}}</td>
-          <td>
-            <i
-              title="Sửa"
-              data-toggle="modal"
-              data-target="#model_category"
-              @click="setUpdate()"
-              class="fas fa-edit"
-              style="margin-right: 1rem;"
-            ></i>
-            <i title="Xóa" class="fas fa-trash"></i>
-          </td>
-        </tr>
-      </tbody>
     </table>
 
     <div id="control">

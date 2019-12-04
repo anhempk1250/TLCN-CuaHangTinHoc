@@ -32,7 +32,27 @@ class StoreProductPageController extends BaseController
         return $product->insertProduct($request);
     }
 
-    public function updateProduct() {
-
+    public function updateProduct(Request $request) {
+        $product = new Product();
+        return $product->updateProduct($request);
     }
+
+    public function deleteProduct(Request $request) {
+        $product = Product::find($request->id);
+        if($product) {
+            $product->status = 0;
+            $product->save();
+            return [
+                'msg' => 'Xóa thành công',
+                'RequestSuccess' => true
+            ];
+        } else {
+            return [
+                'msg' => 'Không tìm thấy sản phẩm',
+                'RequestSuccess' => false
+            ];
+        }
+    }
+
+
 }

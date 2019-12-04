@@ -5,6 +5,8 @@ import ProductDetailPage from './product-detail-page/ProductDetailPage.vue'
 import NotFoundPage from './not-found-page/NotFoundPage.vue'
 import CartPage from './cart-page/CartPage.vue'
 import LoginPage from './login-page/LoginPage.vue';
+import PolicyPage from './warranty-policy-page/WarrantyPolicyPage.vue'
+
 export default [
     {
         path: '/',
@@ -43,6 +45,11 @@ export default [
         path: '/login',
         name: 'login',
         component: LoginPage
+    }, 
+    {
+        path: '/policy',
+        name: 'policy',
+        component: PolicyPage
     },
     {
         path: '/404',

@@ -14,7 +14,7 @@
         >
           <div class="col col-md-2">
             <router-link :to="{name: 'product', params: {id: product.id}}">
-              <img :src="product.image_link" alt="image" style="width:100%;" />
+              <img :src="image_link+ product.id +'/1.png' " alt="image" style="width:100%;" />
             </router-link>
           </div>
           <div class="col col-md-10">
@@ -110,6 +110,7 @@
 export default {
   data() {
     return {
+      image_link: "http://localhost:8000/storage/images/",
       productList: [],
       totalPrice: 0,
       discountCode: "",
@@ -157,7 +158,7 @@ export default {
             },
             showCancelButton: true
           })
-          .then((result) => this.handleOrder(result));
+          .then(result => this.handleOrder(result));
       } else {
         this.alertFailOrder();
       }
@@ -179,12 +180,24 @@ export default {
       this.$router.push({ name: "login" });
     },
     deleteCartItem(id) {
-      alert(this.productList);
-      for (let i = 0; i < this.productList.length; i++) {
-        if (this.productList[i].id == id) {
-          this.productList.splice(i, 1);
-          localStorage.cart = JSON.stringify(this.productList);
-          return 0;
+      this.$swal({
+        title: "Thông báo",
+        text: "Bạn muốn xóa sản phẩm khỏi giỏ hàng ?",
+        showCancelButton: true
+      }).then(result => this.handleDeleteCartItem(result,id));
+    },
+    handleDeleteCartItem(result, id) {
+      if (result.value) {
+        for (let i = 0; i < this.productList.length; i++) {
+          if (this.productList[i].id == id) {
+            this.productList.splice(i, 1);
+            localStorage.cart = JSON.stringify(this.productList);
+            this.$swal({
+              title: "Thông báo",
+              text: "Xóa thành công"
+            });
+            return 0;
+          }
         }
       }
     }

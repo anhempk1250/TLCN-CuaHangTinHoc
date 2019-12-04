@@ -9,7 +9,7 @@
       v-on:click="pushRouter()"
     >
       <div id="productImage">
-        <img alt="itemImg" :src="product.first_image.image_link" />
+        <img alt="itemImg" :src="image_link + product.id+'/1.png'" />
       </div>
       <div id="productName">
         <div class="col">{{fixProductName}}</div>
@@ -52,7 +52,8 @@
 export default {
   data() {
     return {
-      isHover: false
+      isHover: false,
+      image_link: "http://localhost:8000/storage/images/"
     };
   },
   props: {
@@ -102,10 +103,10 @@ export default {
     }
   },
   created() {
-    if (!this.product.first_image && this.product.images) {
-      this.product.first_image = {};
-      this.product.first_image.image_link = this.product.images[0].image_link;
-    }
+    //if (!this.product.first_image && this.product.images) {
+      //this.product.first_image = {};
+      //this.product.first_image.image_link = this.product.images[0].image_link;
+    //}
   }
 };
 </script>

@@ -12,6 +12,8 @@ class Product extends Model
     //
     protected $table = "Product";
     public $timestamps = false;
+    public $incrementing = false;
+
 
     public function images()
     {
@@ -90,13 +92,9 @@ class Product extends Model
             $product->save();
 
              for($i =1;$i<=4;$i++) {
-                 $imageName = $request->id.'_'.$i.'.'.$request->file('image'.$i)->getClientOriginalExtension();
+                 $imageName = $i.'.png';//$request->id.'_'.$i.'.'.$request->file('image'.$i)->getClientOriginalExtension();
                  $key = 'image'.$i;
-                 $path = Storage::putFileAs('public/images', $request->file($key), $imageName);
-                 $image = new Image();
-                 $image->image_link = $imageName;
-                 $image->product_id = $product->id;
-                 $image->save();
+                 $path = Storage::putFileAs('public/images/'.$request->id, $request->file($key), $imageName);
              }
 
             return [
@@ -111,7 +109,60 @@ class Product extends Model
             ];
 
         return 'Thêm sản phẩm thất bại';
-
     }
 
+    public function updateProduct(Request $request) {
+        $product = Product::find($request->id);
+        if($product) {
+            $product->name = $request->name;
+            $product->productCount = $request->productCount;
+            $product->Description = $request->property;
+            $product->product_category_id = $request->product_category_id;
+            $product->producer_id = $request->producer_id;
+            $product->price = $request->price;
+            $product->cost_price = $request->cost_price;
+            $product->employee_id = $request->user->id;
+            $product->status = 1;
+            $product->save();
+
+            for ($i = 1; $i <= 4; $i++) {
+                $imageName = $i . '.png';//$request->id.'_'.$i.'.'.$request->file('image'.$i)->getClientOriginalExtension();
+                $key = 'image' . $i;
+                $file = $request->file(($key));
+                if($file) {
+                    $path = Storage::putFileAs('public/images/' . $request->id, $file, $imageName);
+                }
+            }
+
+            return [
+                'msg' => 'Cập nhật thành công',
+                'RequestSuccess' => true
+            ];
+        } else {
+            return [
+                'msg' => 'Không tìm thấy sản phẩm',
+                'RequestSuccess' => false
+            ];
+        }
+    }
+
+    public function deleteProduct(Request $request) {
+        $id = $request->id;
+        $product = Product::find($id);
+        if($product) {
+            $product->status = 0;
+            $product->save();
+            return [
+                'msg' => 'Xóa thành công',
+                'RequestSuccess' => true
+            ];
+        } else {}
+    }
+
+    public function getStoreProductListFromProductTypePage() {
+        $product = Product::where('status','=',1)->get();
+        return [
+            'list' => $product
+        ];
+    }
 }

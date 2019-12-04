@@ -18,12 +18,6 @@ Route::get('/', function () {
 Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 Route::get('/botman/tinker', 'BotManController@tinker');
 
-Route::post('/testLaravel',function (\Illuminate\Http\Request $request){
-    $fname = $request->input('firstName');
-    $lname = $request->input('lastName');
-    return "firstName : $fname / lastName : $lname" ;
-});
-
 // home page
 Route::get('/products','HomePageController@getSummaryProductList');
 
@@ -45,14 +39,12 @@ Route::get('/storeOrders','StoreOrderPageController@getListOrder');
 Route::put('/storeOrders','StoreOrderPageController@updateOrderStatus');
 
 // customer account
-//temp register
-Route::get('/temp', 'CustomerAccountController@register');
 // register
-Route::post('/customerRegister','CustomerAccountController@sendConfirmEmailCustomerAccount');
-Route::get('/confirmEmail','CustomerAccountController@confirmEmail')->name('customerVerify');
-
+Route::post('/customerRegister','CustomerController@register');
 // login
 Route::get('/customerLogin', 'CustomerController@login');
+
+
 
 // request with check token of customer
 Route::group(['middleware' => 'jwt.auth'], function () {
@@ -62,7 +54,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
 
 
-
+Route::get('/test', 'CustomerController@getStoreCustomerList');
 
 
 
@@ -90,13 +82,28 @@ Route::group([
 
     // store product page
     Route::get('/storeProduct','StoreProductPageController@getProduct');
-    Route::post('/storeProduct','StoreProductPageController@insertProduct');
-    Route::put('/storeProduct','StoreProductPageController@updateProduct');
+    Route::post('/insertStoreProduct','StoreProductPageController@insertProduct');
+    Route::post('/updateStoreProduct','StoreProductPageController@updateProduct');
+    Route::delete('/storeProduct', 'StoreProductPageController@deleteProduct');
     Route::get('/storeCategoryFromProductPage', 'StoreCategoryPageController@getCategoryListFromProductPage');
     Route::get('/storeProducerFromProductPage','StoreProducerPageController@getProducer');
 
+    // store product type page
+    Route::get('/storeProductType','StoreProductTypePageController@getStoreProductTypeList');
+    Route::post('/storeProductType','StoreProductTypePageController@insertProductType');
+    Route::patch('/storeProductType','StoreProductTypePageControlcustomerRegisterler@updateProductType');
+    Route::delete('/storeProductType','StoreProductTypePageController@deleteProductType');
+    Route::post('/storeProductWithType', 'StoreProductTypePageController@addStoreProductToType');
+    Route::delete('/storeProductWithType', 'StoreProductTypePageController@deleteStoreProductFromType');
+    Route::get('/storeProductListFromProductTypePage',
+        'StoreProductTypePageController@getStoreProductListFromProductTypePage');
 
+    Route::get('/storeOrder', 'StoreOrderPageController@getOrderList');
+    Route::post('/storeOrder', 'StoreOrderPageController@insertStoreOrder');
+    Route::get('/storeOrderStatus', 'StoreOrderPageController@getOrderStatusList');
+
+    // store customer page
+    Route::get('/storeCustomer','StoreOrderPageController@getCustomerList');
 });
 
 
-Route::get('/testNe', 'AccountController@register');

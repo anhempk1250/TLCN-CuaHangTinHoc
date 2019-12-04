@@ -84,9 +84,6 @@ export default {
     if(list) {
       state.productHistory.list = JSON.parse(list)
     }
-    if (localStorage.token) {
-      state.customerAccountState.object.name = localStorage.name;
-    }
   },
   categoryList_request(state) {
     state.categoryState.loading = true
@@ -126,7 +123,7 @@ export default {
       state.customerAccountState.msg = data.msg
     if (data.token) {
       state.customerAccountState.token = data.token
-      localStorage.token = data.token
+      localStorage.ctoken = data.token
     }
 
     if (data.userName) {
@@ -141,8 +138,8 @@ export default {
   },
   customerLogout(state) {
     localStorage.userName = '';
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
+    localStorage.removeItem("ctoken");
+    localStorage.removeItem("cuserName");
     state.customerAccountState.object = {};
   },
   storeCategory_request(state) {
@@ -167,11 +164,6 @@ export default {
     state.store_orderState.loading = true
   },
   storeOrder_success(state, data) {
-    if (data.errorToken) {
-      localStorage.removeItem('token');
-      //location.reload();
-    }
-    console.log(data.list)
     state.store_orderState.loading = false;
     state.store_orderState.success = true;
     state.store_orderState.list = data.list;
@@ -186,10 +178,6 @@ export default {
     state.store_productState.loading = true
   },
   storeProduct_success(state, data) {
-    if (data.errorToken) {
-      localStorage.removeItem('token');
-      //location.reload();
-    }
     state.store_productState.loading = false
     state.store_productState.list = data.list
     state.store_productState.success = true
@@ -230,5 +218,29 @@ export default {
   storeProductType_error(state) {
     state.store_productTypeState.loading = false
     state.store_productTypeState.error = true
+  },
+  storeCustomer_request(state) {
+    state.store_customerState.loading = true
+  },
+  storeCustomer_success(state, data) {
+    state.store_customerState.loading = false
+    state.store_customerState.list = data.list
+    state.store_customerState.success = true
+  },
+  storeCustomer_error(state) {
+    state.store_customerState.loading = false
+    state.store_customerState.error = true
+  },
+  storeOrderStatus_request(state) {
+    state.store_orderStatus_State.loading = true
+  },
+  storeOrderStatus_success(state, data) {
+    state.store_orderStatus_State.loading = false
+    state.store_orderStatus_State.list = data.list
+    state.store_orderStatus_State.success = true
+  },
+  storeOrderStatus_error(state) {
+    state.store_orderStatus_State.loading = false
+    state.store_orderStatus_State.error = true
   }
 }

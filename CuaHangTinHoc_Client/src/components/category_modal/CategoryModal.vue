@@ -47,6 +47,7 @@
                   <button
                     type="button"
                     @click="InsertOrUpdateCategory()"
+                    data-dismiss="modal"
                     class="btn btn-primary"
                   >Lưu</button>
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
@@ -178,11 +179,13 @@ export default {
     },
     AddProperty() {
       if (this.checkSpecialCharacter()) {
-        for (let i = 0; i < this.category.propertyList.length; i++) {
+        if(this.category.propertyList) {
+          for (let i = 0; i < this.category.propertyList.length; i++) {
           if (this.category.propertyList[i] == this.inputProperty) {
             this.notification("Thông báo", "Thuộc tính này đã được thêm vào");
             return 0;
           }
+        }
         }
         this.category.propertyList.push(this.inputProperty);
         this.propertyList = this.category.propertyList;
@@ -236,7 +239,6 @@ export default {
     },
     InsertOrUpdateCategory() {
       if (this.checkInputCategory()) {
-        //this.mySwal = new this.$swal();
         this.$swal.showLoading();
         if (this.insert) {
           this.category.propertyString = this.formatProperty();
@@ -263,9 +265,8 @@ export default {
         });
         if (respone.data.msg.RequestSuccess) {
           this.showModal = true;
-
-          this.$store.dispatch("getStoreCategory");
-          //location.reload();
+          this.category = {};
+          this.$emit('reLoad');
         }
       }
     },

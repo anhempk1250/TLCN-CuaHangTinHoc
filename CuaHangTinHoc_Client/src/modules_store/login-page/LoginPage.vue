@@ -72,6 +72,7 @@ export default {
         });
         return -1;
       }
+      this.$swal.showLoading();
       this.$store
         .dispatch("storeLogin", this.employeeAccount)
         .then(response => this.affterLogin(response));
@@ -83,18 +84,19 @@ export default {
           text: response.data.msg.msg
         });
       } else {
-        if (response.data.token != null)
+        if (response.data.token != null) {
           localStorage.token = response.data.token;
-        this.$router.push({ name: "overview" });
+          this.$swal.close();
+          this.$router.push({ name: "overview" });
+        }
       }
     }
-    
   },
   computed: {
     ...mapGetters({
       storeAuthenMsg: "storeAuthenMsg",
       storeEmployeeAccount: "storeEmployeeAccount",
-      customerAccountObject: 'customerAccountObject'
+      customerAccountObject: "customerAccountObject"
     })
   }
 };

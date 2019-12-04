@@ -10,7 +10,6 @@
         style="position: absolute;right: 2rem;"
         data-toggle="modal"
         data-target="#login_modal"
-        @click="setInsert()"
       >
         <i class="fas fa-plus"></i>
         Thêm {{loadCurrentTabName}}
@@ -49,6 +48,7 @@
 import customerTab from "../../components/store_customerpage/CustomerTab";
 import supplierTab from "../../components/store_customerpage/SupplierTab";
 import registerModel from "../../components/login_modal/Login_modal";
+
 export default {
   components: {
     customerTab,

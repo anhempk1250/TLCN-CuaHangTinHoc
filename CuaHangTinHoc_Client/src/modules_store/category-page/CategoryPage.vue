@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="row" style="background-color: #e9ebea;margin:0;padding: 1rem;">
@@ -130,13 +129,15 @@
       <button class="btn btn-dark" v-on:click="cancel()">
         <i class="fa fa-window-close"></i> Hủy
       </button>
-      <ModalCategory :insert="insert" :categorySelected="loadSelectedForUpdate" />
+      <ModalCategory :insert="insert" v-on:reLoad="loadCategoryList" :categorySelected="loadSelectedForUpdate" />
     </div>
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
 import ModalCategory from "../../components/category_modal/CategoryModal.vue";
+import { CommonService } from "../../service/common.service";
+var commonService = new CommonService();
 export default {
   data() {
     return {
@@ -199,8 +200,10 @@ export default {
       console.log(this.categoryList.length);
       for (let i = 0; i < this.categoryList.length; i++) {
         if (this.categoryList[i].status == this.status) {
-          if(!this.categoryList[i].employeeName)
-            this.categoryList[i].employeeName = this.categoryList[i].employee.name;
+          if (!this.categoryList[i].employeeName)
+            this.categoryList[i].employeeName = this.categoryList[
+              i
+            ].employee.name;
           arr.push(this.categoryList[i]);
         }
       }
@@ -252,8 +255,9 @@ export default {
       this.selected = items;
     },
     loadCategoryList() {
-      this.$store.dispatch("getStoreCategory").then(() => {
-        this.updateTempList();
+      this.$store.dispatch("getStoreCategory").then(response => {
+        if (commonService.checkErrorToken(response, this))
+          this.updateTempList();
       });
     },
     deleteCategory(category) {
@@ -269,26 +273,62 @@ export default {
         this.$swal.showLoading();
         this.$store
           .dispatch("deleteStoreCategory", category)
-          .then(respone => this.affterDelete(respone));
+          .then(response => this.affterDelete(response));
       }
     },
-    affterDelete(respone) {
-      console.log("after");
-      if (respone.data.msg && respone.data.msg.msg) {
-        this.$swal({
-          title: "Thông báo",
-          text: respone.data.msg.msg
-        });
+    affterDelete(response) {
+      if (commonService.checkErrorToken(response, this)) {
+        if (response.data.msg && response.data.msg.msg) {
+          this.$swal({
+            title: "Thông báo",
+            text: response.data.msg.msg
+          });
+        }
+        if (response.data.msg.RequestSuccess) {
+          this.loadCategoryList();
+        }
       }
-      if (respone.data.msg.RequestSuccess) {
+      /**
+       * if (respone.data.msg && respone.data.msg.msg) {
+          this.$swal({
+            title: "Thông báo",
+            text: respone.data.msg.msg
+          });
+        }
+        if (respone.data.msg.RequestSuccess) {
+          this.loadCategoryList();
+        }
+       */
+    }
+    /*handleCheckLogin(respone) {
+      if (respone.data.errorToken) {
+        this.$swal({
+          title: "Error",
+          text: respone.data.errorToken
+        }).then(() => this.affterCheckLogin());
+      } else {
         this.loadCategoryList();
       }
-    }
+    },/*
+    /*affterCheckLogin() {
+      localStorage.removeItem("name");
+      localStorage.removeItem("token");
+      this.$router.push({ name: "storeLoginPage" });
+    }*/
   },
   created() {
-    if (localStorage.token) {
-      this.loadCategoryList();
-    }
+    this.loadCategoryList();
+    /*if (!localStorage.token) {
+      this.$swal.fire({
+        title: "Lỗi",
+        text: "Lỗi đăng nhập, vui lòng đăng nhập lại"
+      });
+      this.$router.push({ name: "storeLoginPage" });
+    } else {
+      this.$store
+        .dispatch("storeCheckToken")
+        .then(respone => this.handleCheckLogin(respone));
+    }*/
   }
 };
 </script>

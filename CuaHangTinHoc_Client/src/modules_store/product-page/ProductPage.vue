@@ -15,7 +15,7 @@
         <i class="fa fa-plus"></i> Thêm mới sản phẩm
       </button>
       <div v-if="control" style="position: absolute;right: 2rem;">
-        <button class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
+        <button v-if="!view" class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
           <i class="fa fa-check"></i> Lưu
         </button>
         <button class="btn btn-danger" @click="back()">
@@ -115,7 +115,7 @@
           </div>
         </template>
         <template v-slot:cell(id)="row">
-          <p style="width:100%;word-break: break-word;">{{row.item.id + "abcyxz"}}</p>
+          <p style="width:100%;word-break: break-word;">{{row.item.id}}</p>
         </template>
         <template v-slot:cell(Name)="row">
           <p style="width:100%;word-break: break-word;">{{formatName(row.item.name)}}</p>
@@ -129,7 +129,12 @@
         <template v-slot:cell(price)="row">{{fixFormatVND(row.item.price)}}đ</template>
         <template v-slot:cell(cost_price)="row">{{fixFormatVND(row.item.cost_price)}}đ</template>
         <template v-slot:cell(control)="data">
-          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;"></i>
+          <i
+            title="Chi tiết"
+            class="fa fa-eye"
+            @click="setView(data.item)"
+            style="margin-right: 1rem;"
+          ></i>
           <i
             title="Sửa"
             @click="setUpdate(data.item)"
@@ -152,7 +157,7 @@
     </div>
 
     <div v-if="control" id="controlContainer">
-      <form ref='form' id="formData" action="http://localhost:8000/storeProduct" method="post" enctype="multipart/form-data">
+      <form ref="form" id="formData" action="#" method="post" enctype="multipart/form-data">
         <div class="row" style="margin: 1rem 0;">
           <div class="col-md-4">
             <div class="input">
@@ -163,6 +168,7 @@
                   v-model="categoryIdSelected"
                   ref="selectCetegory"
                   class="form-control"
+                  :disabled="view"
                 >
                   <option value="-1" selected>-- Danh Mục --</option>
                   <option
@@ -178,12 +184,22 @@
             <div class="input">
               <div>
                 <label for="id">Mã sản phẩm:</label>
-                <input v-model="selected.id" class="form-control" placeholder="Nhập mã sản phẩm" />
+                <input
+                  v-model="selected.id"
+                  class="form-control"
+                  :disabled="!insert || view"
+                  placeholder="Nhập mã sản phẩm"
+                />
               </div>
 
               <div>
                 <label for="name">Tên sản phẩm:</label>
-                <input v-model="selected.name" class="form-control" placeholder="Nhập tên sản phẩm" />
+                <input
+                  v-model="selected.name"
+                  class="form-control"
+                  :disabled="view"
+                  placeholder="Nhập tên sản phẩm"
+                />
               </div>
 
               <div>
@@ -192,7 +208,8 @@
                   type="number"
                   v-model="selected.productCount"
                   class="form-control"
-                  placeholder="Nhập tên sản phẩm"
+                  placeholder="Nhập số lượng sản phẩm"
+                  :disabled="view"
                 />
               </div>
             </div>
@@ -201,12 +218,13 @@
             <div class="input">
               <div>
                 <label for="nxs">Nhà sản xuất:</label>
-                <select v-model="producerIdSelected" id="nxs" class="form-control">
+                <select :disabled="view" v-model="producerIdSelected" class="form-control">
                   <option
                     v-for="(producer,index) in storeProducerList"
                     selected
                     :key="index"
                     :value="producer.id"
+                    :disabled="view"
                   >{{producer.name}}</option>
                 </select>
               </div>
@@ -218,6 +236,7 @@
                     type="number"
                     class="form-control"
                     placeholder="Giá vốn"
+                    :disabled="view"
                   />
                 </div>
                 <div class="col-md-6" style="margin:0;padding-right:0;">
@@ -227,19 +246,40 @@
                     type="number"
                     class="form-control"
                     placeholder="Giá bán"
+                    :disabled="view"
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div v-if="!insert || view" class="row containerImg">
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/1.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/2.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/3.png'" alt="image" />
+          </div>
+          <div class="col-md-3">
+            <img :src="imgLink + selected.id+'/4.png'" alt="image" />
+          </div>
+        </div>
+        <div v-if="!view">
           <div>
             <p>Chọn 4 tấm hình :</p>
           </div>
           <div style="margin: 1rem 0;">
-            <input ref="inputFile" id="inputFile" name="inputFile" @change="upload" type="file" multiple />
-            <button type="submit">submit</button>
+            <input
+              ref="inputFile"
+              id="inputFile"
+              name="inputFile"
+              @change="upload"
+              type="file"
+              multiple
+            />
           </div>
           <div class="row containerImg">
             <div class="col-md-3">
@@ -275,13 +315,31 @@
                     <td style="padding-top:1.1rem">{{index+1}}</td>
                     <td style="padding-top:1.1rem">{{prop}}</td>
                     <td>
-                      <input :id="'prop'+index" class="form-control" />
+                      <input
+                        v-if="selected.property"
+                        :id="'prop'+index"
+                        :disabled="view"
+                        :value="selected.property[index]"
+                        class="form-control"
+                      />
+                      <input
+                        v-if="!selected.property"
+                        :id="'prop'+index"
+                        :disabled="view"
+                        class="form-control"
+                      />
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div v-if="control" style="position: absolute;right: 2rem;">
-                <button class="btn btn-primary" type="button" @click="save()" style="margin-right:0.1rem;">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  v-if="!view"
+                  @click="save()"
+                  style="margin-right:0.1rem;"
+                >
                   <i class="fa fa-check"></i> Lưu
                 </button>
                 <button class="btn btn-danger" @click="back()">
@@ -298,9 +356,12 @@
 <script>
 import { mapGetters } from "vuex";
 import $ from "jquery";
+import { CommonService } from "../../service/common.service";
+var commonService = new CommonService();
 export default {
   data() {
     return {
+      imgLink: "http://localhost:8000/storage/images/",
       images: ["", "", "", ""],
       imagesNewTech: [],
       propertyCount: 0,
@@ -311,6 +372,7 @@ export default {
       typeListSelected: [],
       status: 1,
       control: false,
+      view: false,
       insert: true,
       currentPage: 1,
       selected: {},
@@ -319,10 +381,7 @@ export default {
       fields: [
         {
           key: "id",
-          label: "Mã sản phẩm",
-          formatter: value => {
-            return "abc" + value;
-          }
+          label: "Mã sản phẩm"
         },
         { key: "Name", label: "Tên sản phẩm" },
         { key: "productCount", label: "Số lượng" },
@@ -352,7 +411,10 @@ export default {
         }
       }
     },
-    updateTempList() {
+    updateTempList(response) {
+      if (response) {
+        commonService.checkErrorToken(response);
+      }
       if (!this.control) {
         this.updateActiveTempList();
       } else {
@@ -366,18 +428,15 @@ export default {
       }
     },
     updateActiveTempList() {
-      if (this.categoryIdSelected != -1) {
-        let arr = [];
-        let productList = this.storeProductList;
-        for (let i = 0; i < productList.length; i++) {
-          if (productList[i].status == this.status) {
-            arr.push(productList[i]);
-          }
+      let arr = [];
+      let productList = this.storeProductList;
+      console.log(productList, "here");
+      for (let i = 0; i < productList.length; i++) {
+        if (productList[i].status == this.status) {
+          arr.push(productList[i]);
         }
-        this.updateForCategoryTempList(arr);
-      } else {
-        this.tempList = this.storeProductList;
       }
+      this.updateForCategoryTempList(arr);
     },
     updateForCategoryTempList(productList) {
       if (this.categoryIdSelected != -1) {
@@ -390,6 +449,7 @@ export default {
         this.updateTypeListSelected();
         this.updateForTypeTempList(arr);
       } else {
+        this.tempList = productList;
         this.typeProductIdSelected = -1;
       }
     },
@@ -405,7 +465,6 @@ export default {
       } else this.updateForProducerTempList(productList);
     },
     checkProductType(typeList) {
-      console.log(typeList, "type ne");
       for (let i = 0; i < typeList.length; i++) {
         if (typeList[i].id == this.typeProductIdSelected) {
           return true;
@@ -425,7 +484,6 @@ export default {
       }
     },
     updateForProducerTempList(productList) {
-      console.log("producer", productList);
       if (this.producerIdSelected != -1) {
         let arr = [];
         for (let i = 0; i < productList.length; i++) {
@@ -437,6 +495,8 @@ export default {
       } else this.tempList = productList;
     },
     fixFormatVND(nStr) {
+      return commonService.fixFormatVND(nStr);
+      /*
       nStr = nStr + "";
       let x = nStr.split(".");
       let x1 = x[0];
@@ -446,6 +506,7 @@ export default {
         x1 = x1.replace(rgx, "$1" + "," + "$2");
       }
       return x1 + x2;
+      */
     },
     formatDescription(property) {
       if (property) {
@@ -493,22 +554,33 @@ export default {
     },
     setInsert() {
       this.insert = true;
+      this.view = false;
       this.control = true;
       this.selected = {};
       this.categoryIdSelected = -1;
       this.producerIdSelected = -1;
     },
     setUpdate(product) {
+      this.view = false;
       this.insert = false;
       this.control = true;
       this.selected = product;
+      this.selected.property = product.description.split("___");
+      this.categoryIdSelected = product.product_category_id;
+      this.producerIdSelected = product.producer_id;
+    },
+    setView(product) {
+      this.view = true;
+      this.insert = false;
+      this.control = true;
+      this.selected = product;
+      this.selected.property = product.description.split("___");
       this.categoryIdSelected = product.product_category_id;
       this.producerIdSelected = product.producer_id;
     },
     checkImage() {
       for (let i = 0; i < 4; i++) {
         if (!this.images[i]) {
-          console.log(this.images[i]);
           return true;
         }
       }
@@ -516,15 +588,13 @@ export default {
     },
     checkProp() {
       for (let i = 0; i < this.propertyCount; i++) {
-        console.log($("#prop" + i));
+        //console.log($("#prop" + i));
         if ($("#prop" + i).val() == "") return true;
       }
       return false;
     },
     checkEmpty() {
-      /**
-       * 
-       * if (
+      if (
         this.selected.id == "" ||
         this.selected.name == "" ||
         this.selected.productCount == "" ||
@@ -537,8 +607,6 @@ export default {
       ) {
         return true;
       } else return false;
-       */
-      return false;
     },
     save() {
       if (!this.checkEmpty()) {
@@ -555,11 +623,22 @@ export default {
         }
         this.selected.propertyString = str;
         this.selected.imagesNewTech = this.$refs.inputFile.files;
-        this.selected.form = this.$refs.form, $('#formData')
-        console.log(this.$refs.form, $('#formData'));
-        this.$store
-          .dispatch("insertStoreProduct", this.selected)
-          .then(response => this.handleSubmit(response));
+        (this.selected.form = this.$refs.form), $("#formData");
+
+        if (this.insert) {
+          this.$swal.showLoading();
+          this.$store
+            .dispatch("insertStoreProduct", this.selected)
+            .then(response => this.afterSubmit(response));
+        } else {
+          this.$swal
+            .fire({
+              title: "Thông báo",
+              text: "Bạn chắc chắn muốn thay đổi ?",
+              showCancelButton: true
+            })
+            .then(result => this.updateProduct(result));
+        }
       } else {
         this.$swal({
           title: "Thông báo",
@@ -567,15 +646,48 @@ export default {
         });
       }
     },
-    handleSubmit(response) {
-      if (response.data.msg) {
+    updateProduct(result) {
+      if (result) {
+        this.$store
+          .dispatch("updateStoreProduct", this.selected)
+          .then(response => this.afterSubmit(response));
+      }
+    },
+    afterSubmit(response) {
+      if (commonService.checkErrorToken(response, this)) {
+        if (response.data.msg) {
+          this.$swal({
+            title: "Thông báo",
+            text: response.data.msg
+          });
+        }
+        if (response.data.RequestSuccess) {
+          this.$store
+            .dispatch("getStoreProductList")
+            .then(() => this.updateTempList());
+          this.back();
+        }
+      }
+      /*
+      if (response.data.errorToken) {
         this.$swal({
-          text: response.data.msg
+          title: "Error",
+          text: response.data.errorToken
         });
-      }
-      if (response.data.RequestSuccess) {
-        this.back();
-      }
+      } else {
+        if (response.data.msg) {
+          this.$swal({
+            title: "Thông báo",
+            text: response.data.msg
+          });
+        }
+        if (response.data.RequestSuccess) {
+          this.$store
+            .dispatch("getStoreProductList")
+            .then(() => this.updateTempList());
+          this.back();
+        }
+      } */
     },
     back() {
       this.control = false;
@@ -583,8 +695,19 @@ export default {
       this.categoryIdSelected = -1;
       this.producerIdSelected = -1;
     },
-    deleteProduct() {
-      console.log("delete");
+    deleteProduct(product) {
+      this.$swal({
+        title: "Thông báo",
+        text: "Bạn chắc chắn muốn xóa ?",
+        showCancelButton: true
+      }).then(result => this.handleDeleteProduct(result, product));
+    },
+    handleDeleteProduct(result, product) {
+      if (result.value) {
+        this.$store
+          .dispatch("deleteStoreProduct", product)
+          .then(response => this.afterSubmit(response));
+      }
     }
   },
   computed: {
@@ -612,20 +735,29 @@ export default {
           }
         }
       }
-      // console.log(temp);
+      // //console.log(temp);
       return temp;
     }
   },
   created() {
+    this.$store
+      .dispatch("getStoreProductList")
+      .then(response => this.updateTempList(response));
+    this.$store.dispatch("getStoreCategoryFromProductPage").then(response => {
+      commonService.checkErrorToken(response, this);
+    });
+    this.$store.dispatch("getStoreProducerFromProductPage").then(response => {
+      commonService.checkErrorToken(response, this);
+    });
+
+    /* 
     if (localStorage.token) {
       this.$store
         .dispatch("getStoreProductList")
         .then(() => this.updateTempList());
-      this.$store.dispatch("getStoreCategoryFromProductPage").then(() => {
-        console.log("create", this.categoryList);
-      });
+      this.$store.dispatch("getStoreCategoryFromProductPage").then(() => {});
       this.$store.dispatch("getStoreProducerFromProductPage");
-    }
+    }*/
   }
 };
 </script>
