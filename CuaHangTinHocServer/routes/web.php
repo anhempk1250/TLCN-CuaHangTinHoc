@@ -43,8 +43,9 @@ Route::put('/storeOrders','StoreOrderPageController@updateOrderStatus');
 Route::post('/customerRegister','CustomerController@register');
 // login
 Route::get('/customerLogin', 'CustomerController@login');
-
-
+// login with social
+Route::get('/auth/{social}', 'CustomerController@loginSocial');
+Route::get('/auth/{social}/callback', 'CustomerController@callback');
 
 // request with check token of customer
 Route::group(['middleware' => 'jwt.auth'], function () {
@@ -105,5 +106,6 @@ Route::group([
     // store customer page
     Route::get('/storeCustomer','StoreOrderPageController@getCustomerList');
 });
+
 
 

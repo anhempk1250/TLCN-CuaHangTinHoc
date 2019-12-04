@@ -6,7 +6,7 @@ import NotFoundPage from './not-found-page/NotFoundPage.vue'
 import CartPage from './cart-page/CartPage.vue'
 import LoginPage from './login-page/LoginPage.vue';
 import PolicyPage from './warranty-policy-page/WarrantyPolicyPage.vue'
-
+import ShowRoomPage from './show-room-page/ShowRoomPage'
 export default [
     {
         path: '/',
@@ -50,6 +50,11 @@ export default [
         path: '/policy',
         name: 'policy',
         component: PolicyPage
+    },
+    {
+        path: '/showroom',
+        name: 'showroom',
+        component: ShowRoomPage
     },
     {
         path: '/404',

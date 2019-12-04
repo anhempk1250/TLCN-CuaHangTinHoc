@@ -10,6 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use Illuminate\Routing\Controller as BaseController;
@@ -54,5 +55,17 @@ class CustomerController  extends BaseController
     public function getStoreCustomerList() {
         $user = new User();
         return $user->getStoreCustomerList();
+    }
+
+    public function loginSocial($social)
+    {
+        return Socialite::driver($social)->redirect();
+    }
+    public function callback($social)
+    {
+
+
+        return 'ahihi';
+
     }
 }

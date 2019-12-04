@@ -11,7 +11,7 @@
           <div class="col-md-2">
             <div class="row" v-for="(index) in 4" :key="index">
               <div class="col">
-                <span>{{index}}
+                <span>
                   <img
                     :src="image_link + productDetailsObject.id + '/'+(index)+'.png'"
                     v-on:click="changeImage(index)"

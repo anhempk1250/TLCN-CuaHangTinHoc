@@ -26,9 +26,6 @@
             <i class="fa fa-search"></i> Search
           </button>
         </form>
-        <button class="leftNavbar-item btn">
-          <i class="fa fa-star"></i> Khuyến Mãi
-        </button>
         <router-link
           class="btn"
           style="color: white;"
@@ -121,10 +118,10 @@
             ></DropdownMegaHistory>
           </li>
           <li class="nav-item active ml-auto">
-            <a class="nav-link" href="#">
+            <router-link class="nav-link" :to="{name: 'showroom'}">
               <i class="fa fa-building"></i>
               Hệ thống Showroom
-            </a>
+            </router-link>
           </li>
           <li class="nav-item active ml-auto">
             <router-link :to="{name: 'policy'}" class="nav-link" href="#">

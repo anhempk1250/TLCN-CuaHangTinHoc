@@ -10,6 +10,10 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    RewriteEngine On
+    RewriteCond %{SERVER_PORT} 8080
+    RewriteRule ^(.*)$ https://localhost:8000/$1 [R,L]
+
     # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
