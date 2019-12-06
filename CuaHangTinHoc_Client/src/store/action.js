@@ -147,21 +147,21 @@ export default {
       address: customerAccount.address
     }
     console.log(commit)
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       axios.post(apiUrl, data)
-      .then(function (response) {
-        resolve(response)
-      })
-      .catch(function (err) {
-        reject(err)
-      })
+        .then(function (response) {
+          resolve(response)
+        })
+        .catch(function (err) {
+          reject(err)
+        })
     })
   },
   checkLoginCustomer({ commit }) {
     const apiUrl = apiConfig.checkLoginCustomer
     return new Promise((resolve, reject) => {
       let data = {
-        token: localStorage.token
+        token: localStorage.ctoken
       }
       commit('customerAccount_request')
       axios.get(apiUrl, { params: data })
@@ -462,27 +462,12 @@ export default {
         })
     })
   },
-  customerLogin({ commit }, customerAccount, typeLogin) {
+  customerLogin({ commit }, customerAccount) {
     let apiUrl = apiConfig.customerLogin;
-    let config = {};
-    if (typeLogin == 1) {
-      apiUrl = apiConfig.customerLoginGG
-    } else {
-      if (typeLogin == 2) {
-        apiUrl = apiConfig.customerLoginFB;
-      } else
-        if (typeLogin == 0 && customerAccount) {
-          apiUrl = apiConfig.customerLogin;
-          config = {
-            id: customerAccount.id,
-            password: customerAccount.password
-          }
-        }
-    }
     return new Promise((resolve, reject) => {
       commit('customerAccount_request')
       axios.get(apiUrl,
-        { params: config })
+        { params: customerAccount })
         .then(function (response) {
           commit('customerAccount_success', response.data)
           ////console.log(response.data);
@@ -490,6 +475,108 @@ export default {
         })
         .catch(function (err) {
           commit('customerAccount_error')
+          reject(err)
+        })
+    })
+  },
+  customerLoginSocial({ commit }, customerAccount) {
+    let apiUrl = apiConfig.customerLoginSocial;
+    return new Promise((resolve, reject) => {
+      commit('customerAccount_request')
+      axios.get(apiUrl,
+        { params: customerAccount })
+        .then(function (response) {
+          commit('customerAccount_success', response.data)
+          console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerAccount_error')
+          reject(err)
+        })
+    })
+  },
+  updateCustomer({ commit }, customerAccount) {
+    let apiUrl = apiConfig.customer;
+    customerAccount.token = localStorage.ctoken;
+    return new Promise((resolve, reject) => {
+      commit('customerAccount_request')
+      axios.patch(apiUrl, {},
+        { params: customerAccount })
+        .then(function (response) {
+          commit('customerAccount_success', response.data)
+          console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerAccount_error')
+          reject(err)
+        })
+    })
+  },
+  customerOrder({ commit }, order) {
+    let apiUrl = apiConfig.customerOrder;
+    return new Promise((resolve, reject) => {
+      //commit('customerOrder_request')
+      axios.post(apiUrl, {},
+        { params: order })
+        .then(function (response) {
+          //  commit('customerOrder_success', response.data)
+          console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrder_error')
+          reject(err)
+        })
+    })
+  },
+  getCustomerOrder({ commit }) {
+    let apiUrl = apiConfig.customerOrder;
+    return new Promise((resolve, reject) => {
+      commit('customerOrder_request')
+      axios.get(apiUrl, { params: { token: localStorage.ctoken } })
+        .then(function (response) {
+          commit('customerOrder_success', response.data)
+          console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrder_error')
+          reject(err)
+        })
+    })
+  },
+  getCustomerOrderSuccess({ commit }) {
+    let apiUrl = apiConfig.customerOrderSuccess;
+    return new Promise((resolve, reject) => {
+      commit('customerOrder_request')
+      axios.get(apiUrl, { params: { token: localStorage.ctoken } })
+        .then(function (response) {
+          commit('customerOrder_success', response.data)
+          console.log('day ne quoan',response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrder_error')
+          reject(err)
+        })
+    })
+  },
+  cancelCustomerOrder({commit}, order) {
+    order.token = localStorage.ctoken;
+    let apiUrl = apiConfig.customerOrder;
+    return new Promise((resolve, reject) => {
+      commit('customerOrder_request')
+      axios.delete(apiUrl,
+        { params: order })
+        .then(function (response) {
+            commit('customerOrder_success', response.data)
+          console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrder_error')
           reject(err)
         })
     })
@@ -656,7 +743,7 @@ export default {
         })
     })
   },
-  getCustomerList({commit}) {
+  getCustomerList({ commit }) {
     const apiUrl = apiConfig.store_customer
     return new Promise((resolve, reject) => {
       commit('storeCustomer_request')
@@ -672,7 +759,7 @@ export default {
         })
     })
   },
-  insertStoreOrder({commit}, order) {
+  insertStoreOrder({ commit }, order) {
     order.token = localStorage.token;
     const apiUrl = apiConfig.store_order;
     return new Promise((resolve, reject) => {
@@ -691,7 +778,7 @@ export default {
         })
     })
   },
-  getOrderStatusList({commit}) {
+  getOrderStatusList({ commit }) {
     const apiUrl = apiConfig.store_orderStatus;
     return new Promise((resolve, reject) => {
       commit('storeOrderStatus_request')
@@ -702,6 +789,25 @@ export default {
         })
         .catch(function (err) {
           commit('storeOrderStatus_error')
+          reject(err)
+        })
+    })
+  },
+  confirmStoreOrder({commit}, order) {
+    order.token = localStorage.token;
+    const apiUrl = apiConfig.store_order;
+    return new Promise((resolve, reject) => {
+      commit('storeOrder_request')
+      axios.patch(apiUrl, {},
+        {
+          params: order
+        })
+        .then(function (response) {
+          commit('storeOrder_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrder_error')
           reject(err)
         })
     })

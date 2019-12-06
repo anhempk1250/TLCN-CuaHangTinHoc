@@ -97,7 +97,18 @@ export default {
     state.categoryState.loading = false
     state.categoryState.error = true
   },
-
+  customerOrder_request(state) {
+    state.customer_orederState.loading = true
+  },
+  customerOrder_success(state, data) {
+    state.customer_orederState.loading = false
+    state.customer_orederState.list = data.list
+    state.customer_orederState.success = true
+  },
+  customerOrder_error(state) {
+    state.customer_orederState.loading = false
+    state.customer_orederState.error = true
+  },
   storeProducer_request(state) {
     state.store_producerState.loading = true
   },
@@ -121,14 +132,16 @@ export default {
     }
     if (data.msg)
       state.customerAccountState.msg = data.msg
+    /*
+    
     if (data.token) {
       state.customerAccountState.token = data.token
       localStorage.ctoken = data.token
-    }
+    } */
 
     if (data.userName) {
-      state.customerAccountState.object.name = data.userName
-      localStorage.userName = data.userName
+     // state.customerAccountState.object.name = data.userName
+     // localStorage.userName = data.userName
     }
 
   },
@@ -137,19 +150,18 @@ export default {
     state.customerAccountState.error = true
   },
   customerLogout(state) {
-    localStorage.userName = '';
     localStorage.removeItem("ctoken");
-    localStorage.removeItem("cuserName");
+    localStorage.removeItem("cname");
     state.customerAccountState.object = {};
   },
   storeCategory_request(state) {
     state.store_categoryState.loading = true
   },
   storeCategory_success(state, data) {
-    if (data.errorToken) {
-      localStorage.removeItem('token');
+    //if (data.errorToken) {
+      //localStorage.removeItem('token');
       //location.reload();
-    }
+    //}
     state.store_categoryState.loading = false;
     state.store_categoryState.success = true;
     state.store_categoryState.list = data.list;
@@ -196,12 +208,12 @@ export default {
       state.store_authenState.msg = data.msg.msg;
     state.store_authenState.list = data.list;
     state.store_authenState.object = data.employee;
-    state.store_authenState.token = data.token;
-    localStorage.userName = data.userName;
-    if (data.errorToken) {
-      state.store_authenState.msg = data.errorToken;
+    //state.store_authenState.token = data.token;
+    //localStorage.userName = data.userName;
+    //if (data.errorToken) {
+     // state.store_authenState.msg = data.errorToken;
       
-    }
+    //}
   },
   authenState_error(state) {
     state.store_authenState.loading = false

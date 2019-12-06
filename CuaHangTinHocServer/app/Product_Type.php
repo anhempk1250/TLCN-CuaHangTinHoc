@@ -10,9 +10,18 @@ class Product_Type extends Model
     //
     protected $table = "product_type";
 
-    public function productListWithType() {
+        public function productListWithType() {
         return $this
-            ->belongsToMany(Product::class,"list_product_with_type","product_type_id");
+            ->belongsToMany(Product::class,"list_product_with_type","product_type_id")
+            ->where('product.status','=',1)
+            ;
+    }
+
+    public function productListWithTypeAll() {
+        return $this
+            ->belongsToMany(Product::class,"list_product_with_type","product_type_id")
+            ->where('product.status','=',1)
+            ;
     }
 
     public function category() {
@@ -20,7 +29,7 @@ class Product_Type extends Model
     }
 
     public static function getProductTypeList() {
-        return Product_Type::with("productListWithType","productListWithType.firstImage")
+        return Product_Type::with("productListWithType")
             ->where('HomePage','=',true)
             ->get();
     }

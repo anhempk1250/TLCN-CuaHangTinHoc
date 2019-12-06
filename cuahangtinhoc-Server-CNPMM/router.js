@@ -55,6 +55,8 @@ router.get('/storeCategoryFromProductPage', middleware.requireLogin, StorePageCo
 
 
 router.get('/storeProductType', middleware.requireLogin, StorePageController.productTypeList)
+router.get('/storeProductListFromProductTypePage', middleware.requireLogin, 
+StorePageController.getStoreProductListFromProductTypePage)
 
 
 
@@ -72,8 +74,8 @@ router.get('/account', ensureAuthenticated, function (req, res) {
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get('/auth/google/callback', passport.authenticate('google'), function (req, res) {
-  res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
-  //res.send({ token: req.user.token, name: req.user.name })
+  let user = JSON.stringify(req.user)
+  res.redirect('http://localhost:8081/mypage?user=' + user)
 })
 
 
@@ -84,7 +86,8 @@ router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' 
 
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook'), function (req, res) {
-    res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
+    let user = JSON.stringify(req.user)
+    res.redirect('http://localhost:8081/mypage?user=' + user)
     //res.send({ token: req.user.token, name: req.user.name })
   });
 // mypage 

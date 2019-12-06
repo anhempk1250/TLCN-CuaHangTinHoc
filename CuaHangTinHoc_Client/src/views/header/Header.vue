@@ -209,7 +209,7 @@ export default {
         "updateProductHistory",
         localStorage.productHistoryList
       );
-    if (localStorage.userName != "") this.userName = localStorage.userName;
+    if (localStorage.cname != "") this.userName = localStorage.userName;
   }
 };
 </script>

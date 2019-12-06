@@ -49,7 +49,7 @@ class Orders extends Model
         $order = new Orders();
         $order->employee_id =$request->user->id;
         $order->order_status_id = 1;
-        $order->total_price = $request->total_price/1000;
+        $order->total_price = $request->total_price;
         $order->customer_id = $request->customer_id;
         $order->note = $request->note;
         $order->save();
@@ -68,6 +68,37 @@ class Orders extends Model
             'RequestSuccess' => true
         ];
 
+    }
+
+    public function confirmStoreOrder(Request $request) {
+        $order = Orders::find($request->id);
+        if($order) {
+            $productList = json_decode($request->productList);
+            $count = 0;
+            $msg = '';
+            $RequestSuccess = false;
+            for($i =0;$i<count($productList);$i++) {
+                $product = Product::find($productList[$i]->id);
+                if($product) {
+                    if( ($productList[$i]->pivot->ProductCount) > ($product->productCount)) {
+                        $msg = 'Sản phẩm '.$product->name.' không đủ số lượng, ';
+                    }
+                }
+                $count++;
+            }
+            if($count == count($productList)) {
+                $order->order_status_id = 1;
+                $order->employee_id = $request->user->id;
+                $order->save();
+                $msg = 'Xác nhận thành công';
+                $RequestSuccess = true;
+            }
+            return [
+                'msg' => $msg,
+                'RequestSuccess' => $RequestSuccess,
+                'list' => $this->getOrderList()
+            ];
+        }
     }
 
 }

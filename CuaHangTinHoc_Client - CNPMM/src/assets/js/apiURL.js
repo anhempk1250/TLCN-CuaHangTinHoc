@@ -16,6 +16,7 @@ var apiUrl = {
   store_product: apiAddress + '/storeProduct',
   store_categoryFromProductPage: apiAddress + "/storeCategoryFromProductPage",
   store_producerFromProductPage: apiAddress + "/storeProducerFromProductPage",
+  store_productListFromProductTypePage: apiAddress + "/storeProductListFromProductTypePage",
   store_productType: apiAddress + "/storeProductType",
   store_checkToken: apiAddress + "/checkToken",
   store_producer: apiAddress + "/storeProducer",

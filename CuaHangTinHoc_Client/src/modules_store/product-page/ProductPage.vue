@@ -430,7 +430,7 @@ export default {
     updateActiveTempList() {
       let arr = [];
       let productList = this.storeProductList;
-      console.log(productList, "here");
+      //console.log(productList, "here");
       for (let i = 0; i < productList.length; i++) {
         if (productList[i].status == this.status) {
           arr.push(productList[i]);
@@ -457,7 +457,9 @@ export default {
       if (this.typeProductIdSelected != -1) {
         let arr = [];
         for (let i = 0; i < productList.length; i++) {
+          //alert(productList[i].id)
           if (this.checkProductType(productList[i].product_type_list)) {
+          
             arr.push(productList[i]);
           }
         }
@@ -588,7 +590,7 @@ export default {
     },
     checkProp() {
       for (let i = 0; i < this.propertyCount; i++) {
-        //console.log($("#prop" + i));
+        ////console.log($("#prop" + i));
         if ($("#prop" + i).val() == "") return true;
       }
       return false;
@@ -735,7 +737,7 @@ export default {
           }
         }
       }
-      // //console.log(temp);
+      // ////console.log(temp);
       return temp;
     }
   },

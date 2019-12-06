@@ -23,7 +23,7 @@ class Product_Category extends Model
     }
 
     public function getProductCategoryList() {
-        return Product_Category::with('products','productTypes')->get();
+        return Product_Category::with('products','productTypes')->where('status','=',1)->get();
     }
 
 

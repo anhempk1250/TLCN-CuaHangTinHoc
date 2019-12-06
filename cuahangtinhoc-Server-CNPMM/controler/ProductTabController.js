@@ -15,14 +15,7 @@ exports.productList = function (req, res) {
   })
 }
 
-exports.productTypeList = function (req, res) {
-  ProductType.find().populate('product_category_id').exec(function (err, list) {
-    if (err) res.send({ msg: { msg: err } })
-    else {
-      res.send({ list: list })
-    }
-  })
-}
+
 
 exports.insertProduct = function (req, res, next) {
   let product = new Product(req.query);

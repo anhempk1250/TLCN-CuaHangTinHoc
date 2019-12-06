@@ -7,7 +7,8 @@ let product_type = new schema({
   name: String,
   HomePage: Boolean,
   status: Boolean,
-  product_list_with_type: [{ type: schema.Types.ObjectId, ref: 'product' }]
+  product_list_with_type: [{ type: schema.Types.ObjectId, ref: 'product' }],
+  category: { type: schema.Types.ObjectId, ref: 'product_category' }
 }, { collection: 'product_type' },)
 
 

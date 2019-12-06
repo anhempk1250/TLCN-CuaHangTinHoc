@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <button class="btn btn-primary" @click="updateTempList(true)">
+          <button class="btn btn-primary" @click="updateTempList(1)">
             <i class="fa fa-search"></i> Tìm kiếm theo ngày
           </button>
         </div>
@@ -71,19 +71,20 @@
           <b-pagination
             style="right:1rem;bottom: -1rem;position:absolute;"
             v-model="currentPage"
-            :total-rows="2"
-            :per-page="1"
-            aria-controls="my-table"
+            :total-rows="loadTempList.length"
+            :per-page="perPage"
+            aria-controls="orderTalbe"
           ></b-pagination>
         </div>
       </div>
 
       <b-table
+        id="orderTalbe"
         :busy="storeOrderLoading"
         head-variant="light"
         :fields="fields"
-        sticky-header
-        :items="tempList"
+        :items="loadTempList"
+        :per-page="perPage"
       >
         <template v-slot:table-busy>
           <div class="text-center text-danger my-2">
@@ -92,16 +93,19 @@
           </div>
         </template>
 
-        <template v-slot:cell(customer)="data">{{data.item.customer.name}}</template>
+        <template v-slot:cell(customer)="data">
+          <div v-if="data.item.customer">{{data.item.customer.name}}</div>
+        </template>
 
-        <template v-slot:cell(employee)="data">{{data.item.employee.name}}</template>
+        <template v-slot:cell(employee)="data">
+          <div v-if="data.item.employee">{{data.item.employee.name}}</div>
+        </template>
 
         <template v-slot:cell(status)="data">{{data.item.status.name}}</template>
 
         <template v-slot:cell(total_price)="data">{{fixFormatVND(data.item.total_price)}}đ</template>
 
         <template v-slot:cell(control)="data">
-          <i title="Chi tiết" class="fa fa-eye" style="margin-right: 1rem;"></i>
           <i
             title="Sửa"
             data-toggle="modal"
@@ -149,8 +153,13 @@
                 >{{fixFormatVND(data.item.price * data.item.pivot.ProductCount)}}đ</template>
               </b-table>
 
-              <label>Tổng tiền: {{loadSelected.total_price}}</label>
-              <button v-if="loadSelected.status.id != 1" class="btn btn-primary">Xác nhận đơn hàng</button>
+              <label>Tổng tiền: {{fixFormatVND(loadSelected.total_price)}}đ</label>
+              <button
+                style="position:absolute;right:1rem;"
+                v-if="loadSelected.status.id != 1"
+                class="btn btn-primary"
+                @click="confirmOrder"
+              >Xác nhận đơn hàng</button>
             </div>
           </div>
         </div>
@@ -227,7 +236,10 @@
                         class="btn btn-outline-secondary"
                         type="button"
                         id="button-addon2"
+                        data-toggle="modal"
+                        data-target="#login_modal"
                       >Thêm</button>
+                      <registerModal :store="true"></registerModal>
                     </div>
                   </div>
                 </div>
@@ -295,7 +307,7 @@
 <script>
 import { mapGetters } from "vuex";
 import DatePick from "../../../node_modules/vue-date-pick/src/vueDatePick.vue";
-
+import registerModal from "../../components/login_modal/Login_modal";
 import { CommonService } from "../../service/common.service";
 var commonService = new CommonService();
 export default {
@@ -304,7 +316,7 @@ export default {
       fields: [
         { key: "id", label: "Mã đơn hàng" },
         { key: "customer", label: "Tên khách hàng" },
-        { key: "created_at", label: "Ngày bán" },
+        { key: "created_at", label: "Ngày bán", sortable: true },
         { key: "status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
         { key: "employee", label: "Tên nhân viên" },
@@ -332,6 +344,7 @@ export default {
       control: false,
       insert: true,
       currentPage: 1,
+      perPage: 5,
       inputSearch: "",
       selectedForUpdate: {},
       dateFrom: "",
@@ -349,10 +362,39 @@ export default {
       }
     };
   },
-  components: { DatePick },
+  components: { DatePick, registerModal },
   props: {},
   watch: {},
   methods: {
+    confirmOrder() {
+      let vm = this;
+      this.$swal({
+        type: "question",
+        title: "Thông báo",
+        text: "Bạn muốn xác nhận đơn hàng này ?",
+        showCancelButton: true
+      }).then(result => {
+        if (result.value) {
+          vm.selected.productList = JSON.stringify(vm.selected.product_list);
+          vm.$store
+            .dispatch("confirmStoreOrder", vm.selected)
+            .then(response => {
+              if (response.data.msg) {
+                let type = "error";
+                vm.$store.dispatch("getStoreOrderList").then(response => {
+                  commonService.checkErrorToken(response, this);
+                });
+                if (response.data.RequestSuccess) type = "success";
+                this.$swal({
+                  type: type,
+                  title: "Thông báo",
+                  text: response.data.msg
+                });
+              }
+            });
+        }
+      });
+    },
     removeProduct(product) {
       for (let i = 0; i < this.productList.length; i++) {
         if (this.productList[i].id == product.id) {
@@ -522,7 +564,8 @@ export default {
         }
       }
       this.tempList = temp;
-      if (flag) this.updateForDate();
+      console.log(this.tempList);
+      if (flag == 1) this.updateForDate();
     },
     updateForDate() {
       let dateFrom = new Date(this.dateFrom).getTime();
@@ -561,6 +604,7 @@ export default {
       return this.total_price;
     },
     loadTempList() {
+      console.log("change");
       return this.tempList;
     },
     loadSelected() {

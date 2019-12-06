@@ -19,7 +19,7 @@
                   <h2 class="modal-title">Chọn Phương Thức Đăng Nhập</h2>
                 </div>
                 <div class="modal-body">
-                  <form class="row">
+                  <div class="row">
                     <div class="col-7">
                       <div class="row">
                         <input
@@ -77,115 +77,74 @@
                         </div>
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </b-tab>
               <b-tab title="Tạo Tài Khoản">
-                <form>
-                  <div
-                    v-if="customerAccountMessage!=''"
-                    class="alert alert-danger"
-                    role="alert"
-                  >{{customerAccountMessage}}</div>
-                  <div class="row">
-                    <div class="col">
-                      <input
-                        id="firstName"
-                        type="text"
-                        class="form-control"
-                        placeholder="Họ tên"
-                        v-model="customer.name"
-                      />
-                    </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="firstName"
+                      type="text"
+                      class="form-control"
+                      placeholder="Họ tên"
+                      v-model="customer.name"
+                    />
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <input class="form-control" placeholder="Tài khoản" v-model="customer.id" />
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      class="form-control"
+                      placeholder="Số điện thoại"
+                      v-model="customer.id"
+                      type="number"
+                    />
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <input
-                        type="password"
-                        class="form-control"
-                        placeholder="Password"
-                        v-model="customer.password"
-                      />
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      type="password"
+                      class="form-control"
+                      placeholder="Password"
+                      v-model="customer.password"
+                    />
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <input
-                        id="confirm-password"
-                        type="password"
-                        class="form-control"
-                        placeholder="Nhập lại mật khẩu"
-                        v-model="confirm"
-                      />
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="confirm-password"
+                      type="password"
+                      class="form-control"
+                      placeholder="Nhập lại mật khẩu"
+                      v-model="confirm"
+                    />
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <input
-                        id="phone"
-                        type="text"
-                        class="form-control"
-                        placeholder="Điện thoại"
-                        v-model="customer.phone"
-                      />
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="address"
+                      type="text"
+                      class="form-control"
+                      placeholder="Địa chỉ"
+                      v-model="customer.address"
+                    />
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <input
-                        id="address"
-                        type="text"
-                        class="form-control"
-                        placeholder="Địa chỉ"
-                        v-model="customer.address"
-                      />
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col">
-                      <div id="Privacy">
-                        Company's Policy Privacy
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsfdlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsfdlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                        <p>dlkfdsklfmklsdmfklsdmlfmdslkfmksdlmfklsdmfkldsmklfmsdlkfmsdkfdsf</p>
-                      </div>
-                    </div>
-                  </div>
+                </div>
 
-                  <div class="row">
-                    <div class="col">
-                      <label for="CheckPrivacy">
-                        <input
-                          id="CheckPrivacy"
-                          @click="checkBox()"
-                          class="text-left"
-                          type="checkbox"
-                          checked
-                        /> Tôi đồng ý với điều khoản của công ty
-                      </label>
-                    </div>
+                <div class="row">
+                  <div class="col">
+                    <button
+                      class="btn btn-primary"
+                      style="width: 100%"
+                      data-dismiss="modal"
+                      @click="createAccount()"
+                    >Tạo tài khoản</button>
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <button
-                        class="btn btn-primary"
-                        style="width: 100%"
-                        @click="createAccount()"
-                      >Tạo tài khoản</button>
-                    </div>
-                  </div>
-                </form>
+                </div>
               </b-tab>
             </b-tabs>
           </div>
@@ -200,13 +159,11 @@ export default {
   data() {
     return {
       showModal: true,
-      checked: true,
       confirm: "",
       customer: {
         id: "",
         name: "",
         password: "",
-        phone: "",
         address: ""
       }
     };
@@ -218,15 +175,51 @@ export default {
     checkBox() {
       this.checked = !this.checked;
     },
+    checkInfo() {
+      if (this.customer.password != this.confirm) {
+        this.$swal.fire({
+          icon: "error",
+          title: "Thông báo",
+          text: "Mật khẩu không trùng khớp"
+        });
+        return false;
+      }
+
+      if (
+        this.customer.id == "" ||
+        this.customer.name == "" ||
+        this.customer.address == "" ||
+        this.customer.password == ""
+      ) {
+        this.$swal.fire({
+          type: "error",
+          title: "Thông báo",
+          text: "Nhập thiếu thông tin"
+        });
+        return false;
+      }
+      return true;
+    },
     createAccount() {
-      if (!this.checked) {
-        alert("Vui lòng chọn đồng ý điều khoản");
-      } else {
-        this.$store.dispatch("insertAccountCustomer", this.customer);
+      if (this.checkInfo()) {
+        this.$store
+          .dispatch("insertAccountCustomer", this.customer)
+          .then(response => this.afterRegister(response));
       }
     },
-    login(typeLogin) {
-      this.customer.typeLogin = typeLogin;
+    afterRegister(response) {
+      if (response.data.msg) {
+        this.$swal({
+          icon: "error",
+          title: "Thông báo",
+          text: response.data.msg
+        });
+      }
+      if (response.data.RequestSuccess) {
+        this.customer = {};
+      }
+    },
+    login() {
       this.$store
         .dispatch("customerLogin", this.customer)
         .then(respone => this.affterLogin(respone));
@@ -239,7 +232,7 @@ export default {
         });
       }
       if (respone.data.token) {
-        localStorage.token = respone.data.token;
+        localStorage.ctoken = respone.data.token;
         this.$router.push({ name: "mypage" });
       }
     }
@@ -282,6 +275,15 @@ export default {
     }
   }
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 .loginBtn {
   box-sizing: border-box;
   position: relative;
@@ -310,7 +312,6 @@ export default {
 .loginBtn:active {
   box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.1);
 }
-
 /* Facebook */
 .loginBtn--facebook {
   background-color: #4c69ba;

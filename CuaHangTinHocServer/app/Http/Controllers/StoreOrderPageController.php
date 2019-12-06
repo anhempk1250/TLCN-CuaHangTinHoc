@@ -42,4 +42,9 @@ class StoreOrderPageController
         $status = new Order_Status();
         return $status->getOrderStatusList();
     }
+
+    public function confirmStoreOrder(Request $request) {
+        $order = new Orders();
+        return $order->confirmStoreOrder($request);
+    }
 }

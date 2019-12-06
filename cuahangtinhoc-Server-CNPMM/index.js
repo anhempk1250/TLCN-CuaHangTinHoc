@@ -22,7 +22,6 @@ https.createServer({
 }, app).listen(8001, function () {
   console.log('https run on 8001')
 })
-// Passport session setup. 
 
 
 passport.serializeUser(function (user, done) {
@@ -32,6 +31,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
+
 
 
 passport.use(new GoogleStrategy({
@@ -98,7 +98,6 @@ passport.use(new FacebookStrategy({
     });
   }
 ));
-
 
 
 

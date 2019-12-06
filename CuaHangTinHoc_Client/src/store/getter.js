@@ -19,6 +19,8 @@ export default {
   storeProductLoading: state => state.store_productState.loading,
   customerAccountObject: state => state.customerAccountState.object,
   customerAccountLoading: state => state.customerAccountState.loading,
+  customerOrderList: state => state.customer_orederState.list,
+  customerOrderLoading: state => state.customer_orederState.loading,
   customerAccountMessage: state => state.customerAccountState.msg,
   storeCategoryList: state => state.store_categoryState.list,
   storeCategoryLoading: state => state.store_categoryState.loading,

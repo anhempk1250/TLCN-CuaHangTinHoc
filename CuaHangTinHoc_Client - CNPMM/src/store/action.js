@@ -571,5 +571,21 @@ export default {
           reject(err)
         })
     })
+  },
+  getStoreProductListFromProductTypePage({ commit }) {
+    const apiUrl = apiConfig.store_productListFromProductTypePage
+    return new Promise((resolve, reject) => {
+      commit('storeProduct_request')
+      axios.get(apiUrl, { params: { token: localStorage.token } })
+        .then(function (response) {
+          commit('storeProduct_success', response.data)
+          //console.log(response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProduct_error')
+          reject(err)
+        })
+    })
   }
 }

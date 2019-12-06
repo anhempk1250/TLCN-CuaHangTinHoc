@@ -19,6 +19,7 @@ var apiUrl = {
   store_categoryFromProductPage: apiAddress + "/storeCategoryFromProductPage",
   store_producerFromProductPage: apiAddress + "/storeProducerFromProductPage",
   store_productType: apiAddress + "/storeProductType",
+  store_productTypeFromType: apiAddress +"/storeProductTypeFromType",
   store_productListFromProductTypePage: apiAddress + "/storeProductListFromProductTypePage",
   storeProductWithType: apiAddress + "/storeProductWithType",
   store_checkToken: apiAddress + "/checkToken",
@@ -27,9 +28,10 @@ var apiUrl = {
   store_orderStatus: apiAddress + "/storeOrderStatus",
   store_customer: apiAddress + "/storeCustomer",
   customerLogin: apiAddress + "/customerLogin",
-  customerLoginFB: apiAddress + "/auth/facebook",
-  customerLoginGG: apiAddress + "/auth/google",
-  customerOrderList : apiAddress + "/orderList"
+  customerLoginSocial: apiAddress + "/loginSocial",
+  customer: apiAddress +"/customer",
+  customerOrder : apiAddress + "/customerOrder",
+  customerOrderSuccess: apiAddress + "/customerOrderSuccess"
 }
 
 exports.apiUrl = apiUrl

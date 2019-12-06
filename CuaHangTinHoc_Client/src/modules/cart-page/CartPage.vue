@@ -135,8 +135,7 @@ export default {
       return x1 + x2;
     },
     checkLogin() {
-      if (localStorage.token) {
-        console.log("here");
+      if (localStorage.ctoken) {
         this.$store
           .dispatch("checkLoginCustomer")
           .then(respone => this.affterCheckLogin(respone));
@@ -146,12 +145,12 @@ export default {
     },
     affterCheckLogin(respone) {
       console.log(respone.data);
-      if (respone.data.user) {
+      if (respone.data.user && JSON.parse(localStorage.cart).length > 0) {
         this.$swal
           .fire({
             title: "Nhập địa chỉ giao hàng",
             input: "textarea",
-            inputValue: "995/56 phường 12 quận 6",
+            inputValue: respone.data.user.address,
             inputPlaceholder: "Địa chỉ giao hàng",
             inputAttributes: {
               "aria-label": "Địa Chỉ giao hàng"
@@ -164,7 +163,29 @@ export default {
       }
     },
     handleOrder(result) {
-      if (result.value) this.$router.push({ name: "mypage" });
+      if (result.value) {
+        let order = {
+          total_price : this.totalPrice,
+          token : localStorage.ctoken,
+          address: result.value,
+          productList: localStorage.cart
+        }
+        this.$store.dispatch('customerOrder', order).then(response => this.afterOrder(response))
+        
+      }
+    },
+    afterOrder(response) {
+        if(response.data.msg) {
+          this.$swal({
+            type: 'success',
+            title: "Thông báo",
+            text: response.data.msg
+          })
+        }
+        if(response.data.RequestSuccess) {
+          localStorage.removeItem('cart');
+           this.$router.push({ path: "/mypage?order=true" });
+        }
     },
     alertFailOrder() {
       this.$swal
@@ -184,7 +205,7 @@ export default {
         title: "Thông báo",
         text: "Bạn muốn xóa sản phẩm khỏi giỏ hàng ?",
         showCancelButton: true
-      }).then(result => this.handleDeleteCartItem(result,id));
+      }).then(result => this.handleDeleteCartItem(result, id));
     },
     handleDeleteCartItem(result, id) {
       if (result.value) {

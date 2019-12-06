@@ -62,4 +62,6 @@ class User extends Authenticatable
                     ->whereRaw(DB::raw('orders.created_at <= orders2.created_at'))->get();
         return $users;
     }
+
+
 }

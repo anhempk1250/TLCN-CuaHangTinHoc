@@ -23,84 +23,25 @@
     </div>
 
     <div class="row">
-      <div class="col-2">Ngày Sinh</div>
+      <div class="col-2">
+        <label for="email">Điện thoại</label>
+      </div>
       <div class="col-5">
-        <div class="row" style="padding:0;">
-          <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Ngày</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Tháng</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="dropdown">
-              <button
-                class="btn btn-default dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >Năm</button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </div>
-          </div>
-        </div>
+        <input v-model="customer.phone" class="form-control" type="text" />
       </div>
     </div>
+   
     <div class="row">
-      <div class="col-2" style="margin-top: 0;">
-        <label for="sex">Giới tính</label>
+      <div class="col-2">
+        <label for="email">Địa chỉ</label>
       </div>
       <div class="col-5">
-        <div class="row" style="padding:0;">
-          <div class="col-4 text-left">
-            <label for="nam">
-              <input type="radio" id="nam" name="sex" checked /> Nam
-            </label>
-          </div>
-          <div class="col-4 text-left">
-            <label for="nu">
-              <input type="radio" id="nu" name="sex" /> Nữ
-            </label>
-          </div>
-        </div>
+        <input v-model="customer.address" class="form-control" type="text" />
       </div>
     </div>
 
-    <div v-if="!customer.facebook_id">
+
+    <div v-if="!customer.password">
       <div class="row">
       <div class="col-5 offset-2 text-left">
         <label>
@@ -135,7 +76,7 @@
 
     <div class="row">
       <div class="col-5 offset-2">
-        <button class="btn btn-warning">Cập nhật</button>
+        <button class="btn btn-warning" @click="updateCustomer">Cập nhật</button>
       </div>
     </div>
   </div>
@@ -144,12 +85,24 @@
 export default {
   data() {
     return {
+
       changePassword: false
     };
   },
   methods: {
     handleChangePassword() {
       this.changePassword = !this.changePassword;
+    },
+    updateCustomer() {
+      this.$store.dispatch('updateCustomer', this.customer).then(response => this.handleUpdate(response))
+    },
+    handleUpdate(response) {
+      if(response.data.msg) {
+        this.$swal({
+          title: 'Thông báo',
+          text: response.data.msg
+        })
+      }
     }
   },
   props: ['customer'],
