@@ -21,7 +21,7 @@ class Orders extends Model
         return $this->belongsTo(User::class,'customer_id');
     }
 
-    public function productList() {
+    public function productList() { //product_list
         return $this->belongsToMany(Product::class
             ,'product_order','order_id','product_id')
             ->withPivot('ProductCount');
@@ -37,6 +37,8 @@ class Orders extends Model
             'list' => $order
         ];
     }
+
+
 
     public function updateOrderStatus(Request $request){
         $order = Orders::find($request->id);
@@ -82,6 +84,7 @@ class Orders extends Model
                 if($product) {
                     if( ($productList[$i]->pivot->ProductCount) > ($product->productCount)) {
                         $msg = 'Sản phẩm '.$product->name.' không đủ số lượng, ';
+                        break;
                     }
                 }
                 $count++;
@@ -101,4 +104,18 @@ class Orders extends Model
         }
     }
 
+    public function cancelStoreOrder(Request $request) {
+        $order = Orders::find($request->id);
+        if($order) {
+            $order->order_status_id = 3;
+            $order->note = $request->note;
+            $order->employe_id = $request->user->id;
+            $order->save();
+            return [
+                'msg' => 'Hủy thành công',
+                'RequestSuccess' => true,
+                'list' => $this->getOrderList()
+            ];
+        }
+    }
 }

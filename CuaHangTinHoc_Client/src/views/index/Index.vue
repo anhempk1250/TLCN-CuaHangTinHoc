@@ -33,6 +33,7 @@ export default {
           text: response.data.msg
         });
         if (localStorage.ctoken) localStorage.removeItem("ctoken");
+        if(localStorage.cname) localStorage.removeItem('cname');
         this.$router.push({ name: "home-page" });
       } else {
         localStorage.cname = this.customerAccountObject.name;

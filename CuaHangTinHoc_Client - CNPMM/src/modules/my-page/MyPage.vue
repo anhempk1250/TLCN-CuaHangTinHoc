@@ -36,17 +36,20 @@ export default {
   },
   methods: {
     handleGetCusInfo(response) {
-      
       if (response.data.errorToken) {
         this.$router.push({ name: "home-page" });
-      if (localStorage.token) localStorage.removeItem('token');
-      if( localStorage.userName) localStorage.removeItem('userName')
+        if (localStorage.token) localStorage.removeItem("ctoken");
+        if (localStorage.cname) localStorage.removeItem("cname");
         this.$swal({
           title: "Thông báo",
           text: response.data.msg
         });
       } else {
-        localStorage.userName = this.customerAccountObject.name;
+        if (this.$route.query.token) {
+          localStorage.cname = this.customerAccountObject.name;
+          localStorage.ctoken = this.$route.query.token;
+          this.$route.query = {};
+        }
       }
     }
   },

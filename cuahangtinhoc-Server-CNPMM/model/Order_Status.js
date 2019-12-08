@@ -2,7 +2,7 @@ let mongooes = require('mongoose')
 let schema = mongooes.Schema
 
 let order_status = new schema({
-  _id: schema.Types.ObjectId,
+  id: Number,
   name: String
 }, {collection: 'order_status'}) 
 

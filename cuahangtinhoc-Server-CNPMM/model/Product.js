@@ -7,6 +7,7 @@ let product = new schema({
   price: Number,
   cost_price: Number,
   description: String,
+  productCount: Number,
   producer: { type: schema.Types.ObjectId, ref: 'producer' },
   product_category_id: { type: schema.Types.ObjectId, ref: 'product_category' },
   product_type_list: [{ type: schema.Types.ObjectId, ref: 'product_product_type' }],

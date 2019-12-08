@@ -6,7 +6,8 @@ let customeraccount = new schema({
   email: String,
   name: String,
   password: String,
-  sex: Boolean
+  address: String,
+  phone: String
 }, {collection: 'customeraccount'})
 
 module.exports = mongoose.model('customeraccount',customeraccount);

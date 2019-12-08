@@ -57,7 +57,7 @@ passport.use(new GoogleStrategy({
           console.log(profile)
           if (!err && customer) {
             let token = jwt.sign({ id: customer.id, name: customer.name, _id: customer._id }, secretKey)
-            return done(null, { token: token, name: customer.name })
+            return done(null, { token: token, cus: customer })
           }
         });
       }
@@ -90,7 +90,7 @@ passport.use(new FacebookStrategy({
           newCustomer.save((err, customer) => {
             console.log(profile)
             let token = jwt.sign({ id: customer.id, name: customer.name, _id: customer._id }, secretKey)
-            return done(null, { token: token, name: customer.name })
+            return done(null, { token: token, cus: customer })
           });
         }
 

@@ -15,7 +15,7 @@
         <i class="fas fa-plus"></i> Thêm mới đơn hàng
       </button>
       <div v-if="control" style="position: absolute;right: 2rem;">
-        <button class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
+        <button class="btn btn-primary" @click="insertOrder()" style="margin-right:0.1rem;">
           <i class="fa fa-check"></i> Lưu
         </button>
         <button class="btn btn-danger" @click="back()">
@@ -79,6 +79,7 @@
       </div>
 
       <b-table
+      bordered
         id="orderTalbe"
         :busy="storeOrderLoading"
         head-variant="light"
@@ -114,7 +115,6 @@
             class="fa fa-edit"
             style="margin-right: 1rem;"
           ></i>
-          <i title="Xóa" class="fa fa-trash"></i>
         </template>
       </b-table>
       <div
@@ -135,10 +135,22 @@
             </div>
             <div class="modal-body">
               <div v-if="loadSelected!= {}" class="row">
-                <label class="col-md-3">Mã đơn hàng: {{loadSelected.id}}</label>
-                <label class="col-md-3">Khách hàng: {{loadSelected.customer.name}}</label>
-                <label class="col-md-3">Ngày bán: {{loadSelected.created_at}}</label>
-                <label class="col-md-3">Trạng thái: {{loadSelected.status.name}}</label>
+                <label class="col-md-3">
+                  Mã đơn hàng:
+                  <b>{{loadSelected.id}}</b>
+                </label>
+                <label class="col-md-3">
+                  Khách hàng:
+                  <b>{{loadSelected.customer.name}}</b>
+                </label>
+                <label class="col-md-3">
+                  Ngày bán:
+                  <b>{{loadSelected.time}}</b>
+                </label>
+                <label class="col-md-3">
+                  Trạng thái:
+                  <b>{{loadSelected.status.name}}</b>
+                </label>
               </div>
               <b-table
                 small
@@ -148,18 +160,48 @@
                 :fields="fieldsDetailProduct"
               >
                 <template v-slot:cell(price)="data">{{fixFormatVND(data.item.price)}}đ</template>
+                <template v-slot:cell(ProductCount)="data">{{loadSelected.ProductCount[data.index]}}</template>
                 <template
                   v-slot:cell(total_price)="data"
-                >{{fixFormatVND(data.item.price * data.item.pivot.ProductCount)}}đ</template>
+                >{{fixFormatVND(data.item.price * loadSelected.ProductCount[data.index])}}đ</template>
               </b-table>
 
               <label>Tổng tiền: {{fixFormatVND(loadSelected.total_price)}}đ</label>
               <button
                 style="position:absolute;right:1rem;"
-                v-if="loadSelected.status.id != 1"
+                v-if="loadSelected.status.id != 1 && loadSelected.status.id != 2"
                 class="btn btn-primary"
                 @click="confirmOrder"
               >Xác nhận đơn hàng</button>
+              <button
+                v-if="loadSelected.status.id != 1 && loadSelected.status.id != 2"
+                style="position:absolute;right: 20rem"
+                data-toggle="collapse"
+                data-target="#collapseExample"
+                class="btn btn-danger"
+              >Hủy đơn hàng</button>
+              <div
+                class="collapse row"
+                style="margin-top:2rem"
+                id="collapseExample"
+                v-if="loadSelected.status.id != 1 && loadSelected.status.id != 2"
+              >
+                <div class="col-md-5">
+                  <input
+                    placeholder="Nhập lý do hủy"
+                    v-model="noteCancel"
+                    class="form-control"
+                    type="text"
+                  />
+                </div>
+                <div class="col-md-1">
+                  <button
+                    v-if="loadSelected.status.id != 1"
+                    @click="cancelOrder"
+                    class="btn btn-danger"
+                  >Hủy</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -289,10 +331,10 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <button class="btn btn-primary save" @click="insertOrder">
+                  <button class="btn btn-primary save" @click="insertOrder()">
                     <i class="fa fa-check"></i> Lưu
                   </button>
-                  <button class="btn btn-danger cancel">
+                  <button class="btn btn-danger cancel" @click="back()">
                     <i class="fa fa-arrow-left"></i> Trở về
                   </button>
                 </div>
@@ -313,10 +355,13 @@ var commonService = new CommonService();
 export default {
   data() {
     return {
+      noteCancel: "",
       fields: [
         { key: "id", label: "Mã đơn hàng" },
         { key: "customer", label: "Tên khách hàng" },
-        { key: "created_at", label: "Ngày bán", sortable: true },
+        { key: "time", label: "Ngày bán", sortable: true },
+        { key: 'note', label: 'Ghi chú'},
+        { key: "address", label: "Địa chỉ" },
         { key: "status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
         { key: "employee", label: "Tên nhân viên" },
@@ -333,13 +378,14 @@ export default {
       fieldsDetailProduct: [
         { key: "id", label: "Mã sản phẩm" },
         { key: "name", label: "Sản phẩm" },
-        { key: "pivot.ProductCount", label: "Số lượng" },
+        { key: "ProductCount", label: "Số lượng" },
         { key: "price", label: "Giá" },
         { key: "total_price", label: "Thành tiền" }
       ],
       note: "",
       customerGive: 0,
       customer_id: "",
+      customer_object_id: "",
       customer_check: false,
       control: false,
       insert: true,
@@ -352,7 +398,7 @@ export default {
       product_id: "",
       productList: [],
       total_price: 0,
-      orderStatus: "",
+      orderStatus: 1,
       tempList: [],
       selected: {
         customer: {},
@@ -371,6 +417,7 @@ export default {
       this.$swal({
         type: "question",
         title: "Thông báo",
+        input: "text",
         text: "Bạn muốn xác nhận đơn hàng này ?",
         showCancelButton: true
       }).then(result => {
@@ -381,10 +428,15 @@ export default {
             .then(response => {
               if (response.data.msg) {
                 let type = "error";
-                vm.$store.dispatch("getStoreOrderList").then(response => {
-                  commonService.checkErrorToken(response, this);
-                });
-                if (response.data.RequestSuccess) type = "success";
+
+                if (response.data.RequestSuccess) {
+                  vm.$store.dispatch("getStoreOrderList").then(response => {
+                    this.updateTempList();
+                    commonService.checkErrorToken(response, this);
+                  });
+                  //jquery("#order_modal").modal("hide");
+                  type = "success";
+                }
                 this.$swal({
                   type: type,
                   title: "Thông báo",
@@ -392,6 +444,38 @@ export default {
                 });
               }
             });
+        }
+      });
+    },
+    cancelOrder() {
+      let vm = this;
+      this.$swal({
+        type: "question",
+        title: "Thông báo",
+        showCancelButton: true
+      }).then(result => {
+        if (result.value) {
+          vm.selected.productList = JSON.stringify(vm.selected.product_list);
+          vm.selected.note = this.noteCancel;
+          vm.$store.dispatch("cancelStoreOrder", vm.selected).then(response => {
+            if (response.data.msg) {
+              let type = "error";
+
+              if (response.data.RequestSuccess) {
+                vm.$store.dispatch("getStoreOrderList").then(response => {
+                  this.updateTempList();
+                  commonService.checkErrorToken(response, this);
+                });
+                //jquery("#order_modal").modal("hide");
+                type = "success";
+              }
+              this.$swal({
+                type: type,
+                title: "Thông báo",
+                text: response.data.msg
+              });
+            }
+          });
         }
       });
     },
@@ -411,7 +495,7 @@ export default {
       this.control = true;
     },
     setUpdate(order) {
-      console.log(order);
+      console.log("set update", order);
       this.selected = order;
     },
     save() {
@@ -476,6 +560,7 @@ export default {
             title: "Thông báo",
             text: "Xác nhận khách hàng thành công"
           });
+          this.customer_object_id = this.storeCustomerList[i]._id;
           this.customer_check = true;
           return 0;
         }
@@ -504,7 +589,7 @@ export default {
         ) {
           let order = {
             total_price: this.total_price,
-            customer_id: this.customer_id,
+            customer_object_id: this.customer_object_id,
             note: this.note,
             productList: JSON.stringify(this.productList)
           };
@@ -532,6 +617,9 @@ export default {
           this.productList = [];
           this.total_price = 0;
           this.note = "";
+          this.$store.dispatch("getStoreOrderList").then(response => {
+            commonService.checkErrorToken(response, this);
+          });
         }
       }
       /* 
@@ -612,25 +700,25 @@ export default {
     }
   },
   created() {
-    this.$store
-      .dispatch("getStoreProductListFromProductTypePage")
-      .then(response => {
-        commonService.checkErrorToken(response, this);
-      });
+    this.$store.dispatch("getStoreProductListFromProductTypePage").then(() => {
+      //commonService.checkErrorToken(response, this);
+    });
     this.$store.dispatch("getStoreOrderList").then(response => {
       commonService.checkErrorToken(response, this);
-    });
-    this.$store.dispatch("getCustomerList").then(response => {
-      commonService.checkErrorToken(response, this);
-    });
-    this.$store.dispatch("getOrderStatusList").then(response => {
-      if (commonService.checkErrorToken(response, this)) {
-        if (response.data.list) {
-          this.orderStatus = response.data.list[0].id;
-          this.updateTempList();
+      this.$store.dispatch("getOrderStatusList").then(response => {
+        if (commonService.checkErrorToken(response, this)) {
+          if (response.data.list) {
+            this.orderStatus = response.data.list[0].id;
+            this.updateTempList();
+          }
         }
-      }
+      });
     });
+    this.$store.dispatch("getCustomerList").then(() => {
+      //commonService.checkErrorToken(response, this);
+    });
+  },
+  mounted() {
   }
 };
 </script>

@@ -23,7 +23,6 @@ class StoreProductPageController extends BaseController
         ]]);
     }
     public function getProduct() {
-
         $product = new Product();
         return $product->getStoreProductList();
     }

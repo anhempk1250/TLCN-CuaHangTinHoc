@@ -62,7 +62,7 @@
                 <template v-slot:cell(name)="data">
                   <div v-if="!edit || data.item.id != selected.id">{{data.item.name}}</div>
                   <div v-if="edit && data.item.id == selected.id">
-                    <input class="form-control" :value="data.item.name" />
+                    <input class="form-control" v-model="selected.name" />
                   </div>
                 </template>
                 <template v-slot:cell(HomePage)="data">
@@ -79,10 +79,13 @@
                   </div>
                 </template>
                 <template v-slot:cell(category.name)="data">
-                  <p v-if="!edit || data.item.id != selected.id">{{data.item.category.name}}</p>
+                  <p
+                    v-if="data.item.category && (!edit || data.item.id != selected.id)"
+                  >{{data.item.category.name}}</p>
+
                   <select
                     v-if="edit && data.item.id == selected.id"
-                    v-model="selected.product_category_id"
+                    v-model="selected.category.id"
                     class="form-control"
                   >
                     <option
@@ -117,7 +120,11 @@
             </div>
           </div>
         </b-tab>
-        <b-tab title="Loại & Sản phẩm" :active="typeAndProduct" @click="selected.id = -1">
+        <b-tab
+          title="Loại & Sản phẩm"
+          :active="typeAndProduct"
+          @click="selected.id = -1;selected = {};"
+        >
           <div class="row">
             <label>
               <h4 style="color:rgb(48, 126, 204)">Danh sách sản phẩm</h4>
@@ -126,11 +133,12 @@
               <input class="form-control" placeholder="Nhập mã sản phẩm" style="margin-bottom:1rem" />
               <b-table
                 head-variant="light"
-                style="font-size: 14px;height: 250px"
+                style="font-size: 12px;height: 300px"
                 sticky-header
                 :fields="fieldsProductOfCategory"
                 :items="storeProductList"
               >
+                <template v-slot:cell(name)="data">{{fixName(data.item.name)}}</template>
                 <template v-slot:table-busy>
                   <div class="text-center text-danger my-2">
                     <b-spinner class="align-middle"></b-spinner>
@@ -174,7 +182,7 @@
               </div>
               <b-table
                 head-variant="light"
-                style="font-size: 14px;height: 200px"
+                style="font-size: 12px;height: 300px"
                 sticky-header
                 :fields="fieldsProductOfType"
                 :items="loadSelected.product_list_with_type"
@@ -194,6 +202,7 @@
                   ></i>
                   <i title="Thêm" class="fa fa-trash" @click="deleteProductFromType(data.item)"></i>
                 </template>
+                <template v-slot:cell(name)="data">{{fixName(data.item.name)}}</template>
               </b-table>
             </div>
           </div>
@@ -238,22 +247,35 @@ export default {
     };
   },
   methods: {
+    fixName(name) {
+      if (name.length > 100) {
+        return name.slice(0, 100) + "...";
+      } else return name;
+    },
     addProductToType(product) {
-      this.$swal({
-        title: "Thông báo",
-        text:
-          "Bạn muốn thêm sản phẩm " +
-          product.id +
-          " vào loại " +
-          this.selected.name +
-          " ?",
-        showCancelButton: true
-      }).then(result => this.handleAddProductToType(result, product));
+      if (this.selected.name) {
+        this.$swal({
+          title: "Thông báo",
+          text:
+            "Bạn muốn thêm sản phẩm " +
+            product.id +
+            " vào loại " +
+            this.selected.name +
+            " ?",
+          showCancelButton: true
+        }).then(result => this.handleAddProductToType(result, product));
+      } else {
+        this.$swal({
+          title: "Thông báo",
+          text: "Bạn chưa chọn loại sản phẩm"
+        });
+      }
     },
     handleAddProductToType(result, product) {
       if (result.value) {
         if (this.selected != {} && this.selected.id != -1) {
           let pwt = {
+            product_Object_id: product._id,
             product_id: product.id,
             product_name: product.name,
             product_type_id: this.selected.id,
@@ -286,6 +308,7 @@ export default {
       if (result.value) {
         if (this.selected != {} && this.selected.id != -1) {
           let pwt = {
+            product_Object_id: product._id,
             product_id: product.id,
             product_name: product.name,
             product_type_id: this.selected.id,
@@ -317,7 +340,9 @@ export default {
       this.selected = type;
     },
     editProductType(type) {
+      //alert('asd')
       this.selected = type;
+      this.selected.product_category_id = type.category.id;
       this.selectedID = type;
       this.edit = true;
     },
@@ -355,6 +380,8 @@ export default {
       if (result.value && this.checkEmpty(this.selected)) {
         if (this.selected.HomePage == true) this.selected.HomePage = 1;
         else this.selected.HomePage = 0;
+        //alert(this.selected.category.id);
+        this.selected.product_category_id = this.selected.category.id;
         this.$store
           .dispatch("updateStoreProductType", this.selected)
           .then(response => this.afterSubmit(response));
@@ -369,6 +396,7 @@ export default {
     },
     handleDeleteProductType(result, type) {
       if (result.value) {
+        type.product_category_id = type.category.id;
         this.$store
           .dispatch("deleteStoreProductType", type)
           .then(response => this.afterSubmit(response));

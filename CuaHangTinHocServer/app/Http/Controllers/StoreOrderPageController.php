@@ -47,4 +47,9 @@ class StoreOrderPageController
         $order = new Orders();
         return $order->confirmStoreOrder($request);
     }
+
+    public function cancelStoreOrder(Request $request) {
+        $order = new Orders();
+        return $order->cancelStoreOrder($request);
+    }
 }

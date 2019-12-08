@@ -17,7 +17,6 @@ exports.requireLogin = function (req, res, next) {
             req.query.employee = employee._id;
             next();
           }
-            
         }
       })
     }
@@ -27,13 +26,13 @@ exports.requireLogin = function (req, res, next) {
 
 exports.requireLoginCustomer = function (req, res, next) {
   jwt.verify(req.query.token, secretKey, function (err, customerAccount) {
-   if (err) res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập', errorToken: true }) // token không hợp hệ
+   if (err) res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập1 ', errorToken: true }) // token không hợp hệ
    else {
     Customer.findOne({ _id: customerAccount._id }, function (err, customer) {
        if (err) res.send(err)
        else {
          if (!customer)
-           res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập', errorToken: true }) // token không hợp hệ
+           res.send({ msg: 'Truy cập bị lỗi, dừng phiên đăng nhập2', errorToken: true }) // token không hợp hệ
          else {
            req.query.token = jwt.sign({ id: customer.id, name: customer.name, _id: customer._id }, secretKey)
            req.query.customer = customer;

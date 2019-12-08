@@ -19,14 +19,17 @@ Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 Route::get('/botman/tinker', 'BotManController@tinker');
 
 // home page
-Route::get('/products','HomePageController@getSummaryProductList');
+//Route::get('/products','HomePageController@getSummaryProductList');
 
 Route::get('/productCategory','HomePageController@getProductCategoryList');
 Route::get('/producers', 'HomePageController@getProducerList');
 Route::get('/productType','HomePageController@getProductTypeList');
 
 
-
+// product list page
+Route::get('/productFromProductListPage', 'ProductListPageController@getProductListFromProductListPage');
+Route::get('/productCategoryFromProductListPage', 'ProductListPageController@getCategoryListFromProductListPage');
+Route::get('/producerFromProductListPage','ProductListPageController@getProducerFromProductListPage');
 
 
 // product detail page
@@ -41,6 +44,8 @@ Route::put('/storeOrders','StoreOrderPageController@updateOrderStatus');
 // customer account
 // register
 Route::post('/customerRegister','CustomerController@register');
+
+
 // login
 Route::get('/customerLogin', 'CustomerController@login');
 // login with social
@@ -59,11 +64,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::get('/customerOrderSuccess', 'CustomerController@getOrderSuccessList');
 
+    Route::post('/customerInsertComment','CustomerController@insertComment');
 });
 
 
-
-Route::get('/test', 'CustomerController@getStoreCustomerList');
 
 
 
@@ -107,10 +111,12 @@ Route::group([
     Route::get('/storeProductListFromProductTypePage',
         'StoreProductTypePageController@getStoreProductListFromProductTypePage');
 
+    // store order
     Route::get('/storeOrder', 'StoreOrderPageController@getOrderList');
     Route::post('/storeOrder', 'StoreOrderPageController@insertStoreOrder');
     Route::patch('/storeOrder', 'StoreOrderPageController@confirmStoreOrder');
     Route::get('/storeOrderStatus', 'StoreOrderPageController@getOrderStatusList');
+    Route::patch('/cancelStoreOrder', 'StoreOrderPageController@cancelStoreOrder');
 
     // store customer page
     Route::get('/storeCustomer','StoreOrderPageController@getCustomerList');

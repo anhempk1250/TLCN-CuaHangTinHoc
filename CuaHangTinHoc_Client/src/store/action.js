@@ -550,20 +550,37 @@ export default {
   getCustomerOrderSuccess({ commit }) {
     let apiUrl = apiConfig.customerOrderSuccess;
     return new Promise((resolve, reject) => {
-      commit('customerOrder_request')
+      commit('customerOrderSs_request')
       axios.get(apiUrl, { params: { token: localStorage.ctoken } })
         .then(function (response) {
-          commit('customerOrder_success', response.data)
-          console.log('day ne quoan',response.data);
+          commit('customerOrderSs_success', response.data)
+          console.log('day ne quoan', response.data);
           resolve(response)
         })
         .catch(function (err) {
-          commit('customerOrder_error')
+          commit('customerOrderSs_error')
           reject(err)
         })
     })
   },
-  cancelCustomerOrder({commit}, order) {
+  insertOrderComment({ commit }, order_product) {
+    order_product.token = localStorage.ctoken;
+    let apiUrl = apiConfig.customerInsertComment;
+    return new Promise((resolve, reject) => {
+      commit('customerOrderSs_request')
+      axios.post(apiUrl,{}, { params: order_product })
+        .then(function (response) {
+          commit('customerOrderSs_success', response.data)
+          console.log('day ne quoan', response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrderSs_error')
+          reject(err)
+        })
+    })
+  },
+  cancelCustomerOrder({ commit }, order) {
     order.token = localStorage.ctoken;
     let apiUrl = apiConfig.customerOrder;
     return new Promise((resolve, reject) => {
@@ -571,7 +588,7 @@ export default {
       axios.delete(apiUrl,
         { params: order })
         .then(function (response) {
-            commit('customerOrder_success', response.data)
+          commit('customerOrder_success', response.data)
           console.log(response.data);
           resolve(response)
         })
@@ -793,7 +810,7 @@ export default {
         })
     })
   },
-  confirmStoreOrder({commit}, order) {
+  confirmStoreOrder({ commit }, order) {
     order.token = localStorage.token;
     const apiUrl = apiConfig.store_order;
     return new Promise((resolve, reject) => {
@@ -809,6 +826,76 @@ export default {
         .catch(function (err) {
           commit('storeOrder_error')
           reject(err)
+        })
+    })
+  },
+  cancelStoreOrder({ commit }, order) {
+    order.token = localStorage.token;
+    const apiUrl = apiConfig.store_cancelOrder;
+    return new Promise((resolve, reject) => {
+      commit('storeOrder_request')
+      axios.patch(apiUrl, {},
+        {
+          params: order
+        })
+        .then(function (response) {
+          commit('storeOrder_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrder_error')
+          reject(err)
+        })
+    })
+  },
+  getProductListFromProductListPage({ commit }) {
+    const apiUrl = apiConfig.productFromProductListPage
+    return new Promise((resolve, reject) => {
+      commit('product_request')
+      axios.get(apiUrl, { params: { token: localStorage.token } })
+        .then(function (response) {
+          commit('product_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('product_error')
+          reject(err)
+        })
+    })
+  },
+  getProductCategoryFromProductListPage({ commit }) {
+    ////console.log(apiConfig)
+    const apiUrl = apiConfig.productCategoryFromProductListPage
+    return new Promise((resolve, reject) => {
+      commit('productCategories_request')
+      axios.get(apiUrl)
+        .then(function (response) {
+          commit('productCategories_success', response.data)
+          resolve(response)
+          ////console.log(response.data, 'action category')
+        })
+        .catch(function (err) {
+          commit('productCategories_error')
+          reject(err)
+        })
+    })
+  },
+  getProducerListFromProductListPage({ commit }) {
+    //////console.log(apiConfig)
+    const apiUrl = apiConfig.producerFromProductListPage
+    return new Promise((resolve, reject) => {
+      commit('producter_request')
+
+      axios.get(apiUrl)
+        .then(function (response) {
+          commit('producer_success', response.data)
+          resolve(response)
+          //////console.log(response.data,'action producer')
+        })
+        .catch(function (err) {
+          commit('producer_error')
+          reject(err)
+
         })
     })
   }

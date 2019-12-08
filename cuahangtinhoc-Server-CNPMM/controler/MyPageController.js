@@ -4,17 +4,7 @@ let ProductOrder = require('../model/Product_Order')
 let Product = require('../model/Product')
 
 exports.checkLoginCustomer = function (req, res) {
-  /**
-   * CustomerAccount.findOne({ _id: req.query.id }, function (err, CustomerAccount) {
-    if (err) res.send({ msg: err })
-    else if (CustomerAccount == null) {
-      res.send('customer does not exist')
-    }
-    else {
-      res.send(CustomerAccount)
-    }
-  }) */
-  res.json({ user: req.query.customer, token: req.query.token });
+  res.json({user: req.query.customer})
 }
 
 exports.getListOders = function (req, res) {
@@ -71,7 +61,7 @@ exports.changePassword = function (req, res) {
     else if (req.query.newpass1 != req.query.newpass2) {
       res.json({ msg: { msg: 'nhập lại mật khẩu không trùng khớp', RequestSuccess: false } })
     }
-    else if (!req.query.newpass1 ){
+    else if (!req.query.newpass1) {
       res.json({ msg: { msg: 'vui lòng nhập mật khẩu mới', RequestSuccess: false } })
     }
     else {

@@ -2,7 +2,6 @@ let mongooes = require('mongoose')
 let schema = mongooes.Schema
 
 let product_type = new schema({
-  _id: schema.Types.ObjectId,
   id: schema.Types.ObjectId,
   name: String,
   HomePage: Boolean,

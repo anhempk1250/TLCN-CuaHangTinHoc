@@ -24,6 +24,7 @@ class Product extends Model
         return $this->hasOne(Image::class);
     }
 
+
     public function discounts()
     {
         return $this->belongsTo(Discount::class);
@@ -72,6 +73,13 @@ class Product extends Model
 
     public function getStoreProductList() {
         $products = Product::with('category','producer','productTypeList','discounts','images','employee')
+            ->get();
+        return ['list' => $products];
+    }
+
+    public function getProductListFromProductListPage() {
+        $products = Product::with('category','producer','productTypeList','discounts','images','employee')
+            ->where('status','=',1)
             ->get();
         return ['list' => $products];
     }

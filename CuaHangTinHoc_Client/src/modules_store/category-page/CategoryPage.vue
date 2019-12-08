@@ -129,7 +129,11 @@
       <button class="btn btn-dark" v-on:click="cancel()">
         <i class="fa fa-window-close"></i> Hủy
       </button>
-      <ModalCategory :insert="insert" v-on:reLoad="loadCategoryList" :categorySelected="loadSelectedForUpdate" />
+      <ModalCategory
+        :insert="insert"
+        v-on:reLoad="loadCategoryList"
+        :categorySelected="loadSelectedForUpdate"
+      />
     </div>
   </div>
 </template>
@@ -171,8 +175,7 @@ export default {
   computed: {
     ...mapGetters({
       categoryList: "storeCategoryList",
-      categoryLoading: "storeCategoryLoading",
-      storeCategory: "storeCategory"
+      categoryLoading: "storeCategoryLoading"
     }),
     loadSelected() {
       return this.selected;

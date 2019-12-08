@@ -43,6 +43,11 @@ class Product_Category extends Model
         return Product_Category::with('productTypes')->where('status','=',1)->get();
     }
 
+    public function getCategoryListFromProductListPage() {
+        return Product_Category::with('productTypes')
+            ->where('id','<>',1)->where('status','=',1)->get();
+    }
+
     public function createCategory(Request $request){
         $productCategory = new Product_Category();
         $productCategory->name =  $request->input("name");

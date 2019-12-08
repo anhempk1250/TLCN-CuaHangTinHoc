@@ -51,7 +51,13 @@ export const store = new Vuex.Store({
       success: false,
       error: false
     },
-    customer_orederState: {
+    customer_orderState: {
+      loading: false,
+      list: [],
+      success: false,
+      error: false
+    },
+    customer_orderStateSs: {
       loading: false,
       list: [],
       success: false,

@@ -15,7 +15,7 @@
         <i class="fas fa-plus"></i> Thêm mới đơn hàng
       </button>
       <div v-if="control" style="position: absolute;right: 2rem;">
-        <button class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
+        <button class="btn btn-primary" @click="insertOrder" style="margin-right:0.1rem;">
           <i class="fa fa-check"></i> Lưu
         </button>
         <button class="btn btn-danger" @click="back()">
@@ -84,6 +84,7 @@
         head-variant="light"
         :fields="fields"
         :items="loadTempList"
+        :current-page="currentPage"
         :per-page="perPage"
       >
         <template v-slot:table-busy>
@@ -114,7 +115,6 @@
             class="fa fa-edit"
             style="margin-right: 1rem;"
           ></i>
-          <i title="Xóa" class="fa fa-trash"></i>
         </template>
       </b-table>
       <div
@@ -153,13 +153,38 @@
                 >{{fixFormatVND(data.item.price * data.item.pivot.ProductCount)}}đ</template>
               </b-table>
 
-              <label>Tổng tiền: {{fixFormatVND(loadSelected.total_price)}}đ</label>
+              <label>
+                <b>
+                  Tổng tiền:
+                  <label style="color: red;">{{fixFormatVND(loadSelected.total_price)}}đ</label>
+                </b>
+              </label>
+              <button
+                style="margin-left: 1rem"
+                class="btn btn-danger"
+                v-if="loadSelected.status.id != 1 && loadSelected.status.id != 3"
+                data-toggle="collapse"
+                data-target="#cancelOrder"
+              >Hủy đơn hàng</button>
               <button
                 style="position:absolute;right:1rem;"
-                v-if="loadSelected.status.id != 1"
+                v-if="loadSelected.status.id != 1 && loadSelected.status.id != 3"
                 class="btn btn-primary"
                 @click="confirmOrder"
               >Xác nhận đơn hàng</button>
+              <div class="row collapse" id="cancelOrder" style="margin-top: 1rem">
+                <div class="col-md-1">
+                  <p>
+                    <b>Lý do:</b>
+                  </p>
+                </div>
+                <div class="col-md-4">
+                  <textarea class="form-control" placeholder="Nhập lý do hủy"></textarea>
+                </div>
+                <div class="col-md-2">
+                  <button @click="cancelOrder" class="btn btn-danger">Xác nhận</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -292,7 +317,7 @@
                   <button class="btn btn-primary save" @click="insertOrder">
                     <i class="fa fa-check"></i> Lưu
                   </button>
-                  <button class="btn btn-danger cancel">
+                  <button class="btn btn-danger cancel" @click="back()">
                     <i class="fa fa-arrow-left"></i> Trở về
                   </button>
                 </div>
@@ -319,7 +344,8 @@ export default {
         { key: "created_at", label: "Ngày bán", sortable: true },
         { key: "status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
-        { key: "employee", label: "Tên nhân viên" },
+        { key: "employee.name", label: "Tên nhân viên" },
+        { key: "note", label: "Ghi chú" },
         { key: "control", label: "" }
       ],
       fieldsOfProduct: [
@@ -384,7 +410,10 @@ export default {
                 vm.$store.dispatch("getStoreOrderList").then(response => {
                   commonService.checkErrorToken(response, this);
                 });
-                if (response.data.RequestSuccess) type = "success";
+                if (response.data.RequestSuccess) {
+                  type = "success";
+                  this.updateTempList();
+                }
                 this.$swal({
                   type: type,
                   title: "Thông báo",
@@ -392,6 +421,35 @@ export default {
                 });
               }
             });
+        }
+      });
+    },
+    cancelOrder() {
+      let vm = this;
+      this.$swal({
+        type: "question",
+        title: "Thông báo",
+        text: "Bạn muốn hủy đơn hàng này ?",
+        showCancelButton: true
+      }).then(result => {
+        if (result.value) {
+          vm.$store.dispatch("cancelStoreOrder", vm.selected).then(response => {
+            if (response.data.msg) {
+              let type = "error";
+              vm.$store.dispatch("getStoreOrderList").then(response => {
+                commonService.checkErrorToken(response, this);
+              });
+              if (response.data.RequestSuccess) {
+                type = "success";
+                this.updateTempList();
+              }
+              this.$swal({
+                type: type,
+                title: "Thông báo",
+                text: response.data.msg
+              });
+            }
+          });
         }
       });
     },

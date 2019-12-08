@@ -84,9 +84,9 @@ export default {
     if(list) {
       state.productHistory.list = JSON.parse(list)
     }
-    if (localStorage.token) {
-      state.customerAccountState.object.name = localStorage.name;
-    }
+    //if (localStorage.token) {
+    //  state.customerAccountState.object.name = localStorage.name;
+    //}
   },
   categoryList_request(state) {
     state.categoryState.loading = true
@@ -124,16 +124,6 @@ export default {
     }
     if (data.msg)
       state.customerAccountState.msg = data.msg
-    if (data.token) {
-      state.customerAccountState.token = data.token
-      localStorage.ctoken = data.token
-    }
-
-    if (data.userName) {
-      state.customerAccountState.object.name = data.userName
-      localStorage.userName = data.userName
-    }
-
   },
   customerAccount_error(state) {
     state.customerAccountState.loading = false
@@ -141,8 +131,8 @@ export default {
   },
   customerLogout(state) {
     localStorage.userName = '';
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
+    localStorage.removeItem("ctoken");
+    localStorage.removeItem("cname");
     state.customerAccountState.object = {};
     window.location.href = 'http://localhost:8081/'
   },
@@ -151,7 +141,7 @@ export default {
   },
   storeCategory_success(state, data) {
     if (data.errorToken) {
-      localStorage.removeItem('token');
+      //localStorage.removeItem('token');
       //location.reload();
     }
     state.store_categoryState.loading = false;
@@ -169,7 +159,7 @@ export default {
   },
   storeOrder_success(state, data) {
     if (data.errorToken) {
-      localStorage.removeItem('token');
+      //localStorage.removeItem('token');
       //location.reload();
     }
     //console.log(data.list)
@@ -188,7 +178,7 @@ export default {
   },
   storeProduct_success(state, data) {
     if (data.errorToken) {
-      localStorage.removeItem('token');
+      //localStorage.removeItem('token');
       //location.reload();
     }
     state.store_productState.loading = false
@@ -209,12 +199,9 @@ export default {
       state.store_authenState.msg = data.msg.msg;
     state.store_authenState.list = data.list;
     state.store_authenState.object = data.employee;
-    state.store_authenState.token = data.token;
-    localStorage.userName = data.userName;
-    if (data.errorToken) {
-      state.store_authenState.msg = data.errorToken;
-      
-    }
+    //state.store_authenState.token = data.token;
+    //localStorage.userName = data.userName;
+    
   },
   authenState_error(state) {
     state.store_authenState.loading = false
@@ -243,5 +230,17 @@ export default {
   storeCustomer_error(state) {
     state.store_customerState.loading = false
     state.store_customerState.error = true
+  },
+  storeOrderStatus_request(state) {
+    state.store_orderStatus_State.loading = true
+  },
+  storeOrderStatus_success(state, data) {
+    state.store_orderStatus_State.loading = false
+    state.store_orderStatus_State.list = data.list
+    state.store_orderStatus_State.success = true
+  },
+  storeOrderStatus_error(state) {
+    state.store_orderStatus_State.loading = false
+    state.store_orderStatus_State.error = true
   }
 }

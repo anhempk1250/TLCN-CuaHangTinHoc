@@ -9,6 +9,7 @@ use App\Product_Order;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use JWTAuth;
 use Illuminate\Routing\Controller as BaseController;
@@ -126,12 +127,15 @@ class CustomerController  extends BaseController
     }
 
     public function getOrderSuccessList(Request $request) {
+
+        $list = DB::table('orders')
+            ->join('product_order','orders.id','=','product_order.order_id')
+            ->join('product','product.id','=','product_order.product_id')
+            ->where('product.status','=',1)
+            ->where('orders.order_status_id', '=', 1)
+            ->where('orders.customer_id','=',$request->user->id)->get();
         return [
-            'list' => Orders::with('status','productList')
-                ->where('customer_id','=',$request->user->id)
-                ->whereHas('status',function ($query){
-                    $query->where('id', 1);
-                })->get()
+            'list' => $list
         ];
     }
 
@@ -146,6 +150,29 @@ class CustomerController  extends BaseController
                 'RequestSuccess' => true,
                 'list' => Orders::with('status','productList')
                     ->where('customer_id','=',$request->user->id)->get()];
+        }
+    }
+
+
+    public function insertComment(Request $request) {
+        $pdo = Product_Order::all()->where('order_id','=',$request->order_id)
+            ->where('product_id','=',$request->product_id)
+            ->first();
+        if($pdo) {
+            //$pdo->comment = $request->comment;
+            //$pdo->stars = $request->stars;
+            DB::table('product_order')->where('order_id','=',$request->order_id)
+                ->where('product_id','=',$request->product_id)
+                ->update(['comment' => $request->comment,'stars' => $request->stars]);
+            return [
+                'msg' => 'Gửi nhận xét thành công',
+                'RequestSuccess' => true
+            ];
+        } else {
+            return [
+                'msg' => 'Không tìm thấy sản phẩm trong đơn hàng',
+                'RequestSuccess' => false
+            ];
         }
     }
 }

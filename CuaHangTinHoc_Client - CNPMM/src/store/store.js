@@ -128,6 +128,15 @@ export const store = new Vuex.Store({
       success: false,
       error: false,
       msg: ''
+    },
+    store_orderStatus_State: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      success: false,
+      error: false,
+      msg: ''
     }
   },
   mutations,

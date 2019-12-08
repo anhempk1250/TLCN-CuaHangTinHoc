@@ -13,7 +13,9 @@
       :items="customerOrderList"
     >
       <template v-slot:cell(total_price)="data">{{fixFormatVND(data.item.total_price)}}đ</template>
-      <template v-slot:cell(status)="data">{{fixFormatVND(data.item.status.name)}}</template>
+      <template v-slot:cell(status)="data">
+        <p v-if="data.item.status">{{fixFormatVND(data.item.status.name)}}</p>
+      </template>
       <template v-slot:table-busy>
         <div class="text-center text-danger my-2">
           <b-spinner class="align-middle"></b-spinner>
@@ -30,7 +32,7 @@
         >Chi tiết</button>
         <button
           class="btn btn-danger btn-sm"
-          :disabled="row.item.status.id!=2"
+          :disabled="row.item.status && row.item.status.id!=2"
           @click="cancelOrder(row.item)"
         >Hủy</button>
       </template>
@@ -60,12 +62,27 @@
             </button>
           </div>
           <div class="modal-body">
-            <label class="col-md-3">Mã đơn hàng: {{loadSelected.id}}</label>
-            <label class="col-md-3">Ngày bán: {{loadSelected.created_at}}</label>
-            <label class="col-md-3">Trạng thái: {{loadSelected.status.name}}</label>
+            <div class="row">
+              <div class="col-md-3 text-left">
+                <b>
+                  <label>Mã đơn hàng: {{loadSelected.id}}</label>
+                </b>
+              </div>
+              <div class="col-md-3 text-left">
+                <b>
+                  <label>Ngày bán: {{loadSelected.created_at}}</label>
+                </b>
+              </div>
+              <div class="col-md-3 offset-md-3 text-left">
+                <b>
+                  <label>Trạng thái: {{loadSelected.status.name}}</label>
+                </b>
+              </div>
+            </div>
             <b-table
               small
               bordered
+              style="font-size: 14px;"
               head-variant="light"
               :items="loadSelected.product_list"
               :fields="fieldsDetailProduct"
@@ -75,8 +92,8 @@
                 v-slot:cell(total_price)="data"
               >{{fixFormatVND(data.item.price * data.item.pivot.ProductCount)}}đ</template>
             </b-table>
-            <div class="row">
-              <div class="col-12 col-md-3">Tổng tiền: {{fixFormatVND(loadSelected.total_price)}}đ</div>
+            <div class="text-left">
+              <b>Tổng tiền: {{fixFormatVND(loadSelected.total_price)}}đ</b>
             </div>
           </div>
         </div>
@@ -150,9 +167,8 @@ export default {
     }
   },
   created() {
-    let vm = this;
-    this.$store.dispatch("getCustomerOrder").then(() => {
-      console.log(vm.customerOrderList, "vinh ơi");
+    this.$store.dispatch("getCustomerOrder").then(response => {
+      commonService.checkErrorToken(response);
     });
   }
 };

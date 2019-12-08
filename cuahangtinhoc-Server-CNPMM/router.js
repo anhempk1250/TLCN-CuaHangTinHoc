@@ -42,21 +42,29 @@ module.exports = router;
 
 // store order
 router.post('/storeOrder', middleware.requireLogin, StorePageController.insertOrder)
+router.patch('/storeOrder', middleware.requireLogin, StorePageController.confirmOrder)
+router.patch('/storeCancelOrder', middleware.requireLogin, StorePageController.cancelOrder)
 router.get('/storeOrder', middleware.requireLogin, StorePageController.getOrder)
 router.get('/storeCustomer', middleware.requireLogin, StorePageController.getCustomerList)
-
+router.get('/storeOrderStatus', middleware.requireLogin, StorePageController.getOrderStatusList)
 // store product
 router.get('/storeProduct', middleware.requireLogin, StorePageController.productList)
 router.post('/storeProduct', middleware.requireLogin, upload.array('images'), StorePageController.insertProduct)
 router.patch('/storeProduct', middleware.requireLogin, upload.array('images'), StorePageController.updateProduct)
+router.patch('/storeUpdateProductWithoutImage',  middleware.requireLogin, StorePageController.updateProduct)
 router.delete('/storeProduct', middleware.requireLogin, StorePageController.deleteProduct)
 router.get('/storeProducerFromProductPage', middleware.requireLogin, StorePageController.loadProducer)
 router.get('/storeCategoryFromProductPage', middleware.requireLogin, StorePageController.loadCategory)
 
 
 router.get('/storeProductType', middleware.requireLogin, StorePageController.productTypeList)
+router.post('/storeProductType', middleware.requireLogin, StorePageController.insertProductType)
+router.patch('/storeProductType', middleware.requireLogin, StorePageController.updateProductType)
+router.delete('/storeProductType', middleware.requireLogin, StorePageController.deleteProductType)
 router.get('/storeProductListFromProductTypePage', middleware.requireLogin, 
 StorePageController.getStoreProductListFromProductTypePage)
+router.post('/storeProductWithType', middleware.requireLogin, StorePageController.addProductToType)
+router.delete('/storeProductWithType', middleware.requireLogin, StorePageController.deleteProductType)
 
 
 
@@ -66,16 +74,11 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login')
 }
 
-/// facebook
-router.get('/account', ensureAuthenticated, function (req, res) {
-  res.render('account', { user: req.user });
-});
-
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
 router.get('/auth/google/callback', passport.authenticate('google'), function (req, res) {
-  let user = JSON.stringify(req.user)
-  res.redirect('http://localhost:8081/mypage?user=' + user)
+  res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
+  //res.send({ token: req.user.token, name: req.user.name })
 })
 
 
@@ -86,8 +89,7 @@ router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' 
 
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook'), function (req, res) {
-    let user = JSON.stringify(req.user)
-    res.redirect('http://localhost:8081/mypage?user=' + user)
+    res.redirect('http://localhost:8081/mypage?token=' + req.user.token)
     //res.send({ token: req.user.token, name: req.user.name })
   });
 // mypage 

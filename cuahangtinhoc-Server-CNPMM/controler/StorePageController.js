@@ -29,13 +29,27 @@ exports.insertOrder = function (req, res) {
   OrderTabController.insertOrder(req, res)
 }
 
+exports.confirmOrder = function (req, res) {
+  OrderTabController.confirmOrder(req, res)
+}
+
+exports.cancelOrder = function(req,res) {
+  OrderTabController.cancelOrder(req,res)
+}
+
 exports.getOrder = function (req, res) {
   OrderTabController.getOrder(req, res)
+}
+
+exports.getOrderStatusList = function (req, res) {
+  OrderTabController.getOrderStatusList(req, res)
 }
 
 exports.getCustomerList = function (req, res) {
   OrderTabController.getCustomerList(req, res)
 }
+
+
 
 // store product
 exports.productList = function (req, res) {
@@ -72,3 +86,23 @@ exports.productTypeList = function (req, res) {
 exports.getStoreProductListFromProductTypePage = function (req, res) {
   ProductTypeTabController.getStoreProductListFromProductTypePage(req, res)
 }
+exports.insertProductType = function (req, res) {
+  ProductTypeTabController.insertProductType(req, res);
+}
+exports.updateProductType = function (req, res) {
+  ProductTypeTabController.updateProductType(req, res)
+}
+
+exports.deleteProductType = function (req, res) {
+  ProductTypeTabController.deleteProductType(req, res)
+}
+
+exports.addProductToType = function (req, res) {
+  ProductTypeTabController.addProductToType(req, res)
+}
+
+exports.deleteProductType = function (req, res) {
+  ProductTypeTabController.deleteProductType(req, res)
+}
+
+

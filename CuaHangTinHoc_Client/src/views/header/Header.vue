@@ -87,21 +87,34 @@
               >
                 <a
                   v-if="category.id!=1"
-                  class="dropdown-item dropdown-toggle"
                   href="#"
+                  class="dropdown-item dropdown-toggle"
+                  @click="goProductListPage(category.id,-1,-1)"
                 >{{category.name}}</a>
                 <ul class="dropdown-menu" style="padding:0;">
                   <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle" href="#">Thương Hiệu</a>
+                    <a
+                      @click="goProductListPage(category.id,-1,-1)"
+                      class="dropdown-item dropdown-toggle"
+                      href="#"
+                    >Thương Hiệu</a>
                     <ul class="dropdown-menu">
                       <li v-for="(producer,index) in producerList" :key="index">
-                        <a class="dropdown-item" href="#">{{producer.name}}</a>
+                        <a
+                          href="#"
+                          class="dropdown-item"
+                          @click="goProductListPage(category.id,-1,producer.id)"
+                        >{{producer.name}}</a>
                       </li>
                     </ul>
                   </li>
                   <div v-if="category.product_types && category.product_types.length > 0">
                     <li v-for="(type,indexType) in category.product_types" :key="indexType">
-                      <a class="dropdown-item" href="#">{{type.name}}</a>
+                      <a
+                        href="#"
+                        class="dropdown-item"
+                        @click="goProductListPage(category.id,type.id, -1)"
+                      >{{type.name}}</a>
                     </li>
                   </div>
                 </ul>
@@ -155,6 +168,16 @@ export default {
     };
   },
   methods: {
+    goProductListPage(categoryID, typeID, producerID) {
+      let params = {
+        categoryID: categoryID,
+        typeID: typeID,
+        producerID: producerID
+      };
+      if (this.$route.name != "productList") {
+        this.$router.push({ name: "productList", params: params });
+      }
+    },
     test() {
       console.log(this.productCategoryList);
     },
@@ -209,7 +232,7 @@ export default {
         "updateProductHistory",
         localStorage.productHistoryList
       );
-    if (localStorage.cname != "") this.userName = localStorage.userName;
+    if (localStorage.cname != "") this.userName = localStorage.cname;
   }
 };
 </script>

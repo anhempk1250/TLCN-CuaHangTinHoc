@@ -473,6 +473,43 @@ export default {
         })
     })
   },
+  updateStoreProductWithoutImage({ commit }, product) {
+    const apiUrl = apiConfig.store_updateProductWithoutImage
+    console.log(product.form);
+    return new Promise((resolve, reject) => {
+      commit('storeProduct_request')
+      const config = {
+        headers: { 'content-type': 'multipart/form-data' }
+      }
+      let formData = new FormData();
+      formData.append('images', product.images[0]);
+      formData.append('images', product.images[1]);
+      formData.append('images', product.images[2]);
+      formData.append('images', product.images[3]);
+      let params = {
+        _id: product._id,
+        id: product.id,
+        name: product.name,
+        product_category_id: product.product_category_id,
+        producer: product.producer_id,
+        productCount: product.productCount,
+        price: product.price,
+        cost_price: product.cost_price,
+        property: product.propertyString,
+        token: localStorage.token
+      }
+      console.log(formData);
+      axios.patch(apiUrl, formData, { params: params }, config)
+        .then(function (response) {
+          commit('storeProduct_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProduct_error')
+          reject(err)
+        })
+    })
+  },
   customerLogin({ commit }, customerAccount) {
     let typeLogin = customerAccount.typeLogin
     let apiUrl = apiConfig.customerLogin;
@@ -522,6 +559,22 @@ export default {
         })
     })
   },
+  getCustomerList({ commit }) {
+    const apiUrl = apiConfig.store_customer
+    return new Promise((resolve, reject) => {
+      commit('storeCustomer_request')
+      axios.get(apiUrl, { params: { token: localStorage.token } })
+        .then(function (response) {
+          commit('storeCustomer_success', response.data)
+          //console.log(response.data,'cus');
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeCustomer_error')
+          reject(err)
+        })
+    })
+  },
   getStoreCustomerList({commit}) {
     const apiUrl = apiConfig.store_customer;
     return new Promise((resolve, reject) => {
@@ -543,27 +596,70 @@ export default {
         })
     })
   },
-  insertStoreOrder({commit}, order) {
-    const config = {
-      headers: { 'content-type': 'multipart/form-data' }
-    }
-    let params = {
-        token: localStorage.token,
-        customer: order.customer,
-        total_price: order.total_price,
-        product_order: order.product_order
-    }
-    console.log(order)
-    const apiUrl = apiConfig.store_order; 
+  insertStoreOrder({ commit }, order) {
+    order.token = localStorage.token;
+    const apiUrl = apiConfig.store_order;
     return new Promise((resolve, reject) => {
       commit('storeOrder_request')
-      axios.post(apiUrl,{},
+      axios.post(apiUrl, {},
         {
-          params: params
-        }, config)
+          params: order
+        })
         .then(function (response) {
           commit('storeOrder_success', response.data)
-          console.log(response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrder_error')
+          reject(err)
+        })
+    })
+  },
+  getOrderStatusList({ commit }) {
+    const apiUrl = apiConfig.store_orderStatus;
+    return new Promise((resolve, reject) => {
+      commit('storeOrderStatus_request')
+      axios.get(apiUrl, { params: { token: localStorage.token } })
+        .then(function (response) {
+          commit('storeOrderStatus_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrderStatus_error')
+          reject(err)
+        })
+    })
+  },
+  confirmStoreOrder({commit}, order) {
+    order.token = localStorage.token;
+    const apiUrl = apiConfig.store_order;
+    return new Promise((resolve, reject) => {
+      commit('storeOrder_request')
+      axios.patch(apiUrl, {},
+        {
+          params: order
+        })
+        .then(function (response) {
+          commit('storeOrder_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeOrder_error')
+          reject(err)
+        })
+    })
+  },
+  cancelStoreOrder({commit}, order) {
+    order.token = localStorage.token;
+    const apiUrl = apiConfig.store_cancelOrder;
+    return new Promise((resolve, reject) => {
+      commit('storeOrder_request')
+      axios.patch(apiUrl, {},
+        {
+          params: order
+        })
+        .then(function (response) {
+          commit('storeOrder_success', response.data)
           resolve(response)
         })
         .catch(function (err) {
@@ -585,6 +681,106 @@ export default {
         .catch(function (err) {
           commit('storeProduct_error')
           reject(err)
+        })
+    })
+  },
+  insertStoreProductType({ commit }, type) {
+    type.token = localStorage.token;
+    const apiUrl = apiConfig.store_productType;
+    return new Promise((resolve, reject) => {
+      commit('storeProductType_request')
+      axios.post(apiUrl, {},
+        {
+          params: type
+        })
+        .then(function (response) {
+          commit('storeProductType_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProductType_error')
+          reject(err)
+          ////console.log(err);
+        })
+    })
+  },
+  updateStoreProductType({ commit }, type) {
+    type.token = localStorage.token;
+    const apiUrl = apiConfig.store_productType;
+    return new Promise((resolve, reject) => {
+      commit('storeProductType_request')
+      axios.patch(apiUrl, {},
+        {
+          params: type
+        })
+        .then(function (response) {
+          commit('storeProductType_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProductType_error')
+          reject(err)
+          ////console.log(err);
+        })
+    })
+  },
+  deleteStoreProductType({ commit }, type) {
+    type.token = localStorage.token;
+    const apiUrl = apiConfig.store_productType;
+    return new Promise((resolve, reject) => {
+      commit('storeProductType_request')
+      axios.delete(apiUrl,
+        {
+          params: type
+        })
+        .then(function (response) {
+          commit('storeProductType_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProductType_error')
+          reject(err)
+          ////console.log(err);
+        })
+    })
+  },
+  addStoreProductToType({ commit }, productWithType) {
+    productWithType.token = localStorage.token;
+    const apiUrl = apiConfig.storeProductWithType;
+    return new Promise((resolve, reject) => {
+      commit('storeProductType_request')
+      axios.post(apiUrl, {},
+        {
+          params: productWithType
+        })
+        .then(function (response) {
+          commit('storeProductType_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProductType_error')
+          reject(err)
+          ////console.log(err);
+        })
+    })
+  },
+  deleteStoreProductFromType({ commit }, productWithType) {
+    productWithType.token = localStorage.token;
+    const apiUrl = apiConfig.storeProductWithType;
+    return new Promise((resolve, reject) => {
+      commit('storeProductType_request')
+      axios.delete(apiUrl,
+        {
+          params: productWithType
+        })
+        .then(function (response) {
+          commit('storeProductType_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeProductType_error')
+          reject(err)
+          ////console.log(err);
         })
     })
   }

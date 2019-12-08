@@ -115,7 +115,7 @@
           </div>
         </template>
         <template v-slot:cell(id)="row">
-          <p style="width:100%;word-break: break-word;">{{row.item.id + "abcyxz"}}</p>
+          <p style="width:100%;word-break: break-word;">{{row.item.id}}</p>
         </template>
         <template v-slot:cell(Name)="row">
           <p style="width:100%;word-break: break-word;">{{formatName(row.item.name)}}</p>
@@ -350,7 +350,7 @@ import $ from "jquery";
 export default {
   data() {
     return {
-      imgLink: "http://localhost:8000/storage/images/",
+      imgLink: "http://localhost:8000/images/",
       images: ["", "", "", ""],
       imagesNewTech: [],
       propertyCount: 0,
@@ -372,7 +372,7 @@ export default {
           key: "id",
           label: "Mã sản phẩm",
           formatter: value => {
-            return "abc" + value;
+            return value;
           }
         },
         { key: "Name", label: "Tên sản phẩm" },
@@ -579,6 +579,8 @@ export default {
       return false;
     },
     checkEmpty() {
+      if(this.checkImage() && this.insert)
+        return false;
       if (
         this.selected.id == "" ||
         this.selected.name == "" ||
@@ -587,7 +589,6 @@ export default {
         this.selected.cost_price == "" ||
         this.categoryIdSelected == -1 ||
         this.producerIdSelected == -1 ||
-        this.checkImage() ||
         this.checkProp()
       ) {
         return true;
@@ -616,9 +617,15 @@ export default {
             .dispatch("insertStoreProduct", this.selected)
             .then(response => this.handleSubmit(response));
         } else {
-          this.$store
+          if(this.checkImage()) {
+            this.$store
+            .dispatch("updateStoreProductWithoutImage", this.selected)
+            .then(response => this.handleSubmit(response));
+          } else {
+            this.$store
             .dispatch("updateStoreProduct", this.selected)
             .then(response => this.handleSubmit(response));
+          }
         }
       } else {
         this.$swal({

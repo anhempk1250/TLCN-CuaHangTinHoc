@@ -2,9 +2,9 @@ export default {
   product_request(state) {
     state.productState.loading = true
   },
-  product_success(state, list) {
+  product_success(state, data) {
     state.productState.loading = false
-    state.productState.list = list
+    state.productState.list = data.list
     state.productState.success = true
   },
   product_error(state) {
@@ -98,16 +98,28 @@ export default {
     state.categoryState.error = true
   },
   customerOrder_request(state) {
-    state.customer_orederState.loading = true
+    state.customer_orderState.loading = true
   },
   customerOrder_success(state, data) {
-    state.customer_orederState.loading = false
-    state.customer_orederState.list = data.list
-    state.customer_orederState.success = true
+    state.customer_orderState.loading = false
+    state.customer_orderState.list = data.list
+    state.customer_orderState.success = true
   },
   customerOrder_error(state) {
-    state.customer_orederState.loading = false
-    state.customer_orederState.error = true
+    state.customer_orderState.loading = false
+    state.customer_orderState.error = true
+  },
+  customerOrderSs_request(state) {
+    state.customer_orderStateSs.loading = true
+  },
+  customerOrderSs_success(state, data) {
+    state.customer_orderStateSs.loading = false
+    state.customer_orderStateSs.list = data.list
+    state.customer_orderStateSs.success = true
+  },
+  customerOrderSs_error(state) {
+    state.customer_orderStateSs.loading = false
+    state.customer_orderStateSs.error = true
   },
   storeProducer_request(state) {
     state.store_producerState.loading = true

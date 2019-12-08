@@ -14,7 +14,7 @@
         >
           <div class="col col-md-2">
             <router-link :to="{name: 'product', params: {id: product.id}}">
-              <img :src="product.image_link" alt="image" style="width:100%;" />
+              <img :src="image_link+ product.id +'/1.png' " alt="image" style="width:100%;" />
             </router-link>
           </div>
           <div class="col col-md-10">
@@ -110,6 +110,7 @@
 export default {
   data() {
     return {
+      image_link: "http://localhost:8000/storage/images/",
       productList: [],
       totalPrice: 0,
       discountCode: "",
@@ -134,8 +135,7 @@ export default {
       return x1 + x2;
     },
     checkLogin() {
-      if (localStorage.token) {
-        console.log("here");
+      if (localStorage.ctoken) {
         this.$store
           .dispatch("checkLoginCustomer")
           .then(respone => this.affterCheckLogin(respone));
@@ -145,29 +145,56 @@ export default {
     },
     affterCheckLogin(respone) {
       console.log(respone.data);
-      if (respone.data.user) {
+      if (respone.data.user && localStorage.cart && JSON.parse(localStorage.cart).length > 0) {
         this.$swal
           .fire({
             title: "Nhập địa chỉ giao hàng",
             input: "textarea",
-            inputValue: "995/56 phường 12 quận 6",
+            inputValue: respone.data.user.address,
             inputPlaceholder: "Địa chỉ giao hàng",
             inputAttributes: {
               "aria-label": "Địa Chỉ giao hàng"
             },
             showCancelButton: true
           })
-          .then((result) => this.handleOrder(result));
+          .then(result => this.handleOrder(result));
       } else {
-        this.alertFailOrder();
+        this.$swal({
+          type: 'error',
+          title: 'Thông báo',
+          text: 'Giỏ hàng rỗng'
+        })
       }
     },
     handleOrder(result) {
-      if (result.value) this.$router.push({ name: "mypage" });
+      if (result.value) {
+        let order = {
+          total_price : this.totalPrice,
+          token : localStorage.ctoken,
+          address: result.value,
+          productList: localStorage.cart
+        }
+        this.$store.dispatch('customerOrder', order).then(response => this.afterOrder(response))
+        
+      }
+    },
+    afterOrder(response) {
+        if(response.data.msg) {
+          this.$swal({
+            type: 'success',
+            title: "Thông báo",
+            text: response.data.msg
+          })
+        }
+        if(response.data.RequestSuccess) {
+          localStorage.removeItem('cart');
+           this.$router.push({ path: "/mypage?order=true" });
+        }
     },
     alertFailOrder() {
       this.$swal
         .fire({
+          type: 'info',
           title: "Xác thực tài khoảng",
           text: "Vui lòng đăng nhập để tiến hành đặt hàng"
         })
@@ -179,12 +206,24 @@ export default {
       this.$router.push({ name: "login" });
     },
     deleteCartItem(id) {
-      alert(this.productList);
-      for (let i = 0; i < this.productList.length; i++) {
-        if (this.productList[i].id == id) {
-          this.productList.splice(i, 1);
-          localStorage.cart = JSON.stringify(this.productList);
-          return 0;
+      this.$swal({
+        title: "Thông báo",
+        text: "Bạn muốn xóa sản phẩm khỏi giỏ hàng ?",
+        showCancelButton: true
+      }).then(result => this.handleDeleteCartItem(result, id));
+    },
+    handleDeleteCartItem(result, id) {
+      if (result.value) {
+        for (let i = 0; i < this.productList.length; i++) {
+          if (this.productList[i].id == id) {
+            this.productList.splice(i, 1);
+            localStorage.cart = JSON.stringify(this.productList);
+            this.$swal({
+              title: "Thông báo",
+              text: "Xóa thành công"
+            });
+            return 0;
+          }
         }
       }
     }

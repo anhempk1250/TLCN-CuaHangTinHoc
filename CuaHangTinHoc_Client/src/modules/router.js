@@ -7,6 +7,7 @@ import CartPage from './cart-page/CartPage.vue'
 import LoginPage from './login-page/LoginPage.vue';
 import PolicyPage from './warranty-policy-page/WarrantyPolicyPage.vue'
 import ShowRoomPage from './show-room-page/ShowRoomPage'
+import ProductListPage from './product-list-page/ProductListPage.vue'
 export default [
     {
         path: '/',
@@ -45,7 +46,7 @@ export default [
         path: '/login',
         name: 'login',
         component: LoginPage
-    }, 
+    },
     {
         path: '/policy',
         name: 'policy',
@@ -55,6 +56,16 @@ export default [
         path: '/showroom',
         name: 'showroom',
         component: ShowRoomPage
+    },
+    {
+        path: '/productList',
+        name: 'productList',
+        meta: {
+            categoryID: '',
+            typeID: '',
+            producerID: '',
+        },
+        component: ProductListPage
     },
     {
         path: '/404',

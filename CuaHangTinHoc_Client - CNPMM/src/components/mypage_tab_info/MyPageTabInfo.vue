@@ -23,51 +23,20 @@
     </div>
 
     <div class="row">
-      <div class="col-2">Ngày Sinh</div>
+      <div class="col-2">
+        <label for="email">Điện thoại</label>
+      </div>
       <div class="col-5">
-        <div class="row" style="padding:0;">
-          <div class="col">
-            <select title="Ngày" class="form-control">
-              <option selected value="-1">Ngày</option>
-              <option v-for="index in 31" :key="index" :value="index">{{index}}</option>
-            </select>
-          </div>
-          <div class="col">
-            <select title="Tháng" class="form-control">
-              <option selected value="-1">Tháng</option>
-              <option v-for="index in 12" :key="index" :value="index">{{index}}</option>
-            </select>
-          </div>
-          <div class="col">
-            <select title="Năm" class="form-control">
-              <option selected value="-1">Năm</option>
-              <option
-                v-for="index in (new Date().getFullYear() - 1981)"
-                :key="index"
-                :value="index"
-              >{{1980 + index}}</option>
-            </select>
-          </div>
-        </div>
+        <input v-model="customer.address" class="form-control" type="text" />
       </div>
     </div>
+
     <div class="row">
-      <div class="col-2" style="margin-top: 0;">
-        <label for="sex">Giới tính</label>
+      <div class="col-2">
+        <label for="email">Địa chỉ</label>
       </div>
       <div class="col-5">
-        <div class="row" style="padding:0;">
-          <div class="col-4 text-left">
-            <label for="nam">
-              <input type="radio" id="nam" name="sex" checked /> Nam
-            </label>
-          </div>
-          <div class="col-4 text-left">
-            <label for="nu">
-              <input type="radio" id="nu" name="sex" /> Nữ
-            </label>
-          </div>
-        </div>
+        <input v-model="customer.address" class="form-control" type="text" />
       </div>
     </div>
 
