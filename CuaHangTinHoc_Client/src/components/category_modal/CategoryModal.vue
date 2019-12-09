@@ -179,14 +179,14 @@ export default {
     },
     AddProperty() {
       if (this.checkSpecialCharacter()) {
-        if(this.category.propertyList) {
+        if (this.category.propertyList) {
           for (let i = 0; i < this.category.propertyList.length; i++) {
-          if (this.category.propertyList[i] == this.inputProperty) {
-            this.notification("Thông báo", "Thuộc tính này đã được thêm vào");
-            return 0;
+            if (this.category.propertyList[i] == this.inputProperty) {
+              this.notification("Thông báo", "Thuộc tính này đã được thêm vào");
+              return 0;
+            }
           }
-        }
-        }
+        } else this.category.propertyList = [];
         this.category.propertyList.push(this.inputProperty);
         this.propertyList = this.category.propertyList;
         this.inputProperty = "";
@@ -266,7 +266,7 @@ export default {
         if (respone.data.msg.RequestSuccess) {
           this.showModal = true;
           this.category = {};
-          this.$emit('reLoad');
+          this.$emit("reLoad");
         }
       }
     },

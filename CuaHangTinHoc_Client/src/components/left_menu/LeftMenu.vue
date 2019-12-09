@@ -33,16 +33,16 @@
       </router-link>
       <router-link :to="{name: 'promotion'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'promotion'}">
-          <i class="fa fa-tachometer"></i> Khuyến Mãi
+          <i class="fa fa-tachometer"></i> Thông báo / Sự kiện
         </button>
       </router-link>
-      <router-link :to="{name: 'sales'}" style="width: 100%;">
+      <router-link v-if="false" :to="{name: 'sales'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'sales'}">
           <i class="fa fa-signal"></i> Doanh Số
         </button>
       </router-link>
 
-      <router-link :to="{name: 'profit'}" style="width: 100%;">
+      <router-link v-if="false" :to="{name: 'profit'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'profit'}">
           <i class="fa fa-usd"></i> Lợi Nhuận
         </button>

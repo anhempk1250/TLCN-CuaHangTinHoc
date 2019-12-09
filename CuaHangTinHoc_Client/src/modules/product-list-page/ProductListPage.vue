@@ -71,11 +71,15 @@
           <ProductItem :loading="productLoading" :product="product"></ProductItem>
         </div>
       </div>
-      <div v-if="loadTempPageList.length == 0" class="text-center" style="width: 100%;">
+      <div
+        v-if="!productLoading && loadTempPageList.length == 0"
+        class="text-center"
+        style="width: 100%;"
+      >
         <img src="https://tiki.vn/desktop/img/account/tiki-not-found-pgae.png" />
         <h3>Không tìm thấy sản phẩm</h3>
       </div>
-      <div v-if="loadLoading">
+      <div v-if="productLoading" class="text-center" style="width:100%;">
         <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
         <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
         <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
@@ -123,7 +127,7 @@ export default {
       ],
       start: 0,
       currentPage: 1,
-      perPage: 1
+      perPage: 20
     };
   },
   methods: {
@@ -134,10 +138,7 @@ export default {
         for (let i = 0; i < productList.length; i++) {
           let id = productList[i].id.toLowerCase();
           let name = productList[i].name.toLowerCase();
-          if (
-            id.includes(inputSearch) ||
-            name.includes(inputSearch)
-          ) {
+          if (id.includes(inputSearch) || name.includes(inputSearch)) {
             arr.push(productList[i]);
           }
         }
@@ -167,11 +168,17 @@ export default {
     updateForCategoryTempList(productList) {
       if (this.categoryIdSelected != -1) {
         let arr = [];
-        for (let i = 0; i < productList.length; i++) {
-          if (productList[i].product_category_id == this.categoryIdSelected) {
-            arr.push(productList[i]);
+        console.log(productList);
+        if (this.categoryIdSelected != 1) {
+          for (let i = 0; i < productList.length; i++) {
+            if (productList[i].product_category_id == this.categoryIdSelected) {
+              arr.push(productList[i]);
+            }
           }
+        } else {
+          arr = productList;
         }
+        console.log(arr, "here");
         this.updateTypeListSelected();
         this.updateForTypeTempList(arr);
       } else {
@@ -180,6 +187,7 @@ export default {
       }
     },
     updateForTypeTempList(productList) {
+      console.log(productList);
       if (this.typeProductIdSelected != -1) {
         let arr = [];
         for (let i = 0; i < productList.length; i++) {
@@ -244,21 +252,21 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.params, "meta");
-    this.$store.dispatch("getProductListFromProductListPage");
     this.$store.dispatch("getProductCategoryFromProductListPage");
     this.$store.dispatch("getProducerListFromProductListPage");
-    if (this.$route.params.categoryID != "") {
-      this.categoryIdSelected = this.$route.params.categoryID;
-      if (this.$route.params.typeID) {
-        this.typeProductIdSelected = this.$route.params.typeID;
-        this.updateTypeListSelected();
+    console.log(this.$route.params, "meta");
+    this.$store.dispatch("getProductListFromProductListPage").then(() => {
+      if (this.$route.params.categoryID) {
+        this.categoryIdSelected = this.$route.params.categoryID;
+        if (this.$route.params.typeID) {
+          this.typeProductIdSelected = this.$route.params.typeID;
+        }
+        if (this.$route.params.producerID) {
+          this.producerIdSelected = this.$route.params.producerID;
+        }
+        this.updateTempList();
       }
-      if (this.$route.params.producerID) {
-        this.producerIdSelected = this.$route.params.producerID;
-      }
-      this.updateTempList();
-    }
+    });
   }
 };
 </script>

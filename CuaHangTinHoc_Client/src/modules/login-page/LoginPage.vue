@@ -131,6 +131,11 @@
         </div>
       </b-tab>
     </b-tabs>
+    <div class="container">
+      {{studentName}}
+      <input v-model="studentName">
+      <button @click="changeName">đổi tên</button>
+    </div>
   </div>
 </template>
 <script>
@@ -138,6 +143,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      studentName: 'Đào Lê Văn Vinh',
       confirm: "",
       customer: {
         id: "",
@@ -148,6 +154,9 @@ export default {
     };
   },
   methods: {
+    changeName(){
+      this.studentName = "Tăng Anh Hào";
+    },
     checkBox() {
       this.checked = !this.checked;
     },
@@ -219,7 +228,7 @@ export default {
       customerAccountObject: "customerAccountObject"
     }),
     loadShowModal() {
-      return this.showModal;
+      return this.studentName;
     }
   }
 };

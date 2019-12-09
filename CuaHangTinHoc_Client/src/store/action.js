@@ -11,12 +11,12 @@ export default {
       axios.get(apiUrl)
         .then(function (response) {
           commit('product_success', response.data)
-          ////console.log(response.data, 'success')
+          //////console.log(response.data, 'success')
           resolve(response)
         })
         .catch(function (err) {
           commit('product_error')
-          ////console.log(err, 'errer')
+          //////console.log(err, 'errer')
           reject(err)
         })
     })
@@ -28,12 +28,12 @@ export default {
       axios.get(apiUrl, { params: { id: id } })
         .then(function (response) {
           commit('product1_success', response.data)
-          ////console.log(response.data, 'success')
+          //////console.log(response.data, 'success')
           resolve(response)
         })
         .catch(function (err) {
           commit('product1_error')
-          ////console.log(err, 'errer')
+          //////console.log(err, 'errer')
           reject(err)
         })
     })
@@ -42,11 +42,11 @@ export default {
     const apiUrl = apiConfig.productDetails
     return new Promise((resolve, reject) => {
       commit('productDetails_request')
-      //console.log(product_id, 'vinh');
+      ////console.log(product_id, 'vinh');
       axios.get(apiUrl, { params: { id: product_id } })
         .then(function (response) {
           commit('productDetails_success', response.data)
-          //console.log(response.data, 'action detail')
+          ////console.log(response.data, 'action detail')
           resolve(resolve)
         })
         .catch(function (err) {
@@ -58,41 +58,41 @@ export default {
 
   },
   getProductCategory({ commit }) {
-    ////console.log(apiConfig)
+    //////console.log(apiConfig)
     const apiUrl = apiConfig.productCategories
     commit('productCategories_request')
     axios.get(apiUrl)
       .then(function (response) {
         commit('productCategories_success', response.data)
-        ////console.log(response.data, 'action category')
+        //////console.log(response.data, 'action category')
       })
       .catch(function () {
         commit('productCategories_error')
       })
   },
   getProducerList({ commit }) {
-    //////console.log(apiConfig)
+    ////////console.log(apiConfig)
     const apiUrl = apiConfig.producer
     commit('producter_request')
 
     axios.get(apiUrl)
       .then(function (response) {
         commit('producer_success', response.data)
-        //////console.log(response.data,'action producer')
+        ////////console.log(response.data,'action producer')
       })
       .catch(function () {
         commit('producer_error')
       })
   },
   getProductTypeList({ commit }) {
-    //////console.log(apiConfig)
+    ////////console.log(apiConfig)
     const apiUrl = apiConfig.productType
     commit('productType_request')
 
     axios.get(apiUrl)
       .then(function (response) {
         commit('productType_success', response.data)
-        //////console.log(response.data,'action product type')
+        ////////console.log(response.data,'action product type')
       })
       .catch(function () {
         commit('productType_error')
@@ -100,13 +100,13 @@ export default {
   },
   addProductHistory({ commit }, product) {
     commit('productHistory_ADD', product)
-    ////console.log(product, 'action nenenen')
+    //////console.log(product, 'action nenenen')
   },
   updateProductHistory({ commit }, list) {
     commit('productHistory_UPDATE', list)
   },
   getCategoryList({ commit }) {
-    //////console.log(apiConfig)
+    ////////console.log(apiConfig)
     const apiUrl = apiConfig.categories
     return new Promise((resolve, reject) => {
       commit('categoryList_request')
@@ -195,7 +195,7 @@ export default {
         .catch(function (err) {
           commit('storeCategory_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -203,7 +203,7 @@ export default {
     const apiUrl = apiConfig.store_category
     return new Promise((resolve, reject) => {
       commit('storeCategory_request')
-      ////console.log(category)
+      //////console.log(category)
       axios.patch(apiUrl, { category: category },
         {
           params: {
@@ -218,13 +218,13 @@ export default {
         })
         .then(function (response) {
           commit('storeCategory_success', response.data)
-          ////console.log(response.data)
+          //////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('storeCategory_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -243,13 +243,13 @@ export default {
         })
         .then(function (response) {
           commit('storeCategory_success', response.data)
-          ////console.log(response.data)
+          //////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('storeCategory_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -260,13 +260,13 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.token } })
         .then(function (response) {
           commit('storeCategory_success', response.data)
-          //console.log(response.data)
+          ////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('storeCategory_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -284,13 +284,13 @@ export default {
         })
         .then(function (response) {
           commit('authenState_success', response.data)
-          //console.log(response.data)
+          ////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('authenState_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -307,13 +307,13 @@ export default {
         })
         .then(function (response) {
           commit('authenState_success', response.data)
-          ////console.log(response.data)
+          //////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('authenState_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -344,13 +344,13 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.token }, employee: true })
         .then(function (response) {
           commit('storeCategory_success', response.data)
-          //console.log(response.data)
+          ////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
           commit('storeCategory_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -376,7 +376,7 @@ export default {
   },
   insertStoreProduct({ commit }, product) {
     const apiUrl = apiConfig.store_insertProduct
-    ////console.log(product.form);
+    //////console.log(product.form);
     return new Promise((resolve, reject) => {
       commit('storeProduct_request')
       const config = {
@@ -397,7 +397,7 @@ export default {
       formData.append('cost_price', product.cost_price);
       formData.append('property', product.propertyString);
       formData.append('token', localStorage.token);
-      //console.log(formData);
+      ////console.log(formData);
       axios.post(apiUrl, formData, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
@@ -431,7 +431,7 @@ export default {
       formData.append('cost_price', product.cost_price);
       formData.append('property', product.propertyString);
       formData.append('token', localStorage.token);
-      //console.log(formData);
+      ////console.log(formData);
       axios.post(apiUrl, formData, config)
         .then(function (response) {
           commit('storeProduct_success', response.data)
@@ -470,7 +470,7 @@ export default {
         { params: customerAccount })
         .then(function (response) {
           commit('customerAccount_success', response.data)
-          ////console.log(response.data);
+          //////console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -487,7 +487,7 @@ export default {
         { params: customerAccount })
         .then(function (response) {
           commit('customerAccount_success', response.data)
-          console.log(response.data);
+          //console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -505,7 +505,7 @@ export default {
         { params: customerAccount })
         .then(function (response) {
           commit('customerAccount_success', response.data)
-          console.log(response.data);
+          //console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -522,7 +522,7 @@ export default {
         { params: order })
         .then(function (response) {
           //  commit('customerOrder_success', response.data)
-          console.log(response.data);
+          //console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -538,7 +538,7 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.ctoken } })
         .then(function (response) {
           commit('customerOrder_success', response.data)
-          console.log(response.data);
+          //console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -554,11 +554,27 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.ctoken } })
         .then(function (response) {
           commit('customerOrderSs_success', response.data)
-          console.log('day ne quoan', response.data);
+          //console.log('day ne quoan', response.data);
           resolve(response)
         })
         .catch(function (err) {
           commit('customerOrderSs_error')
+          reject(err)
+        })
+    })
+  },
+  getCustomerOrderComment({commit}) {
+    let apiUrl = apiConfig.customerOrderComment;
+    return new Promise((resolve, reject) => {
+      commit('customerOrderComment_request')
+      axios.get(apiUrl, { params: { token: localStorage.ctoken } })
+        .then(function (response) {
+          commit('customerOrderComment_success', response.data)
+          //console.log('day ne quoan', response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('customerOrderComment_error')
           reject(err)
         })
     })
@@ -571,7 +587,6 @@ export default {
       axios.post(apiUrl,{}, { params: order_product })
         .then(function (response) {
           commit('customerOrderSs_success', response.data)
-          console.log('day ne quoan', response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -589,7 +604,7 @@ export default {
         { params: order })
         .then(function (response) {
           commit('customerOrder_success', response.data)
-          console.log(response.data);
+          //console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -613,7 +628,7 @@ export default {
         })
         .then(function (response) {
           commit('storeOrder_success', response.data)
-          //console.log(response.data)
+          ////console.log(response.data)
           resolve(response)
         })
         .catch(function (err) {
@@ -634,13 +649,13 @@ export default {
         })
         .then(function (response) {
           commit('storeProductType_success', response.data)
-          //console.log(response.data, 'type')
+          ////console.log(response.data, 'type')
           resolve(response)
         })
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -651,7 +666,7 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.token } })
         .then(function (response) {
           commit('storeProduct_success', response.data)
-          //console.log(response.data);
+          ////console.log(response.data);
           resolve(response)
         })
         .catch(function (err) {
@@ -676,7 +691,7 @@ export default {
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -696,7 +711,7 @@ export default {
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -716,7 +731,7 @@ export default {
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -736,7 +751,7 @@ export default {
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -756,7 +771,7 @@ export default {
         .catch(function (err) {
           commit('storeProductType_error')
           reject(err)
-          ////console.log(err);
+          //////console.log(err);
         })
     })
   },
@@ -767,7 +782,7 @@ export default {
       axios.get(apiUrl, { params: { token: localStorage.token } })
         .then(function (response) {
           commit('storeCustomer_success', response.data)
-          //console.log(response.data,'cus');
+          ////console.log(response.data,'cus');
           resolve(response)
         })
         .catch(function (err) {
@@ -864,7 +879,7 @@ export default {
     })
   },
   getProductCategoryFromProductListPage({ commit }) {
-    ////console.log(apiConfig)
+    //////console.log(apiConfig)
     const apiUrl = apiConfig.productCategoryFromProductListPage
     return new Promise((resolve, reject) => {
       commit('productCategories_request')
@@ -872,7 +887,7 @@ export default {
         .then(function (response) {
           commit('productCategories_success', response.data)
           resolve(response)
-          ////console.log(response.data, 'action category')
+          //////console.log(response.data, 'action category')
         })
         .catch(function (err) {
           commit('productCategories_error')
@@ -881,7 +896,7 @@ export default {
     })
   },
   getProducerListFromProductListPage({ commit }) {
-    //////console.log(apiConfig)
+    ////////console.log(apiConfig)
     const apiUrl = apiConfig.producerFromProductListPage
     return new Promise((resolve, reject) => {
       commit('producter_request')
@@ -890,7 +905,7 @@ export default {
         .then(function (response) {
           commit('producer_success', response.data)
           resolve(response)
-          //////console.log(response.data,'action producer')
+          ////////console.log(response.data,'action producer')
         })
         .catch(function (err) {
           commit('producer_error')

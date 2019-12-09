@@ -127,10 +127,25 @@ class CustomerController  extends BaseController
     }
 
     public function getOrderSuccessList(Request $request) {
-
         $list = DB::table('orders')
             ->join('product_order','orders.id','=','product_order.order_id')
             ->join('product','product.id','=','product_order.product_id')
+            ->whereNull('product_order.comment')
+            ->whereNull('product_order.stars')
+            ->where('product.status','=',1)
+            ->where('orders.order_status_id', '=', 1)
+            ->where('orders.customer_id','=',$request->user->id)->get();
+        return [
+            'list' => $list
+        ];
+    }
+
+    public function getOrderComment(Request $request) {
+        $list = DB::table('orders')
+            ->join('product_order','orders.id','=','product_order.order_id')
+            ->join('product','product.id','=','product_order.product_id')
+            ->whereNotNull('product_order.comment')
+            ->whereNotNull('product_order.stars')
             ->where('product.status','=',1)
             ->where('orders.order_status_id', '=', 1)
             ->where('orders.customer_id','=',$request->user->id)->get();

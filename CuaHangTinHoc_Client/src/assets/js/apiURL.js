@@ -34,6 +34,7 @@ var apiUrl = {
   customerOrder : apiAddress + "/customerOrder",
   customerOrderSuccess: apiAddress + "/customerOrderSuccess",
   customerInsertComment: apiAddress + "/customerInsertComment",
+  customerOrderComment: apiAddress + "/customerOrderComment",
   productFromProductListPage: apiAddress + "/productFromProductListPage",
   productCategoryFromProductListPage: apiAddress + "/productCategoryFromProductListPage",
   producerFromProductListPage: apiAddress + "/producerFromProductListPage"

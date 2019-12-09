@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div class="row" v-if="false">
       <div class="alert alert-success col-12 col-md-12" role="alert">Mã discount hợp lệ</div>
       <div class="alert alert-danger col-12 col-md-12" role="alert">Mã discount không hợp lệ</div>
     </div>
@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top: 1rem;">
+        <div class="row" style="margin-top: 1rem;" v-if="false">
           <div class="col-12 col-md-6 offset-md-1" style="padding:0;">
             <input class="form-control" v-model="discountCode" placeholder="Mã giảm giá" />
           </div>

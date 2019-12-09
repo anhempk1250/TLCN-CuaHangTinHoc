@@ -69,6 +69,7 @@ export default {
   created() {
     if (this.productTypeList.length == 0)
       this.$store.dispatch("getProductTypeList");
+      console.log('creatted');
   }
 };
 </script>

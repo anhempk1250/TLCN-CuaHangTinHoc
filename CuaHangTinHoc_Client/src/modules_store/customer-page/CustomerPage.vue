@@ -24,35 +24,17 @@
         </button>
       </div>
     </div>
-    <div class="row" style="margin-top:1rem;">
-      <div class="col">
-        <b-tabs content-class="mt-3">
-          <b-tab title="Khách hàng" active @click="customerTab()">
-            <template v-slot:title>
-              <i class="fa fa-user"></i> Khách hàng
-            </template>
-            <customerTab></customerTab>
-          </b-tab>
-          <b-tab title="Nhà cung cấp" @click="supplierTab()">
-            <template v-slot:title>
-              <i class="fa fa-truck"></i> Nhà cung cấp
-            </template>
-            <supplierTab></supplierTab>
-          </b-tab>
-        </b-tabs>
-      </div>
-    </div>
+    <customerTab></customerTab>
   </div>
 </template>
 <script>
 import customerTab from "../../components/store_customerpage/CustomerTab";
-import supplierTab from "../../components/store_customerpage/SupplierTab";
 import registerModel from "../../components/login_modal/Login_modal";
 
 export default {
   components: {
     customerTab,
-    supplierTab,
+
     registerModel
   },
   data() {

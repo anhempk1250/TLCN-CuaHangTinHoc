@@ -8,7 +8,11 @@
         <b-tab title="Loại sản phẩm" @click="typeAndProduct = false">
           <div class="row">
             <div class="col-12 col-md-4">
-              <input class="form-control" placeholder="Nhập tên hoặc mã loại sản phẩm" />
+              <input
+                class="form-control"
+                v-model="inputSearch"
+                placeholder="Nhập tên hoặc mã loại sản phẩm"
+              />
             </div>
           </div>
           <div class="row">
@@ -52,6 +56,7 @@
                 :fields="fieldsProductType"
                 :items="storeProductTypeList"
                 :busy="storeProductTypeLoading"
+                :filter="inputSearch"
               >
                 <template v-slot:table-busy>
                   <div class="text-center text-danger my-2">
@@ -123,11 +128,18 @@
               <h4 style="color:rgb(48, 126, 204)">Danh sách sản phẩm</h4>
             </label>
             <div class="col-md-12 container-productList">
-              <input class="form-control" placeholder="Nhập mã sản phẩm" style="margin-bottom:1rem" />
+              <input
+                class="form-control"
+                v-model="inputSearchP"
+                placeholder="Nhập mã sản phẩm"
+                style="margin-bottom:1rem"
+              />
               <b-table
+                small
                 head-variant="light"
-                style="font-size: 14px;height: 250px"
+                style="font-size: 14px;height: 400px"
                 sticky-header
+                :filter="inputSearchP"
                 :fields="fieldsProductOfCategory"
                 :items="storeProductList"
               >
@@ -174,7 +186,8 @@
               </div>
               <b-table
                 head-variant="light"
-                style="font-size: 14px;height: 200px"
+                style="font-size: 14px;height: 400px"
+                small
                 sticky-header
                 :fields="fieldsProductOfType"
                 :items="loadSelected.product_list_with_type"
@@ -209,6 +222,7 @@ var commonService = new CommonService();
 export default {
   data() {
     return {
+      inputSearchP: "",
       type: {
         name: "",
         product_category_id: "",
@@ -217,6 +231,7 @@ export default {
       typeAndProduct: false,
       selectedID: -1,
       selected: {},
+      inputSearch: "",
       edit: false,
       fieldsProductType: [
         { key: "id", label: "Mã loại sản phẩm" },
@@ -384,10 +399,10 @@ export default {
           this.type = {};
           this.selected = {};
           this.edit = false;
-          this.$store.dispatch("getStoreProductType").then(response => {
-            commonService.checkErrorToken(response, this);
-          });
         }
+        this.$store.dispatch("getStoreProductType").then(response => {
+          commonService.checkErrorToken(response, this);
+        });
       }
       /*
       if (response.data.errorToken) {
@@ -417,10 +432,10 @@ export default {
         });
         if (response.data.RequestSuccess) {
           this.selected.product_list_with_type.push(product);
-          this.$store.dispatch("getStoreProductType").then(response => {
-            commonService.checkErrorToken(response);
-          });
         }
+        this.$store.dispatch("getStoreProductType").then(response => {
+          commonService.checkErrorToken(response);
+        });
       }
       /*
       if (response.data.errorToken) {

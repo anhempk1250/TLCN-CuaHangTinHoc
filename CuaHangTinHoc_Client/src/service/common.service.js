@@ -25,4 +25,18 @@ export class CommonService {
       return true
     }
   }
+  checkErrorTokenCustomer(response, vm) {
+    if (response.data.errorToken) {
+      vm.$swal({
+        title: "Error",
+        text: response.data.errorToken
+      }).then(() => {
+        localStorage.removeItem("cname");
+        localStorage.removeItem("ctoken");
+        vm.$router.push({ name: "home-page" });
+      })
+    } else {
+      return true
+    }
+  }
 }

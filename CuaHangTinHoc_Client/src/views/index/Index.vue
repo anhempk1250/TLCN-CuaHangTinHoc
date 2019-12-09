@@ -30,7 +30,7 @@ export default {
       if (response.data.errorToken) {
         this.$swal({
           title: "Thông báo",
-          text: response.data.msg
+          text: response.data.errorToken
         });
         if (localStorage.ctoken) localStorage.removeItem("ctoken");
         if(localStorage.cname) localStorage.removeItem('cname');

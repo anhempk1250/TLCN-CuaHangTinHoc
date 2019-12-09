@@ -6,13 +6,19 @@
           class="form-control row"
           style="width: 100%;margin:0;margin-bottom: 0.5rem;"
           placeholder="Nhập tên hoặc mã khách hàng"
+          v-model="inputSearch"
         />
       </div>
       <div class="col-md-3">
-        <select style="font-size: 14px;" class="form-control">
-          <option selected>Tất cả</option>
-          <option>Khách hàng đã mua hàng</option>
-          <option>Khách hàng chưa mua hàng</option>
+        <select
+          v-model="cusType"
+          @change="updateCusList"
+          style="font-size: 14px;"
+          class="form-control"
+        >
+          <option value="0" selected>Tất cả</option>
+          <option value="1">Khách hàng đã mua hàng</option>
+          <option value="2">Khách hàng chưa mua hàng</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -23,17 +29,23 @@
       <div class="col-md-3">
         <b-pagination
           style="right:1rem;position:absolute;"
-          :total-rows="2"
-          :per-page="1"
-          aria-controls="my-table"
+          v-model="currentPage"
+          :per-page="perPage"
+          :total-rows="loadTempList.length"
+          aria-controls="cusTable"
         ></b-pagination>
       </div>
     </div>
 
     <b-table
-      stickyHeader
+      id="cusTable"
+      small
+      bordered
+      :filter="inputSearch"
+      :per-page="perPage"
+      :current-page="currentPage"
       :fields="fields"
-      :items="storeCustomerList"
+      :items="loadTempList"
       head-variant="light"
       :busy="storeCustomerLoading"
       :sort-by.sync="sortBy"
@@ -55,6 +67,11 @@ var commonService = new CommonService();
 export default {
   data() {
     return {
+      inputSearch: "",
+      cusType: 0,
+      tempList: [],
+      currentPage: 1,
+      perPage: 10,
       transProps: {
         // Transition name
         name: "flip-list"
@@ -97,26 +114,50 @@ export default {
     ...mapGetters({
       storeCustomerList: "storeCustomerList",
       storeCustomerLoading: "storeCustomerLoading"
-    })
+    }),
+    loadTempList() {
+      return this.tempList;
+    }
   },
   methods: {
-    calculateTotalPrice(orders) {
-      let price = 0;
-      for (let i = 0; i < orders.length; i++) {
-        price += orders[i].total_price;
+    updateCusList() {
+      if (this.cusType == 0) this.tempList = this.storeCustomerList;
+      else {
+        let arr = [];
+        if (this.cusType == 1) {
+          for (let i = 0; i < this.storeCustomerList.length; i++) {
+            if (
+              this.calculateTotalPrice(this.storeCustomerList[i].orders) > 0
+            ) {
+              arr.push(this.storeCustomerList[i]);
+            }
+          }
+        } else {
+          for (let i = 0; i < this.storeCustomerList.length; i++) {
+            if (
+              this.calculateTotalPrice(this.storeCustomerList[i].orders) == 0
+            ) {
+              arr.push(this.storeCustomerList[i]);
+            }
+          }
+        }
+        //console.log('tem',arr)
+        this.tempList = arr;
       }
-      return price * 1000;
+    },
+    calculateTotalPrice(orders) {
+      if (orders) {
+        let price = 0;
+        for (let i = 0; i < orders.length; i++) {
+          price += orders[i].total_price;
+        }
+        return price * 1000;
+      } else return 0;
     },
     getLastDeal(orders) {
-      if (orders.length > 0) {
+      if (orders && orders.length > 0) {
         let last = orders[0].created_at;
         for (let i = 0; i < orders.length; i++) {
-          console.log(
-            "1",
-            new Date(last).getTime(),
-            "2",
-            new Date(orders[i].created_at).getTime()
-          );
           if (
             new Date(last).getTime() < new Date(orders[i].created_at).getTime()
           ) {
@@ -141,6 +182,7 @@ export default {
   created() {
     this.$store.dispatch("getCustomerList").then(response => {
       commonService.checkErrorToken(response, this);
+      this.updateCusList();
     });
   }
 };

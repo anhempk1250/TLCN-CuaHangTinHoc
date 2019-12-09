@@ -168,7 +168,7 @@ export default {
   },
   created() {
     this.$store.dispatch("getCustomerOrder").then(response => {
-      commonService.checkErrorToken(response);
+      commonService.checkErrorTokenCustomer(response);
     });
   }
 };

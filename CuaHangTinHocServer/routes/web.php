@@ -65,6 +65,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/customerOrderSuccess', 'CustomerController@getOrderSuccessList');
 
     Route::post('/customerInsertComment','CustomerController@insertComment');
+
+    Route::get('/customerOrderComment', 'CustomerController@getOrderComment');
 });
 
 

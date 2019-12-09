@@ -82,6 +82,7 @@
         id="orderTalbe"
         :busy="storeOrderLoading"
         head-variant="light"
+        :filter="inputSearch"
         :fields="fields"
         :items="loadTempList"
         :current-page="currentPage"

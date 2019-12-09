@@ -121,6 +121,18 @@ export default {
     state.customer_orderStateSs.loading = false
     state.customer_orderStateSs.error = true
   },
+  customerOrderComment_request(state) {
+    state.customer_orderStateComment.loading = true
+  },
+  customerOrderComment_success(state, data) {
+    state.customer_orderStateComment.loading = false
+    state.customer_orderStateComment.list = data.list
+    state.customer_orderStateComment.success = true
+  },
+  customerOrderComment_error(state) {
+    state.customer_orderStateComment.loading = false
+    state.customer_orderStateComment.error = true
+  },
   storeProducer_request(state) {
     state.store_producerState.loading = true
   },

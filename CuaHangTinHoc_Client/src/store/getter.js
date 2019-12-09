@@ -23,6 +23,8 @@ export default {
   customerOrderLoading: state => state.customer_orderState.loading,
   customerOrderSSList: state => state.customer_orderStateSs.list,
   customerOrderSSLoading: state => state.customer_orderStateSs.loading,
+  customerOrderCommentList: state => state.customer_orderStateComment.list,
+  customerOrderCommentLoading: state => state.customer_orderStateComment.loading,
   customerAccountMessage: state => state.customerAccountState.msg,
   storeCategoryList: state => state.store_categoryState.list,
   storeCategoryLoading: state => state.store_categoryState.loading,

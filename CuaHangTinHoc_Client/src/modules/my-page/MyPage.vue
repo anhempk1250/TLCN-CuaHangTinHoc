@@ -16,7 +16,7 @@
         <b-tab @click="loadOrderSuccessList()" title="Nhận xét sản phẩm đã mua" title-item-class="text-left">
           <tabComment />
         </b-tab>
-        <b-tab @click="loadCommentList()" title="Nhận xét của tôi" title-item-class="text-left">
+        <b-tab @click="loadCommentHistory()" title="Nhận xét của tôi" title-item-class="text-left">
           <tabCommentHistory />
         </b-tab>
       </b-tabs>
@@ -43,7 +43,7 @@ export default {
       if (response.data.errorToken) {
         this.$swal({
           title: "Thông báo",
-          text: response.data.msg
+          text: response.data.errorToken
         });
         if (localStorage.ctoken) localStorage.removeItem("ctoken");
         this.$router.push({ name: "home-page" });
@@ -57,8 +57,8 @@ export default {
     loadOrderSuccessList() {
       this.$store.dispatch('getCustomerOrderSuccess')
     },
-    loadCommentList() {
-
+    loadCommentHistory() {
+      this.$store.dispatch("getCustomerOrderComment");
     }
   },
   created() {

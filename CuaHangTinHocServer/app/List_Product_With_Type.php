@@ -37,7 +37,7 @@ class List_Product_With_Type extends Model
         //$productWithType = List_Product_With_Type::where('product_id', '=', $request->product_id )
           //  ->where('product_type_id','=',$request->product_type_id)->first();
         $productWithType = DB::table('list_product_with_type')
-            ->where('product_id', '=', $request->product_id)
+            ->where('addStoreProductToType', '=', $request->product_id)
             ->where('product_type_id','=',$request->product_type_id)
             ->first();
         if($productWithType) {
