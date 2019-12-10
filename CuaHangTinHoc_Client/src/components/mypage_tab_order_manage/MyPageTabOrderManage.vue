@@ -116,6 +116,7 @@ export default {
         { key: "created_at", label: "Thời gian" },
         { key: "total_price", label: "Tổng tiền" },
         { key: "status", label: "Trạng thái" },
+        {key: "note", label: "Lý do"},
         { key: "action", label: "" }
       ],
       fieldsDetailProduct: [

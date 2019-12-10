@@ -41,7 +41,7 @@
             <ProductItem class="product-container" :loading="false" :product="product" />
           </div>
         </div>
-        <a href="#" class="btn btn-outline-primary">Xem Thêm </a>
+        <router-link :to="{name: 'productList'}" class="btn btn-outline-primary">Xem Thêm </router-link>
       </div>
       </div>
     </div>

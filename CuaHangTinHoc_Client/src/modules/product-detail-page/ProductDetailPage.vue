@@ -159,6 +159,7 @@ export default {
       for (let i = 0; i < temp.length; i++) {
         if (temp[i].id == this.productDetailsObject.id) {
           this.$swal({
+            type: 'error',
             title: 'Thông báo',
             text: 'Sản phẩn đã có trong giỏ hàng'
           })
@@ -172,7 +173,7 @@ export default {
         price: this.productDetailsObject.price
       });
       this.$swal({
-        icon: 'success',
+        type: 'success',
         title: 'Thông báo',
         text: "Thêm vào giỏ hàng thành công"
       })

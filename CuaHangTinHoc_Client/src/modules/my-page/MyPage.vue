@@ -62,13 +62,13 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.user) {
-      this.$swal({
+    this.$swal({
         timer: 2000,
         onBeforeOpen: () => {
           this.$swal.showLoading();
         }
       });
+    if (this.$route.query.user) {
       let user = JSON.parse(this.$route.query.user);
       let vm = this;
       this.$store.dispatch("customerLoginSocial", user).then(response => {

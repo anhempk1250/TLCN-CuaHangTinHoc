@@ -173,14 +173,14 @@
                 class="btn btn-primary"
                 @click="confirmOrder"
               >Xác nhận đơn hàng</button>
-              <div class="row collapse" id="cancelOrder" style="margin-top: 1rem">
+              <div class="row collapse" v-if="loadSelected.status.id != 1 && loadSelected.status.id != 3" id="cancelOrder" style="margin-top: 1rem">
                 <div class="col-md-1">
                   <p>
                     <b>Lý do:</b>
                   </p>
                 </div>
                 <div class="col-md-4">
-                  <textarea class="form-control" placeholder="Nhập lý do hủy"></textarea>
+                  <textarea v-model="note" class="form-control" placeholder="Nhập lý do hủy"></textarea>
                 </div>
                 <div class="col-md-2">
                   <button @click="cancelOrder" class="btn btn-danger">Xác nhận</button>
@@ -434,6 +434,7 @@ export default {
         showCancelButton: true
       }).then(result => {
         if (result.value) {
+          vm.selected.note = this.note;
           vm.$store.dispatch("cancelStoreOrder", vm.selected).then(response => {
             if (response.data.msg) {
               let type = "error";

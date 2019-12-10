@@ -57,6 +57,7 @@
                             v-on:click="login(0)"
                             class="btn btn-primary"
                             style="width: 100%;"
+                            type="button"
                           >Đăng Nhập</a>
                         </div>
                       </div>

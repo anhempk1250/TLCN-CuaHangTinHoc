@@ -102,7 +102,7 @@ export default {
             comment: this.comment,
             stars: this.stars
           };
-          alert(this.stars)
+          //alert(this.stars)
           vm.$store
             .dispatch("insertOrderComment", product_order)
             .then(response => {

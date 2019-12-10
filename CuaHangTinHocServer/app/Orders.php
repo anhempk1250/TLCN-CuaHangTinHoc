@@ -109,7 +109,7 @@ class Orders extends Model
         if($order) {
             $order->order_status_id = 3;
             $order->note = $request->note;
-            $order->employe_id = $request->user->id;
+            $order->employee_id = $request->user->id;
             $order->save();
             return [
                 'msg' => 'Hủy thành công',
