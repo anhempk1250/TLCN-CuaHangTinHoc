@@ -1,8 +1,0 @@
-{
-  "auth_token": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTY1ODM1NjkxLCJleHAiOjE1NjY0NDA0OTF9.YSUHGMMSVoNNSlq9F-6ubM5OLrYhtN0FiQG4Yr8vznStHRMJBJjhbc__M7xhdxsv0YP8oysqOU8ih6wLiBs7Tg",
-  "api_url": "http://localhost:8000",
-  "api_url_https": "https://localhost:8001",
-  "base_url": "http://localhost:8081",
-  "client_id": "",
-  "client_secret": ""
-}
