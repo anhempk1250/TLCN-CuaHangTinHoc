@@ -97,9 +97,9 @@
                   <div class="col">
                     <input
                       class="form-control"
-                      placeholder="Số điện thoại"
+                      placeholder="Tài khoản"
                       v-model="customer.id"
-                      type="number"
+                      type="text"
                     />
                   </div>
                 </div>
@@ -127,6 +127,16 @@
                 <div class="row">
                   <div class="col">
                     <input
+                      class="form-control"
+                      placeholder="Số điện thoại"
+                      v-model="customer.phone"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <input
                       id="address"
                       type="text"
                       class="form-control"
@@ -136,7 +146,28 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="!store">
+                  <div class="col">
+                    <button
+                      class="btn btn-primary"
+                      style="width: 100%"
+                      data-dismiss="modal"
+                      @click="createAccount()"
+                    >Tạo tài khoản</button>
+                  </div>
+                </div>
+
+                <div class="row" v-if="store">
+                  <div class="col">
+                    <label style="cursor: pointer">
+                      <input
+                        :disabled="loadManager"
+                        style="cursor: pointer"
+                        type="checkbox"
+                        v-model="Employee"
+                      /> Tài khoản nhân viên?
+                    </label>
+                  </div>
                   <div class="col">
                     <button
                       class="btn btn-primary"
@@ -160,17 +191,29 @@ export default {
   data() {
     return {
       showModal: true,
+      manager: false,
       confirm: "",
+      Employee: false,
       customer: {
         id: "",
         name: "",
         password: "",
-        address: ""
+        address: "",
+        phone: ""
       }
     };
   },
   props: {
     store: Boolean
+  },
+  created() {
+    if (this.store == true) {
+      let vm = this;
+      this.$store.dispatch("getInfoEmployee").then(() => {
+        if (vm.storeEmployeeObject.id_type_of_employee == 1) vm.manager = false;
+        else vm.manager = true;
+      });
+    }
   },
   methods: {
     checkBox() {
@@ -190,7 +233,8 @@ export default {
         this.customer.id == "" ||
         this.customer.name == "" ||
         this.customer.address == "" ||
-        this.customer.password == ""
+        this.customer.password == "" ||
+        this.customer.phone == ""
       ) {
         this.$swal.fire({
           type: "error",
@@ -203,9 +247,16 @@ export default {
     },
     createAccount() {
       if (this.checkInfo()) {
-        this.$store
-          .dispatch("insertAccountCustomer", this.customer)
-          .then(response => this.afterRegister(response));
+        this.$swal.showLoading();
+        if (this.Employee == true) {
+          this.$store
+            .dispatch("insertAccountEmployee", this.customer)
+            .then(response => this.afterRegister(response));
+        } else {
+          this.$store
+            .dispatch("insertAccountCustomer", this.customer)
+            .then(response => this.afterRegister(response));
+        }
       }
     },
     afterRegister(response) {
@@ -241,10 +292,15 @@ export default {
   computed: {
     ...mapGetters({
       customerAccountMessage: "customerAccountMessage",
-      customerAccountObject: "customerAccountObject"
+      customerAccountObject: "customerAccountObject",
+      storeEmployeeObject: "storeEmployeeObject",
+      storeEmployeeLoading: "storeEmployeeLoading"
     }),
     loadShowModal() {
       return this.showModal;
+    },
+    loadManager() {
+      return this.manager;
     }
   }
 };

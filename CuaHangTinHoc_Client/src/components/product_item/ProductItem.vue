@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div
+    <!--v-on:click="pushRouter()"-->
+    <router-link
       class="item"
       @mouseover="hoverItem()"
       @mouseleave="notHoverItem()"
       :class="{'myHover': shadowClass}"
       style="color: black;cursor: pointer;font: 14px Roboto, sans-serif"
-      v-on:click="pushRouter()"
+      :to="{name: 'product', params: {id: product.id}}"
     >
       <div id="productImage">
         <img alt="itemImg" :src="image_link + product.id+'/1.png'" />
@@ -45,7 +46,7 @@
       <div id="productSoldout" v-if="checkSoldOut()">
         <div class="col">Hết hàng {{product.productCount}}</div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script>
@@ -96,7 +97,8 @@ export default {
     },
     fixProductName() {
       let name = this.product.name;
-      if (this.product.name.length > 45) return name.substring(0, 45) + " ...";
+      if (this.product && this.product.name && this.product.name.length > 45)
+        return name.substring(0, 45) + " ...";
       else {
         return name;
       }
@@ -104,8 +106,8 @@ export default {
   },
   created() {
     //if (!this.product.first_image && this.product.images) {
-      //this.product.first_image = {};
-      //this.product.first_image.image_link = this.product.images[0].image_link;
+    //this.product.first_image = {};
+    //this.product.first_image.image_link = this.product.images[0].image_link;
     //}
   }
 };

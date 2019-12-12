@@ -67,7 +67,7 @@ class Product extends Model
 
     public function getProduct(Request $request) {
         $id = $request->input('id');
-        $product = Product::with(['images'])->find($id);
+        $product = Product::with(['category'])->find($id);
         return $product;
     }
 

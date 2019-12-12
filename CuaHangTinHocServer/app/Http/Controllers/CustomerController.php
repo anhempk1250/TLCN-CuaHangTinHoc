@@ -32,7 +32,6 @@ class CustomerController  extends BaseController
 
     public function login(Request $request) {
         $customer = User::find($request->input('id'));
-
             if($customer && Hash::check($request->password, $customer->password)) {
                 $credentials = $request->only('id', 'password');
                 $token = JWTAuth::attempt($credentials);

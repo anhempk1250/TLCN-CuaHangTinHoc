@@ -346,6 +346,7 @@ export default {
         { key: "status", label: "Trạng thái" },
         { key: "total_price", label: "Tổng tiền" },
         { key: "employee.name", label: "Tên nhân viên" },
+        { key: "address", label: "Địa chỉ"},
         { key: "note", label: "Ghi chú" },
         { key: "control", label: "" }
       ],

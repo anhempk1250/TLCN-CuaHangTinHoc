@@ -28,10 +28,10 @@
       </router-link>
       <router-link :to="{name: 'customer'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'customer'}">
-          <i class="fa fa-users"></i> Khách Hàng
+          <i class="fa fa-users"></i> Tài khoản
         </button>
       </router-link>
-      <router-link :to="{name: 'promotion'}" style="width: 100%;">
+      <router-link v-if="false" :to="{name: 'promotion'}" style="width: 100%;">
         <button class="btn" :class="{'active': $route.name == 'promotion'}">
           <i class="fa fa-tachometer"></i> Thông báo / Sự kiện
         </button>

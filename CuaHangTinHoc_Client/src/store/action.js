@@ -4,6 +4,11 @@ var commonService = new CommonService();
 
 const apiConfig = require('../assets/js/apiURL').apiUrl
 export default {
+  updateProductCountInCart({ commit }) {
+    if (localStorage.cart) {
+      commit('updateProductCount')
+    }
+  },
   getProductList({ commit }) {
     const apiUrl = apiConfig.products
     return new Promise((resolve, reject) => {
@@ -52,6 +57,22 @@ export default {
         .catch(function (err) {
 
           commit('productDetails_error')
+          reject(err)
+        })
+    })
+
+  },
+  getCommentProductList({ commit }, product_id) {
+    const apiUrl = apiConfig.commentProduct
+    return new Promise((resolve, reject) => {
+      commit('commentProductList_request')
+      axios.get(apiUrl, { params: { id: product_id } })
+        .then(function (response) {
+          commit('commentProductList_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('commentProductList_error')
           reject(err)
         })
     })
@@ -563,7 +584,7 @@ export default {
         })
     })
   },
-  getCustomerOrderComment({commit}) {
+  getCustomerOrderComment({ commit }) {
     let apiUrl = apiConfig.customerOrderComment;
     return new Promise((resolve, reject) => {
       commit('customerOrderComment_request')
@@ -584,7 +605,7 @@ export default {
     let apiUrl = apiConfig.customerInsertComment;
     return new Promise((resolve, reject) => {
       commit('customerOrderSs_request')
-      axios.post(apiUrl,{}, { params: order_product })
+      axios.post(apiUrl, {}, { params: order_product })
         .then(function (response) {
           commit('customerOrderSs_success', response.data)
           resolve(response)
@@ -911,6 +932,88 @@ export default {
           commit('producer_error')
           reject(err)
 
+        })
+    })
+  },
+  insertAccountEmployee({ commit }, employeeAccount) {
+    const apiUrl = apiConfig.store_employee;
+    let data = {
+      name: employeeAccount.name,
+      id: employeeAccount.id,
+      password: employeeAccount.password,
+      phone: employeeAccount.phone,
+      address: employeeAccount.address,
+      token: localStorage.token
+    }
+    console.log(commit)
+    return new Promise((resolve, reject) => {
+      axios.post(apiUrl, data)
+        .then(function (response) {
+          resolve(response)
+        })
+        .catch(function (err) {
+          reject(err)
+        })
+    })
+  },
+  updateAccountEmployee({ commit }, employeeAccount) {
+    const apiUrl = apiConfig.store_employee;
+    let data = {
+      name: employeeAccount.name,
+      id: employeeAccount.id,
+      password: employeeAccount.password,
+      phone: employeeAccount.phone,
+      address: employeeAccount.address,
+      changePassword: employeeAccount.changePassword,
+      token: localStorage.token
+    }
+    console.log(commit)
+    return new Promise((resolve, reject) => {
+      commit('storeEmployee_request');
+      axios.patch(apiUrl, {}, { params: data })
+        .then(function (response) {
+          commit('storeEmployee_success', response.data);
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeEmployee_error', err);
+          reject(err)
+        })
+    })
+  },
+  getInfoEmployee({ commit }) {
+    const apiUrl = apiConfig.store_infor;
+    return new Promise((resolve, reject) => {
+      let data = {
+        token: localStorage.token
+      }
+      commit('storeEmployee_request');
+      axios.get(apiUrl, { params: data })
+        .then(function (response) {
+          commit('storeEmployee_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeEmployee_error', err)
+          reject(err)
+        })
+    })
+  },
+  getEmployeeAccountList({ commit }) {
+    const apiUrl = apiConfig.store_employee;
+    let data = {
+      token: localStorage.token
+    }
+    return new Promise((resolve, reject) => {
+      commit('storeEmployee_request');
+      axios.get(apiUrl, { params: data })
+        .then(function (response) {
+          commit('storeEmployee_success', response.data)
+          resolve(response)
+        })
+        .catch(function (err) {
+          commit('storeEmployee_error', err)
+          reject(err)
         })
     })
   }

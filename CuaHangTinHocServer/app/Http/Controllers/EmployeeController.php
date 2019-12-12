@@ -52,4 +52,63 @@ class EmployeeController extends  BaseController
         }
         return ['msg' => 'Tài khoản hoặc mật khẩu không chính xác'];
     }
+
+    public function insertEmployeeAccount(Request $request) {
+        $emp = EmployeeAccount::find($request->id);
+        if(!$emp) {
+            $emp = new EmployeeAccount();
+            $emp->id = $request->id; // this is phone
+            $emp->name = $request->name;
+            $emp->phone = $request->phone;
+            $emp->address = $request->address;
+            $emp->password = Hash::make($request->password);
+            $emp->id_type_of_employee = 2;
+            $emp->save();
+            return [
+                'msg' => 'Thêm khách hàng thành công',
+                'RequestSuccess' => true
+            ];
+        }
+        return [
+            'msg' => 'Tài khoản đã tồn tại !!!',
+            'RequestSucess' => false
+        ];
+    }
+
+    public function updateEmployeeAccount(Request $request) {
+        $emp = EmployeeAccount::find($request->id);
+        if($emp) {
+            $emp->name = $request->name;
+            $emp->phone = $request->phone;
+            $emp->address = $request->address;
+            if($request->changePassword == true)
+                $emp->password = Hash::make($request->password);
+            $emp->save();
+            return [
+                'msg' => 'Cập nhật thành công',
+                'object' => $emp,
+                'RequestSuccess' => true
+            ];
+        }
+        return [
+            'msg' => 'Không tìm thấy tài khoản !!!',
+            'RequestSucess' => false
+        ];
+    }
+
+
+    public function getEmployeeAccountList(Request $request) {
+        return [
+            'list' => EmployeeAccount::all()
+        ];
+    }
+
+    public function getInfoEmployee(Request $request) {
+        $employee = EmployeeAccount::find($request->user->id);
+        if($employee) {
+            return [
+                'object' => $employee
+            ];
+        }
+    }
 }

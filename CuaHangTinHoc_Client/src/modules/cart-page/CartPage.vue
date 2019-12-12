@@ -19,18 +19,36 @@
           </div>
           <div class="col col-md-10">
             <div class="row" style="padding: 1rem;">
-              <div class="col-6 col-md-10 text-left">
+              <div class="col-6 col-md-9 text-left">
                 <div>{{product.name}}</div>
               </div>
-              <div class="col-6 col-md-2 text-right">
+              <div class="col-6 col-md-3 text-right">
                 <div>
                   <b>{{fixFormatVND(product.price)}}đ</b>
                 </div>
-                <div style="color: red;">
-                  <strong>Số lượng: {{product.count}}</strong>
-                </div>
                 <div style="margin-top: 1rem;">
                   <button class="btn btn-danger btn-sm" @click="deleteCartItem(product.id)">Xóa</button>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="padding: 1rem;">
+              <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    v-on:click="(product.count > 1) ? product.count-- : ''"
+                  >-</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    style="background-color: white;color:black;cursor:auto"
+                  >{{product.count}}</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    v-on:click="(product.count < product.productCount) ? product.count++ : ''"
+                  >+</button>
                 </div>
               </div>
             </div>
@@ -120,6 +138,7 @@ export default {
   created() {
     if (localStorage.cart) {
       this.productList = JSON.parse(localStorage.cart);
+      console.log(this.productList);
     }
   },
   methods: {
@@ -144,20 +163,26 @@ export default {
       }
     },
     affterCheckLogin(respone) {
-      console.log(respone.data);
-      if (respone.data.user && JSON.parse(localStorage.cart).length > 0) {
-        this.$swal
-          .fire({
-            title: "Nhập địa chỉ giao hàng",
-            input: "textarea",
-            inputValue: respone.data.user.address,
-            inputPlaceholder: "Địa chỉ giao hàng",
-            inputAttributes: {
-              "aria-label": "Địa Chỉ giao hàng"
-            },
-            showCancelButton: true
-          })
-          .then(result => this.handleOrder(result));
+      if (respone.data.user) {
+        if (this.productList.length > 0) {
+          this.$swal
+            .fire({
+              title: "Nhập địa chỉ giao hàng",
+              input: "textarea",
+              inputValue: respone.data.user.address,
+              inputPlaceholder: "Địa chỉ giao hàng",
+              inputAttributes: {
+                "aria-label": "Địa Chỉ giao hàng"
+              },
+              showCancelButton: true
+            })
+            .then(result => this.handleOrder(result));
+        } else {
+          this.$swal({
+            type: "info",
+            text: "Giỏ hàng rỗng, không thể đặt hàng"
+          });
+        }
       } else {
         this.alertFailOrder();
       }
@@ -165,27 +190,29 @@ export default {
     handleOrder(result) {
       if (result.value) {
         let order = {
-          total_price : this.totalPrice,
-          token : localStorage.ctoken,
+          total_price: this.totalPrice,
+          token: localStorage.ctoken,
           address: result.value,
           productList: localStorage.cart
-        }
-        this.$store.dispatch('customerOrder', order).then(response => this.afterOrder(response))
-        
+        };
+        this.$store
+          .dispatch("customerOrder", order)
+          .then(response => this.afterOrder(response));
+          this.$store.dispatch('updateProductCountInCart')
       }
     },
     afterOrder(response) {
-        if(response.data.msg) {
-          this.$swal({
-            type: 'success',
-            title: "Thông báo",
-            text: response.data.msg
-          })
-        }
-        if(response.data.RequestSuccess) {
-          localStorage.removeItem('cart');
-           this.$router.push({ path: "/mypage?order=true" });
-        }
+      if (response.data.msg) {
+        this.$swal({
+          type: "success",
+          title: "Thông báo",
+          text: response.data.msg
+        });
+      }
+      if (response.data.RequestSuccess) {
+        localStorage.removeItem("cart");
+        this.$router.push({ path: "/mypage?order=true" });
+      }
     },
     alertFailOrder() {
       this.$swal
@@ -196,8 +223,8 @@ export default {
         .then(() => this.handleLoginForCart());
     },
     handleLoginForCart() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("name");
+      localStorage.removeItem("ctoken");
+      localStorage.removeItem("cname");
       this.$router.push({ name: "login" });
     },
     deleteCartItem(id) {
@@ -217,6 +244,7 @@ export default {
               title: "Thông báo",
               text: "Xóa thành công"
             });
+            this.$store.dispatch("updateProductCountInCart");
             return 0;
           }
         }
@@ -230,7 +258,7 @@ export default {
     loadTotalPrice() {
       let totalPrice = 0;
       this.productList.forEach(product => {
-        totalPrice += product.price;
+        totalPrice += product.price * product.count;
       });
       return totalPrice;
     },

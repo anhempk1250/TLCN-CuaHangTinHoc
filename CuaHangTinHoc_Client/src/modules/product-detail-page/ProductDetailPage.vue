@@ -1,12 +1,12 @@
 <template>
-  <div style="background-color: #e9ebea">
+  <div style="background-color: #e9ebea;">
     <div v-if="productDetailsLoading">
       <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
       <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
       <b-spinner variant="primary" type="grow" style="width: 100px;height:100px;"></b-spinner>
     </div>
     <div class="row" style="background-color: white;" v-if="!productDetailsLoading">
-      <div class="col-md-5">
+      <div class="col-md-5" style="margin-bottom: 2rem">
         <div class="row">
           <div class="col-md-2">
             <div class="row" v-for="(index) in 4" :key="index">
@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-7">
+      <div class="col-md-7" style="margin-bottom: 2rem">
         <div class="row">
           <div class="col">
             <br />
@@ -73,19 +73,20 @@
       </div>
     </div>
     <h3 class="text-left" style="margin-top: 3rem" v-if="!productDetailsLoading">Thông tin chi tiết</h3>
-    <div class="row" v-if="!productDetailsLoading">
+    <div class="row" v-if="!productDetailsLoading 
+      && productDetailsObject">
       <div class="col-md-8" style="padding:1rem 1rem 0 1rem;background-color: white;">
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th style="width: 15%;">Số thứ tự</th>
-              <th>Thuộc tính sản phẩm</th>
+              <th style="width: 30%;">Thuộc tính sản phẩm</th>
+              <th>Mô tả tính sản phẩm</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(prop, index) in formatDescription()" :key="index">
-              <td>{{index + 1}}</td>
-              <td>{{prop}}</td>
+              <td>{{(productDetailsObject.category.property.split("___")[index]).split("_")[1]}}</td>
+              <td class="text-left">{{prop}}</td>
             </tr>
           </tbody>
         </table>
@@ -97,10 +98,48 @@
         />
       </div>
     </div>
+
+    <div v-if="!productDetailsLoading" style="margin-top: 2rem">
+      <h3 class="text-left">Chấm điểm & đánh giá từ người mua</h3>
+      <div class="row" v-if="productDetailsObject" style="background-color:white">
+        <div class="col-md-3" style="border: 1px solid #e9ebea;padding: 1rem">
+          <ProductItem :product="productDetailsObject"></ProductItem>
+          <div class="row" style="margin-top: 1rem;">
+            <div class="col">
+              <StarsRating
+              :star-size="20"
+              :show-rating="false"
+              :read-only="true"
+              :increment="0.5"
+              :rating="loadAvgStar"
+            ></StarsRating>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="comment" v-for="(comment,index) in commentProductList" :key="index">
+            <p>{{comment.order.customer.name}}</p>
+            <p>
+              <b>{{comment.comment}}</b>
+            </p>
+            <p>
+              <StarsRating
+                :star-size="20"
+                :show-rating="false"
+                :read-only="true"
+                :rating="comment.stars"
+              ></StarsRating>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import StarsRating from "vue-star-rating";
+import ProductItem from "../../components/product_item/ProductItem.vue";
 import zoom from "vue-piczoom";
 export default {
   data() {
@@ -108,10 +147,11 @@ export default {
       tempID: "",
       indexImage: 1,
       productCount: 1,
-      image_link: "http://localhost:8000/storage/images/"
+      image_link: "http://localhost:8000/storage/images/",
+      avgStar: 0
     };
   },
-  components: { zoom },
+  components: { zoom, StarsRating, ProductItem },
   methods: {
     test() {
       console.log(this.productDetailsObject);
@@ -159,10 +199,11 @@ export default {
       for (let i = 0; i < temp.length; i++) {
         if (temp[i].id == this.productDetailsObject.id) {
           this.$swal({
-            type: 'error',
-            title: 'Thông báo',
-            text: 'Sản phẩn đã có trong giỏ hàng'
-          })
+            type: "info",
+            title: "Thông báo",
+            html:
+              '<p style="color: red">Sản phẩn đã có trong giỏ hàng</p>(Bạn có thể tăng số lượng tại giỏ hàng)'
+          });
           return -1;
         }
       }
@@ -170,14 +211,16 @@ export default {
         id: this.productDetailsObject.id,
         name: this.productDetailsObject.name,
         count: this.productCount,
-        price: this.productDetailsObject.price
+        price: this.productDetailsObject.price,
+        productCount: this.productDetailsObject.productCount
       });
       this.$swal({
-        type: 'success',
-        title: 'Thông báo',
+        type: "success",
+        title: "Thông báo",
         text: "Thêm vào giỏ hàng thành công"
-      })
+      });
       localStorage.cart = JSON.stringify(temp);
+      this.$store.dispatch("updateProductCountInCart");
     }
   },
   computed: {
@@ -185,12 +228,15 @@ export default {
       console.log(this.$route.params.id);
       return this.$route.params.id;
     },
+    loadAvgStar() {
+      return this.avgStar;
+    },
     loadImage() {
       return (
         this.image_link +
         this.productDetailsObject.id +
         "/" +
-        (this.indexImage) +
+        this.indexImage +
         ".png"
       );
     },
@@ -199,16 +245,30 @@ export default {
     },
     ...mapGetters({
       productDetailsObject: "productDetailsObject",
-      productDetailsLoading: "productDetailsLoading"
+      productDetailsLoading: "productDetailsLoading",
+      commentProductList: "commentProductList",
+      commentProductLoading: "commentProductLoading"
     })
   },
   created() {
+    let vm = this;
     this.tempID = this.$route.params.id;
     this.$store.dispatch("getProductDetail", this.$route.params.id).then(() => {
       if (this.productDetailsObject && this.productDetailsObject != {})
         this.$store.dispatch("addProductHistory", this.productDetailsObject);
-        this.formatDescription();
+      this.formatDescription();
     });
+    this.$store
+      .dispatch("getCommentProductList", this.$route.params.id)
+      .then(response => {
+        if (response.data.list) {
+          let total = 0;
+          for (let i = 0; i < response.data.list.length; i++) {
+            total += response.data.list[i].stars;
+          }
+          vm.avgStar = total / response.data.list.length / 1;
+        }
+      });
   },
   watch: {
     refresh() {
@@ -256,5 +316,11 @@ table {
   width: 100%;
   border-left: none;
   border-right: none;
+}
+.comment {
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid #e9ebea;
+  padding: 1rem;
 }
 </style>

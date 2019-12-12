@@ -4,13 +4,14 @@
     <b-table
       small
       style="font-size:13px;"
-      sticky-header
       head-variant="light"
       :per-page="perPage"
       :current-page="currentPage"
       :fields="fields"
       :busy="customerOrderLoading"
       :items="customerOrderList"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
     >
       <template v-slot:cell(total_price)="data">{{fixFormatVND(data.item.total_price)}}đ</template>
       <template v-slot:cell(status)="data">
@@ -32,7 +33,8 @@
         >Chi tiết</button>
         <button
           class="btn btn-danger btn-sm"
-          :disabled="row.item.status && row.item.status.id!=2"
+          :disabled="!(row.item.status && row.item.status.id!=2)"
+          :class="{ 'no-drop' : !(row.item.status && row.item.status.id!=2)}"
           @click="cancelOrder(row.item)"
         >Hủy</button>
       </template>
@@ -111,12 +113,14 @@ export default {
       currentPage: 1,
       perPage: 5,
       selected: {},
+      sortBy: "created_at",
+      sortDesc: true,
       fields: [
         { key: "id", label: "Mã đơn hàng" },
-        { key: "created_at", label: "Thời gian" },
-        { key: "total_price", label: "Tổng tiền" },
-        { key: "status", label: "Trạng thái" },
-        {key: "note", label: "Lý do"},
+        { key: "created_at", label: "Thời gian", sortable: true },
+        { key: "total_price", label: "Tổng tiền", sortable: true },
+        { key: "status", label: "Trạng thái", sortable: true },
+        { key: "note", label: "Lý do" },
         { key: "action", label: "" }
       ],
       fieldsDetailProduct: [
@@ -175,4 +179,7 @@ export default {
 };
 </script>
 <style scoped>
+.no-drop {
+  cursor: no-drop;
+}
 </style>

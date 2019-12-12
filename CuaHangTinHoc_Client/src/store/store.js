@@ -155,6 +155,25 @@ export const store = new Vuex.Store({
       success: false,
       error: false,
       msg: ''
+    },
+    store_employeeState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      success: false,
+      error: false,
+      msg: ''
+    },
+    productCountInCart: 0,
+    commentProductState: {
+      loading: false,
+      list: [],
+      object: {},
+      token: '',
+      success: false,
+      error: false,
+      msg: ''
     }
   },
   mutations,

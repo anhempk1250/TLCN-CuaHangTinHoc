@@ -5,58 +5,61 @@
         <input
           class="form-control row"
           style="width: 100%;margin:0;margin-bottom: 0.5rem;"
-          placeholder="Nhập tên hoặc mã khách hàng"
+          placeholder="Nhập tên hoặc nhân viên"
         />
-      </div>
-      <div class="col-md-3">
-        <select style="font-size: 14px;" class="form-control">
-          <option selected>Tất cả</option>
-          <option>NCC từng nhập hàng</option>
-          <option>NCC chưa nhập hàng</option>
-        </select>
       </div>
       <div class="col-md-3">
         <button class="btn btn-primary">
           <i class="fa fa-search"></i> Tìm kiếm
         </button>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 offset-md-3">
         <b-pagination
           style="right:1rem;position:absolute;"
-          :total-rows="2"
-          :per-page="1"
-          aria-controls="my-table"
+          :total-rows="storeEmployeeList.length"
+          :per-page="perPage"
+          v-model="currentPage"
+          aria-controls="employeeTable"
         ></b-pagination>
       </div>
     </div>
 
-    <table class="table" id="categoryTable">
-      <thead class="thead-light" style="font-size: 14px;">
-        <tr class="text-center">
-          <th style="width: 15%;">Mã khách hàng</th>
-          <th style="width: 20%;">Tên khách hàng</th>
-          <th style="width: 10%;">Điện thoại</th>
-          <th style="width: 15%">Địa chỉ</th>
-          <th style="width: 15%;">Lần cuối nhập hàng</th>
-          <th style="width: 15%">Tổng tiền hàng</th>
-          <th style="width: 10%"></th>
-        </tr>
-      </thead>
-    </table>
-
-    <div id="control">
-      <button class="btn btn-danger">
-        <i class="fas fa-trash"></i> Xóa
-      </button>
-      <button class="btn btn-info">Chọn tất cả</button>
-      <button class="btn btn-dark">
-        <i class="fas fa-window-close"></i> Hủy
-      </button>
-    </div>
+    <b-table
+      id="employeeTable"
+      :fields="fields"
+      :items="storeEmployeeList"
+      :busy="storeEmployeeLoading"
+      :current-page="currentPage"
+      :per-page="perPage"
+      small
+      head-variant="light"
+    ></b-table>
   </div>
 </template>
 <script>
-export default {};
+import { mapGetters } from "vuex";
+export default {
+  data() {
+    return {
+      currentPage: 1,
+      perPage: 5,
+      fields: [
+        { key: "id", label: "Tài khoản" },
+        { key: "name", label: "Nhân viên" },
+        { key: "phone", label: "Điện thoại" }
+      ]
+    };
+  },
+  computed: {
+    ...mapGetters({
+      storeEmployeeList: "storeEmployeeList",
+      storeEmployeeLoading: "storeEmployeeLoading"
+    })
+  },
+  created() {
+    this.$store.dispatch("getEmployeeAccountList");
+  }
+};
 </script>
 <style lang="scss" scoped>
 #control {

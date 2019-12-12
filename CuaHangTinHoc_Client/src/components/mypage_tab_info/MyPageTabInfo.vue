@@ -27,7 +27,7 @@
         <label for="email">Điện thoại</label>
       </div>
       <div class="col-5">
-        <input v-model="customer.phone" class="form-control" type="text" />
+        <input  v-model="customer.phone" class="form-control" type="number" />
       </div>
     </div>
    

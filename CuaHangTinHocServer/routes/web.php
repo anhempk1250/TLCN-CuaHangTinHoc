@@ -34,7 +34,7 @@ Route::get('/producerFromProductListPage','ProductListPageController@getProducer
 
 // product detail page
 Route::get('/productDetails','ProductDetailController@getProduct');
-
+Route::get('/commentProduct','ProductDetailController@getCommentList');
 
 
 // order - page
@@ -122,6 +122,14 @@ Route::group([
 
     // store customer page
     Route::get('/storeCustomer','StoreOrderPageController@getCustomerList');
+
+    // store employee
+    Route::get('/storeEmployee', 'EmployeeController@getEmployeeAccountList');
+    Route::post('/storeEmployee','EmployeeController@insertEmployeeAccount');
+    Route::patch('/storeEmployee','EmployeeController@updateEmployeeAccount');
+    Route::delete('/storeEmployee','EmployeeController@deleteEmployeeAccount');
+    Route::get('/getInfoEmployee', 'EmployeeController@getInfoEmployee');
+
 });
 
 

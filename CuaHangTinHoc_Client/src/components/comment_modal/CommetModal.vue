@@ -14,17 +14,22 @@
             <div class="col">
               <div class="row">
                 <div class="col">
-                  <h3 class="text-left">{{product.name}}</h3>
+                  <h5 class="text-left">{{product.name}}</h5>
                 </div>
               </div>
               <div class="row">
                 <div class="col-12">
-                  <img
-                  v-if="product.id"
-                    style="width:15rem;height: 14rem"
-                    :src="'http://localhost:8000/storage/images/'+product.id+'/1.png'"
-                    alt="image"
-                  />
+                  <router-link
+                    v-if="product.id"
+                    :to="{name: 'product', params: {id: product.id}}"
+                    data-dismiss="modal"
+                  >
+                    <img
+                      style="width:15rem;height: 14rem"
+                      :src="'http://localhost:8000/storage/images/'+product.id+'/1.png'"
+                      alt="image"
+                    />
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -56,8 +61,7 @@
                 <div class="col">
                   <button
                     @click="insertComment"
-                    data-toggle="modal"
-                    data-dismiss="comment_modal"
+                    data-dismiss="modal"
                     class="btn btn-warning ml-auto"
                   >Gửi nhận xét</button>
                 </div>
@@ -89,39 +93,32 @@ export default {
   },
   methods: {
     insertComment() {
-      let vm = this;
-      vm.$swal({
-        type: "question",
-        text: "Bạn muốn gửi nhận xét ?",
-        showCancelButton: true
-      }).then(result => {
-        if (result.value) {
-          let product_order = {
-            product_id: this.product.id,
-            order_id: this.product.order_id,
-            comment: this.comment,
-            stars: this.stars
-          };
-          //alert(this.stars)
-          vm.$store
-            .dispatch("insertOrderComment", product_order)
-            .then(response => {
-              if (response.data.msg) {
-                let type = "success";
-                if (!response.data.RequestSuccess) {
-                  type = "error";
-                }
-                vm.$swal({
-                  type: type,
-                  text: response.data.msg
-                });
-              }
-              if (response.data.RequestSuccess) {
-                vm.$store.dispatch("getCustomerOrderSuccess");
-              }
+      let product_order = {
+        product_id: this.product.id,
+        order_id: this.product.order_id,
+        comment: this.comment,
+        stars: this.stars
+      };
+      //alert(this.stars)
+      this.$store
+        .dispatch("insertOrderComment", product_order)
+        .then(response => {
+          if (response.data.msg) {
+            let type = "success";
+            if (!response.data.RequestSuccess) {
+              type = "error";
+            }
+            this.$swal({
+              type: type,
+              text: response.data.msg
             });
-        }
-      });
+            this.comment = "";
+            this.stars = 5;
+          }
+          if (response.data.RequestSuccess) {
+            this.$store.dispatch("getCustomerOrderSuccess");
+          }
+        });
     }
   }
 };

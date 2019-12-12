@@ -1,4 +1,7 @@
 export default {
+  updateProductCount(state) {
+    state.productCountInCart = JSON.parse(localStorage.cart).length
+  },
   product_request(state) {
     state.productState.loading = true
   },
@@ -10,6 +13,18 @@ export default {
   product_error(state) {
     state.productState.loading = false
     state.productState.error = true
+  },
+  commentProductList_request(state) {
+    state.commentProductState.loading = true
+  },
+  commentProductList_success(state, data) {
+    state.commentProductState.loading = false
+    state.commentProductState.list = data.list
+    state.commentProductState.success = true
+  },
+  commentProductList_error(state) {
+    state.commentProductState.loading = false
+    state.commentProductState.error = true
   },
   product1_request(state) {
     state.productState.loading = true
@@ -209,6 +224,20 @@ export default {
   storeOrder_error(state) {
     state.store_orderState.loading = false
     state.store_orderState.error = true
+  },
+  storeEmployee_request(state) {
+    state.store_employeeState.loading = true
+  },
+  storeEmployee_success(state, data) {
+    state.store_employeeState.loading = false;
+    state.store_employeeState.success = true;
+    state.store_employeeState.list = data.list;
+    state.store_employeeState.msg = data.msg;
+    state.store_employeeState.object = data.object;
+  },
+  storeEmployee_error(state) {
+    state.store_employeeState.loading = false
+    state.store_employeeState.error = true
   },
   storeProduct_request(state) {
     state.store_productState.loading = true

@@ -41,5 +41,11 @@ export default {
   storeCustomerList: state => state.store_customerState.list,
   storeCustomerLoading: state => state.store_customerState.loading,
   storeOrderStatusList: state => state.store_orderStatus_State.list,
-  storeOrderStatusLoading: state => state.store_orderStatus_State.loading
+  storeOrderStatusLoading: state => state.store_orderStatus_State.loading,
+  storeEmployeeObject: state => state.store_employeeState.object,
+  storeEmployeeList: state => state.store_employeeState.list,
+  storeEmployeeLoading: state => state.store_employeeState.loading,
+  productCountInCart: state => state.productCountInCart,
+  commentProductList: state => state.commentProductState.list,
+  commentProductLoading: state => state.commentProductState.loading
 }

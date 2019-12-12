@@ -2,7 +2,7 @@
   <div>
     <div class="row" style="background-color: #e9ebea;margin:0;padding: 1rem;">
       <h5 class="text-left" style="margin-top:0.5rem;color:#307ECC">
-        <p>{{loadCurrentTabName}}</p>
+        <p>Tài khoản</p>
       </h5>
       <button
         v-if="!control"
@@ -12,30 +12,29 @@
         data-target="#login_modal"
       >
         <i class="fas fa-plus"></i>
-        Thêm {{loadCurrentTabName}}
+        Thêm mới tài khoản
       </button>
       <registerModel :store="true"></registerModel>
-      <div v-if="control" style="position: absolute;right: 2rem;">
-        <button class="btn btn-primary" @click="save()" style="margin-right:0.1rem;">
-          <i class="fa fa-check"></i> Lưu
-        </button>
-        <button class="btn btn-danger" @click="back()">
-          <i class="fa fa-arrow-left"></i> Trở về
-        </button>
-      </div>
     </div>
-    <customerTab></customerTab>
+    <b-tabs style="margin-top: 1rem">
+      <b-tab title="Khách hàng">
+        <customerTab></customerTab>
+      </b-tab>
+      <b-tab title="Nhân viên">
+        <employeeTab></employeeTab>
+      </b-tab>
+    </b-tabs>
   </div>
 </template>
 <script>
 import customerTab from "../../components/store_customerpage/CustomerTab";
 import registerModel from "../../components/login_modal/Login_modal";
-
+import employeeTab from '../../components/store_customerpage/SupplierTab';
 export default {
   components: {
     customerTab,
-
-    registerModel
+    registerModel,
+    employeeTab
   },
   data() {
     return {

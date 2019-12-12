@@ -1,7 +1,13 @@
 <template>
   <div style="font:Roboto, san-serif;">
     <nav class="navbar navbar-expand-lg navbar-light myHeader1">
-      <router-link class="navbar-brand" :to="{name: 'home-page'}">Logo</router-link>
+      <router-link class="navbar-brand" :to="{name: 'home-page'}">
+        <img
+          style="width: 5rem;"
+          src="https://iweb.tatthanh.com.vn/pic/3/blog/images/logo-may-tinh.jpg"
+          alt="logo-image"
+        />
+      </router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -46,11 +52,19 @@
           <i class="fas fa-user"></i> Đăng Nhập
         </button>
 
-        <router-link :to="{name: 'cart'}">
+        <router-link v-if="$route.name != 'cart'" :to="{name: 'cart'}">
           <button class="leftNavbar-item btn">
-            <i class="fa fa-shopping-cart"></i> Giỏ Hàng
+            <i class="fa fa-shopping-cart"></i>  
+            <span style="color:yellowgreen;" v-if="productCountInCart!=0">{{' (' + productCountInCart+') '}}</span>Giỏ Hàng
           </button>
         </router-link>
+        <a v-if="$route.name == 'cart'" href="http://localhost:8081/cart">
+          <button class="leftNavbar-item btn">
+            <i class="fa fa-shopping-cart"></i>  
+            <span style="color:yellowgreen;" v-if="productCountInCart!=0">{{' (' + productCountInCart+') '}}</span>Giỏ Hàng
+          </button>
+        </a>
+
         <button
           class="btn"
           style="color: white;"
@@ -212,7 +226,8 @@ export default {
       producerList: "producerList",
       producerLoading: "producerLoading",
       productHistoryList: "productHistoryList",
-      customerAccountObject: "customerAccountObject"
+      customerAccountObject: "customerAccountObject",
+      productCountInCart: "productCountInCart"
     }),
     loadUserName() {
       if (localStorage.userName && localStorage.userName != "")
@@ -220,6 +235,9 @@ export default {
       else {
         return this.customerAccountObject.name;
       }
+    },
+    loadProductCountInCart() {
+      return this.productCountInCart;
     }
   },
   created() {
@@ -233,6 +251,8 @@ export default {
         localStorage.productHistoryList
       );
     if (localStorage.cname != "") this.userName = localStorage.cname;
+
+    this.$store.dispatch("updateProductCountInCart");
   }
 };
 </script>

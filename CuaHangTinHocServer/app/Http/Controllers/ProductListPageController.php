@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Producer;
 use App\Product;
 use App\Product_Category;
+use App\Product_Order;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 class ProductListPageController extends BaseController

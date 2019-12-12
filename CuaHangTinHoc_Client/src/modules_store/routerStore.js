@@ -46,8 +46,8 @@ export default [
                 component: PromotionPage
             },
             {
-                path: 'account',
-                name: 'account',
+                path: 'info',
+                name: 'info',
                 component: AccountPage
             },
             {
